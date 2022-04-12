@@ -1,0 +1,140 @@
+@mixin innerBorder($size, $color) {
+  -webkit-box-shadow: inset 0px 0px 0px $size $color;
+  -moz-box-shadow: inset 0px 0px 0px $size $color;
+  box-shadow: inset 0px 0px 0px $size $color;
+}
+
+// Modal 
+.disable-srolling {
+  margin-right: 0.35em;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-visible {
+  display: block !important;
+  opacity: 1 !important;
+  transition: all 0.35s ease-in;
+  visibility: visible !important;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+
+  .modal-card {
+    background-color: $Card;
+    margin: 5em auto;
+    width: 45%;
+    height: fit-content;
+    border-radius: 0.5em;
+    // padding: 1em;
+  }
+  .modal-content {
+    border: none !important;
+    border-radius: 0em !important;
+    padding: 1em !important;
+  }
+  .modal-bar {
+    width: 100%;
+    border: none !important;
+  }
+  .modal-header {
+    padding: 0em !important;
+    padding: 1em !important;
+    border-bottom: 1px solid $BG !important;
+    h1 {
+      margin: 0em !important;
+    }
+  }
+}
+
+.editor-table {
+  border: 1px solid $BG;
+  border-left: none !important;
+  width: 100%;
+  border-radius: 1em !important;
+  button {
+    width: 100%;
+    margin: 0em 0em 0.2em 0em !important;
+  }
+  .up-border-radius {
+    border-top-left-radius: 0.5em;
+  }
+  .down-border-radius {
+    border-bottom-left-radius: 0.5em;
+  }
+  .input-title {
+    text-align: left;
+    padding: 0.5em 1em;
+    background-color: $Color1;
+    color: $FontColor2;
+    width: 20%;
+    font-weight: 400;
+  }
+  .input-box {
+    width: 80%;
+    padding: 0em;
+  }
+  input {
+    padding-left: 1em;
+    width: 100%;
+    height: 100%;
+    border-radius: 0em;
+    height: inherit;
+    font-weight: 400;
+    border: none;
+    outline: none;
+    display: table;
+    padding: 0.5em 1em;
+    &:focus {
+      @include innerBorder(1px, $Color1);
+    }
+  }
+}
+
+.editor-left {
+  padding-right: 0em;
+}
+
+.editor-right {
+  // width: 100%;
+  margin: 0em;
+  padding: 0em 1em;
+  display: grid;
+  place-items: center;
+  button {
+    width: 100%;
+    font-size: small;
+  }
+  .btn-group-vertical {
+    width: 100%;
+  }
+}
+
+#editorContentDiv {
+  // margin-top: 1em;
+
+  .tab-active {
+    background-color: $Color1;
+    color: $FontColor2;
+    border-radius: 0.3em !important;
+  }
+}
+
+
+#editorManageTabs {
+  min-height: 10em;
+  height: 10em;
+}

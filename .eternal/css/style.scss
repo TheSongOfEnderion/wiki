@@ -1,0 +1,176 @@
+// Variables  
+$fontFamily: 'Helvetica';
+$FontColor1: #3a3a3a;
+$FontColor2: whitesmoke;
+$FontColor3: #666;
+$FontShadow: #212121;
+$Color1: #0d6efd;
+$Color2: #6cfb92;
+$Color1Dark: #0e59ca;
+$BG: #E7E7E2;
+$BG2: #F7F7F7;
+$BG3: #d1d1cd;
+$Card: #FFFFFF;
+$ToolTipBG: #eb4034;
+$ToolTipColor: #ffffff;
+$BorderColor: #ced4da;
+
+// Imports   
+@import './navbar';
+@import './spoiler';
+@import './default';
+@import './toc';
+@import './profilebox';
+@import './editor';
+@import './notifications';
+@import './utility';
+@import './easymde.min';
+
+// CSS  
+@mixin center {    
+  display: grid;
+  place-items: center;
+}
+
+@mixin removeSelect {
+  outline: 0px !important;
+  -webkit-appearance: none;
+  box-shadow: none !important;
+}
+
+@mixin innerBorder($size, $color) {
+  -webkit-box-shadow: inset 0px 0px 0px $size $color;
+  -moz-box-shadow: inset 0px 0px 0px $size $color;
+  box-shadow: inset 0px 0px 0px $size $color;
+}
+
+#page-title {
+  h1 {
+    font-size: 2.5em;
+    font-weight: 400;
+  }
+  #page-breadcrumbs {
+    background-color: $BG2;
+    color: $FontColor3;
+    // border: 1px solid $FontColor3;
+    border-radius: 0.3em;
+    padding: 0.5em 1em;
+    font-size: smaller;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    // width: fit-content;
+  }
+}
+
+#head-card {
+  @include center();
+  margin: 6em 0em 3em 0em;
+  h1 {
+    color: $FontColor1;
+    text-shadow: 1px 1px 2px $FontShadow;
+  }
+  // Website Title  
+  #project-title {
+    text-align: center;
+    font-size: 3.4em;
+  }
+  #nav-card {
+    text-align: center;
+  }
+}
+
+body {
+  @include center();
+  background-color: $BG;
+  color: $FontColor1;
+  font-family: $fontFamily;
+  font-weight: 400;
+  font-size: small;
+  .body-card {
+    width: 60em;
+    background-color: $Card;
+    color: $FontColor1;
+    border-radius: 0.5em;
+    padding: 2em 3em;
+  }
+
+  #page-tags {
+    border-top: 1px solid $BG;
+  }
+}
+
+@media (max-width: 1200px) {
+  .modal-card {
+    width: 70% !important;
+  }
+}
+
+@media (max-width: 750px) {
+  .container,
+  .container-sm {
+    max-width: 575px;
+  }
+  .modal-card {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .container,
+  .container-sm {
+    max-width: 500px;
+  }
+  .body-card {
+    padding: 2em 1.5em !important;
+  }
+  .modal-card {
+    width: 90% !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .container,
+  .container-sm {
+    max-width: 300px;
+  }
+  .body-card {
+    padding: 2em 1em !important;
+  }
+  #project-title {
+    font-size: 2.5em !important;
+  }
+  .profile-box {
+    float: none !important;
+    margin: auto;
+  }
+  .profile-box-parent {
+    display: grid !important;
+    place-items: center !important;
+  }
+  #page-title {
+    h1 {
+      font-size: 2em;
+    }
+  }
+  .modal-card {
+    width: 300px !important;
+  }
+}
+ 
+@media (max-width: 300px) {
+  .container,
+  .container-sm {
+    max-width: 250px;
+  }
+  .body-card {
+    padding: 0em;
+    margin: 0em;
+    width: 100% !important;
+  }
+  #project-title {
+    font-size: 2em !important;
+  }
+}
+

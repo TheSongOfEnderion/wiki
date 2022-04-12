@@ -1,0 +1,68 @@
+.hide {
+  display: none;
+}
+
+.space {
+  margin-bottom: 0.5em !important;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+// Primary button used   
+.btn {
+  outline: 0px !important;
+  -webkit-appearance: none;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+.btn-one {
+  font-size: 1rem;
+  background-color: $Color1;
+  color: $FontColor2;
+  border: 0em;
+  cursor: pointer !important;
+  &:hover {
+    background-color: $Color1Dark;
+    color: $FontColor2;
+    cursor: pointer !important;
+  }
+}
+
+.btn-active {
+  background-color: $Color1Dark;
+  color: $FontColor2;
+}
+
+.btn-two {
+  background-color: $BG;
+  color: $FontColor1;
+  &:hover {
+    background-color: $BG3;
+  }
+}
+
+.no-border {
+  border: none !important;
+}
+
+.no-select {
+  outline: 0px !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow:  none !important;
+  box-shadow:  none !important;
+
+  &:focus {
+    outline: 0px !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow:  none !important;
+    box-shadow:  none !important;
+  }
+}
+
+
+.small-font {
+  font-size: small;
+}

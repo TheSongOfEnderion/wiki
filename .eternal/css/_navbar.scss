@@ -1,0 +1,52 @@
+.btn-nav {
+    background-color: transparent;
+    transition: 0.3s;
+    padding: 0.2em 0.4em;
+    margin: 0em 0.05em;
+    // font-size: smaller;
+    &:hover {
+        background-color: $Color1;
+        color: $FontColor2;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    font-size: small;
+    &:hover {
+        .dropdown-content {
+            display: block;
+        }
+        .btn-nav {
+            background-color: $Color1;
+            color: $FontColor2;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    text-align: left;
+    background-color: #f1f1f1;
+    width: fit-content;
+    min-width: 12em;
+    max-width: 30em;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    a {
+        color: #212121;
+        text-decoration: none;
+        display: block;
+        padding: 0.4em;
+        padding-left: 0.8em;
+        padding-right: 0.8em;
+        &:hover {
+            background-color: $Color1;
+            color: $FontColor2;
+        }
+    }
+}

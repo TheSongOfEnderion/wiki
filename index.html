@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eternal Writer</title>
+
+  <!-- CSS -->
+  <link href="./.eternal/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./.eternal/css/style.css" rel="stylesheet">
+
+  <!-- JS -->
+  <script src="./.eternal/js/bootstrap.bundle.min.js"></script>
+  <script src="./.eternal/js/easymde.min.js"></script>
+  <!-- <script src="./.eternal/js/simplemde.min.js"></script> -->
+  <script src="./.eternal/js/notifications.js"></script>
+  <script src="./.eternal/js/main.js"></script>
+
+  <!-- Head Bar -->
+  <div id="head-card"></div>
+</head>
+
+<body>
+  <button id="modalbtn" onclick="createEditor()">open modal</button>
+  <div id="page-editor"> </div>
+
+  <div class="container body-card">
+    <div id="spoiler-button"></div>
+
+    <div id="page-title">
+      <h1></h1>
+      <div id="page-breadcrumbs"></div>
+    </div>
+
+    <div id="page-content"><a href="?p=story-a">Test go</a></div>
+
+    <div id="page-tags"></div>
+  </div>
+
+  <script>
+    // Add Site Head
+    getAsset('headbar.html')
+      .then(data => {
+        document.getElementById('head-card').innerHTML = data
+
+        getAsset('eternal.json') // Website Title
+          .then(data => {
+            document.getElementById('project-title').innerText = data['projectTitle']
+          })
+
+        // Add Horizontal Navigation Bar
+        getAsset('navbar.html')
+          .then(data => {
+            document.getElementById('nav-card').innerHTML = data
+          })
+      })
+
+    // Gets Directory
+    getAsset('directory.json')
+      .then(async(data) => {
+        directory = data;
+      })
+      .then(() => {
+        // Gets Input Url
+        if (window.location.search != "") {
+          let urlParams = new URLSearchParams(window.location.search);
+          let inputUrl = urlParams.get('p').trim();
+
+          // Renders Page
+          pageCard = new Card()
+          pageCard.renderFromHTML(inputUrl)
+            .then(() => {
+              // Renders Editor
+              pageEditor = new PageEditor(pageCard)
+              pageEditor.loadEditor()
+                .then(()=> {
+
+                })
+            })
+        }
+      })
+
+    function createEditor() {
+      openModal('editor-modal')
+    }
+  </script>
+  <script>
+  </script>
+
+</body>
+
+</html>
