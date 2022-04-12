@@ -12,14 +12,14 @@ function getAsset(filename) {
 
   switch (filetype) {
     case 'html':
-      return fetch(`.eternal/assets/${filename}`)
+      return fetch(`eternal/assets/${filename}`)
         .then(response => response.text())
         .then(data => {
           return data;
         })
       break;
     case 'json':
-      return fetch(`.eternal/${filename}`)
+      return fetch(`eternal/${filename}`)
         .then(response => response.json())
         .then(data => {
           return data;
