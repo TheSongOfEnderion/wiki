@@ -4,22 +4,55 @@ var idList = []; // List of randomly generated ids
 var pageCard; // Contains the page card Class
 var editorData; // Contains parsed data for the editor
 var isEditorCreated = false;
+var notificationGreen;
+var notificationRed;
+var tempPageData = {}
+
+function printIDList() {
+  console.log(idList)
+}
 
 // Functions
+
+function notify(type, title, message) {
+  switch (type) {
+    case "success":
+      notificationGreen({
+        title: title,
+        message: message
+      });
+      return;
+    case "error":
+      notificationRed({
+        title: title,
+        message: message
+      });
+      return;
+    default:
+      break;
+  }
+}
+
+
+
+
+
+
+
 function getAsset(filename) {
   let raw = filename.split(".");
   const filetype = raw[raw.length - 1];
 
   switch (filetype) {
     case 'html':
-      return fetch(`eternal/assets/${filename}`)
+      return fetch(`.eternal/assets/${filename}`)
         .then(response => response.text())
         .then(data => {
           return data;
         })
       break;
     case 'json':
-      return fetch(`eternal/${filename}`)
+      return fetch(`.eternal/${filename}`)
         .then(response => response.json())
         .then(data => {
           return data;
@@ -167,6 +200,7 @@ function createTabs(button_id_div, tabIdsObj) {
   let first = true
   for (const idObj of tabIdsObj) {
     const elem = document.getElementById(idObj.id)
+    if (!elem) continue
     elem.classList.add(content_group_class)
     elem.style.display = "none"
 
@@ -233,16 +267,19 @@ class TextRenderer {
         htmlContent += `<li>${value.replace("* ", "").trim()}</li>\n`;
         continue;
       }
-
+      // <div class="mb-4">\n</div>
       // Headers
       const hres = value.match(/(#+)\s/);
       if (hres) {
         let h = this.headerConvertionTable[hres[0]];
-        htmlContent += `<div class="mt-4">\n</div><${h} class="h">${value.replace(hres[0], "")}</${h}>\n`;
+        htmlContent += `<${h} class="h">${value.replace(hres[0], "")}</${h}>\n`;
         if (h == "h1") htmlContent += '<hr>\n';
         continue;
       }
-
+      if (value == "</div>" || value.match(/\<div(.+?)\>/)) {
+        htmlContent += value;
+        continue;
+      }
       htmlContent += value + '<p class="space"></p>\n';
     }
     return htmlContent;
@@ -276,9 +313,9 @@ class Card {
 
 
   constructor() {
-    this.pageData = {}
-    this.profileData = {}
+
   }
+
   async renderFromHTML(inputUrl) {
     let htmlData = await this.findFileData(inputUrl);
     if (!htmlData) return;
@@ -290,10 +327,10 @@ class Card {
     // Loads the Page and Renders Data
     await this.loadPage(htmlData, full);
 
-    if (full) {
-      this.pageData = pageData;
-      this.profileData = profileData;
-    }
+    // if (full) {
+    //   pageData = pageData;
+    //   profileData = profileData;
+    // }
 
     // Create Table of Content
     this.createTOC();
@@ -476,6 +513,8 @@ class Card {
     if (isObjEmpty(profileData)) return;
 
     for (const pageTabId in profileData) {
+      let divToPlaceProfileBoxIn = document.getElementById(pageTabId);
+      if (!divToPlaceProfileBoxIn) continue;
       const profle_obj = profileData[pageTabId];
       const div = document.createElement('div');
       div.id = pageTabId + "-profilebox";
@@ -600,7 +639,7 @@ class Card {
       parentDiv.classList.add("profile-box-parent")
       parentDiv.appendChild(div)
 
-      document.getElementById(pageTabId).prepend(parentDiv);
+      divToPlaceProfileBoxIn.prepend(parentDiv);
     }
   }
 
@@ -653,25 +692,34 @@ class Card {
    * @access     private
    */
   createPageTabs() {
-    if (pageData.functions.createTabs && Object.keys(pageData.functions.createTabs).length != 0) {
-      for (const obj of pageData.functions.createTabs) {
-        let div = document.getElementById(obj.contentArea)
+    if (isObjEmpty(pageData.fileStructure)) return
 
-        let btn = document.createElement('div')
-        btn.id = obj.contentArea + "-page-tab-button-" + makeid(5)
+    for (const area in pageData.fileStructure) {
+      if (isObjEmpty(pageData.fileStructure[area])) continue
+      let div = document.getElementById(area)
 
-        div.prepend(btn)
+      let btn = document.createElement('div')
+      btn.id = area + "-page-tab-button-" + makeid(5)
+      div.prepend(btn)
 
-        createTabs(btn.id, obj.tabs)
+      let tabsObj = []
+
+      for (const tabId in pageData.fileStructure[area]) {
+        tabsObj.push({ name: pageData.fileStructure[area][tabId], id: tabId })
       }
+      if (tabsObj.length == 1) {
+        btn.style.display = "none";
+      }
+      createTabs(btn.id, tabsObj)
     }
+
   }
   getPageData() {
-    return this.pageData;
+    return pageData;
   }
 
   getProfileData() {
-    return this.profileData;
+    return profileData;
   }
 
   setTitle(name) {
@@ -701,6 +749,34 @@ class Card {
     crumbDiv.style.display = "block";
     crumbDiv.innerText = crumbs;
   }
+
+  setTab(area, oldData, newData) {
+    let fskeys = Object.keys(pageData.fileStructure[area]);
+    let index = fskeys.indexOf(oldData.id)
+
+    fskeys.splice(index, 1);
+
+    let keyValues = Object.entries(pageData.fileStructure[area]); //convert object to keyValues ["key1", "value1"] ["key2", "value2"]
+    keyValues.splice(index, 1);
+
+    keyValues.splice(index, 0, [newData.id, newData.name]); // insert key value at the index you want like 1.
+    pageData.fileStructure[area] = Object.fromEntries(keyValues) // convert key values to obj {key1: "value1", newKey: "newValue", key2: "value2"}
+
+    if (profileData.hasOwnProperty(oldData.id)) {
+      let x = profileData[oldData.id];
+      delete profileData[oldData.id];
+      profileData[newData.id] = x;
+      console.log(profileData)
+    }
+  }
+
+  removeTab(area, tabID) {
+    delete pageData.fileStructure[area][tabID];
+  }
+
+  addTab() {
+
+  }
 }
 
 class PageEditor {
@@ -708,12 +784,14 @@ class PageEditor {
     this.card = card
     this.filestructure = {}
 
-
     this.editorAreaIDs = [
       "editorContentDiv",
       "editorProfileBoxDiv",
       "editorManageTabs",
     ]
+
+    // Manage tab
+    this.manageTabSelected
   }
 
   loadEditor() {
@@ -723,129 +801,37 @@ class PageEditor {
         // document.getElementById('page-editor').insertAdjacentHTML('beforeend', `<button id="modalbtn" onclick="openModal('editor-modal')">open modal</button>`);
 
         // Create Spoiler and nonspoiler Tabs
-        this.createTabs();
+        createTabs('editor-content-spoiler-tab-btns', [{
+          name: 'NON-SPOILER CONTENT',
+          id: 'editor-nonspoiler'
+        }, {
+          name: 'SPOILER CONTENT',
+          id: 'editor-spoiler'
+        }]);
+        this.showSpoilers();
 
-        this.createEditorContent();
+        // Create the Content Area
+        // let pageData = pageData;
 
+        // Spoiler Switch
+        if (pageData.functions.hasOwnProperty('createSpoilers') && pageData.functions.createSpoilers == true) {
+          document.getElementById('editorSpoilerCheck').checked = true
+          this.showSpoilers()
+        }
+
+        // Content Areas
+        this.generateTextArea('spoiler');
+        this.generateTextArea('nonspoiler');
+
+        // Meta Area
+        document.getElementById('editorPageTitle').value = pageData.title
+        document.getElementById('editorParent').value = pageData.parent
+        document.getElementById('editorTags').value = pageData.tags
+
+        // Manage Tabs Area
+        this.generateTabArea('spoiler');
+        this.generateTabArea('nonspoiler');
       })
-  }
-
-  createTabs() {
-    createTabs('editor-content-spoiler-tab-btns', [{
-      name: 'NON-SPOILER CONTENT',
-      id: 'editor-nonspoiler'
-    }, {
-      name: 'SPOILER CONTENT',
-      id: 'editor-spoiler'
-    }]);
-    this.showSpoilers();
-  }
-
-  showSpoilers() {
-    const btns = document.getElementById('editor-content-spoiler-tab-btns')
-    if (btns.style.display == "none") {
-      btns.style.display = "block";
-      document.getElementById('editor-nonspoiler').style.display = "block";
-      document.getElementById('editor-spoiler').style.display = "none";
-    } else {
-      btns.style.display = "none";
-      btns.getElementsByTagName('Button')[0].click()
-      document.getElementById('editor-spoiler').style.display = "none";
-    }
-  }
-
-  createEditorContent() {
-    let pageData = this.card.pageData;
-
-    // Create Spoiler Switch
-    if (pageData.functions.hasOwnProperty('createSpoilers') && pageData.functions.createSpoilers == true) {
-      document.getElementById('editorSpoilerCheck').checked = true
-      this.showSpoilers()
-    }
-
-    // Create Text Areas
-    this.createTextArea('spoiler');
-    this.createTextArea('nonspoiler');
-
-    document.getElementById('editorPageTitle').value = pageData.title
-    document.getElementById('editorParent').value = pageData.parent
-    document.getElementById('editorTags').value = pageData.tags
-  }
-
-  createMDEditor(textarea, initialValue) {
-    return new EasyMDE({
-      element: textarea,
-      initialValue: initialValue,
-      autofocus: true,
-      hideIcons: [
-        "guide",
-        "side-by-side",
-        "preview"
-      ],
-      forceSync: true,
-    });
-  }
-
-  createTextArea(area) {
-    if (!pageData.fileStructure.hasOwnProperty(area)) return
-
-    this.filestructure[area] = {};
-
-    let contentArea = document.getElementById(`editor-${area}-content-tab`);
-    contentArea.innerHTML = '';
-    let tabs = [];
-
-    for (const tab in pageData.fileStructure[area]) {
-      // Create Div to put MD
-      let textdiv = document.createElement('div');
-      textdiv.id = tab + "-editordiv-" + makeid(4);
-
-      // Create Textarea
-      let textarea = document.createElement("textarea");
-      textarea.id = tab + "-editor";
-
-      // Append div
-      textdiv.appendChild(textarea)
-      contentArea.appendChild(textdiv)
-
-      // Create Markdown
-      let md = this.createMDEditor(textarea,
-          editorData.getElementById(tab).innerHTML.trim())
-        // Add Tab to button
-      tabs.push({
-        name: pageData.fileStructure[area][tab],
-        id: textdiv.id
-      });
-
-      this.filestructure[area][textarea.id] = {
-        htmlName: pageData.fileStructure[area][tab],
-        htmlId: tab,
-      }
-    }
-
-    createTabs(`editor-${area}-tab-btns`, tabs);
-  }
-
-  changeEditorArea(targetBtn, targetId) {
-    let btns = document.getElementById('editorAreaBtns').getElementsByTagName('button');
-
-    // Clear Buttons
-    for (const btn of btns) {
-      if (btn == targetBtn) {
-        targetBtn.classList.add('btn-active');
-        continue
-      }
-      btn.classList.remove('btn-active');
-    }
-
-    // Clear Area Div
-    for (const areaID of this.editorAreaIDs) {
-      if (areaID == targetId) {
-        document.getElementById(areaID).classList.remove('hide');
-        continue
-      }
-      document.getElementById(areaID).classList.add('hide');
-    }
   }
 
   saveEditor() {
@@ -869,9 +855,190 @@ class PageEditor {
         this.card.setTitle(document.getElementById('editorPageTitle').value)
         this.card.setTags(document.getElementById('editorTags').value)
         this.card.setBreadCrumbs(document.getElementById('editorParent').value)
+
+        notify("success", "Successful Save", "Page has been re-rendered.")
       })
   }
 
+  generateMDEditor(textarea, initialValue) {
+    return new EasyMDE({
+      element: textarea,
+      initialValue: initialValue,
+      autofocus: true,
+      hideIcons: [
+        "guide",
+        "side-by-side",
+        "preview"
+      ],
+      forceSync: true,  
+    });
+  }
+
+  generateTextArea(area) {
+    if (!pageData.fileStructure.hasOwnProperty(area)) return
+
+    this.filestructure[area] = {};
+
+    let contentArea = document.getElementById(`editor-${area}-content-tab`);
+    contentArea.innerHTML = '';
+
+    let btnArea = document.getElementById(`editor-${area}-tab-btns`)
+    btnArea.innerHTML = '';
+
+    let tabs = [];
+
+    for (const tab in pageData.fileStructure[area]) {
+      // Create Div to put MD
+      let textdiv = document.createElement('div');
+      textdiv.id = tab + "-editordiv-" + makeid(4);
+
+      // Create Textarea
+      let textarea = document.createElement("textarea");
+      textarea.id = tab + "-editor";
+
+      // Append div
+      textdiv.appendChild(textarea);
+      contentArea.appendChild(textdiv);
+
+      // Create Markdown
+      let md = this.generateMDEditor(textarea,
+        editorData.getElementById(tab).innerHTML.trim());
+      // Add Tab to button
+      tabs.push({
+        name: pageData.fileStructure[area][tab],
+        id: textdiv.id
+      });
+
+      this.filestructure[area][textarea.id] = {
+        htmlName: pageData.fileStructure[area][tab],
+        htmlId: tab,
+      }
+    }
+
+    createTabs(`editor-${area}-tab-btns`, tabs);
+  }
+
+  generateTabArea(area) {
+    let selectGroup = document.getElementById(`managetab-${area}-list`);
+    selectGroup.innerHTML = '';
+    for (const tab in pageData.fileStructure[area]) {
+      let optionId = tab;
+      if (idList.includes(optionId)) {
+        optionId += "-" + makeid(4);
+      }
+      idList.push(optionId);
+      selectGroup.insertAdjacentHTML('beforeend', `<option value="${optionId}">${pageData.fileStructure[area][tab]}</option>`);
+    }
+  }
+  switchEditorArea(targetBtn, targetId) {
+    let btns = document.getElementById('editorAreaBtns').getElementsByTagName('button');
+
+    // Clear Buttons
+    for (const btn of btns) {
+      if (btn == targetBtn) {
+        targetBtn.classList.add('btn-active');
+        continue;
+      }
+      btn.classList.remove('btn-active');
+    }
+
+    // Clear Area Div
+    for (const areaID of this.editorAreaIDs) {
+      if (areaID == targetId) {
+        document.getElementById(areaID).classList.remove('hide');
+        continue
+      }
+      document.getElementById(areaID).classList.add('hide');
+    }
+  }
+
+  showSpoilers() {
+    const btns = document.getElementById('editor-content-spoiler-tab-btns');
+    if (btns.style.display == "none") {
+      btns.style.display = "block";
+      document.getElementById('editor-nonspoiler').style.display = "block";
+      document.getElementById('editor-spoiler').style.display = "none";
+    } else {
+      btns.style.display = "none";
+      btns.getElementsByTagName('Button')[0].click();
+      document.getElementById('editor-spoiler').style.display = "none";
+    }
+  }
+
+
+  tabUp() {
+    let list = document.getElementById('managetab-contentarea-list');
+  }
+
+  tabGetSelectedArea() {
+    if (typeof this.manageTabSelected == 'undefined') return;
+    return this.manageTabSelected.parentNode.id.split("-")[1];
+  }
+  tabSelectedOption(sel) {
+    this.manageTabSelected = sel.options[sel.selectedIndex];
+    document.getElementById('tabReNameInput').value = this.manageTabSelected.innerText;
+  }
+
+  tabClear(inputId) {
+    document.getElementById(inputId).value = ''
+  }
+
+  tabRename() {
+    if (typeof this.manageTabSelected == 'undefined') return
+    let newName = document.getElementById('tabReNameInput').value;
+
+    // Checks if no change in name
+    if (newName == this.manageTabSelected.innerText) return;
+
+    // Whether its a spoiler or nonspoiler area
+    let area = this.tabGetSelectedArea();
+
+    // Save old data
+    let oldData = {
+      id: this.manageTabSelected.value,
+      name: this.manageTabSelected.innerText,
+    }
+
+    // Set New data
+    this.manageTabSelected.innerText = newName;
+    this.manageTabSelected.value = this.manageTabSelected.value.split("-")[0] + "-" + newName.toLocaleLowerCase();
+
+    // Save New Data
+    let newData = {
+      id: this.manageTabSelected.value,
+      name: this.manageTabSelected.innerText,
+    }
+
+    // Set Card Tabs
+    this.card.setTab(area, oldData, newData)
+
+    // Edit editorData
+    editorData.getElementById(oldData.id).id = newData.id;
+
+    // Content Areas
+    this.generateTextArea(area);
+    notify("success", "Successfully Renamed", "")
+  }
+
+  tabDelete() {
+    if (typeof this.manageTabSelected == 'undefined') return;
+    let area = this.tabGetSelectedArea();
+
+    if (Object.keys(pageData.fileStructure[area]).length == 1) {
+      notify("error", "Deletion Failed", "Content Area must have atleast one textarea.")
+      return;
+    }
+
+    let areaList = document.getElementById('managetab-spoiler-list');
+    areaList.removeChild(this.manageTabSelected)
+
+
+    this.card.removeTab(area, this.manageTabSelected.value);
+    this.generateTextArea(area);
+  }
+
+  tabAppend() {
+    let value = document.querySelector('input[name="contentAreaRadio"]:checked').value;
+    console.log(value)
+  }
 }
-
-

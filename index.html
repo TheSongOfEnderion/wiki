@@ -7,15 +7,16 @@
   <title>Eternal Writer</title>
 
   <!-- CSS -->
-  <link href="./eternal/css/bootstrap.min.css" rel="stylesheet">
-  <link href="./eternal/css/style.css" rel="stylesheet">
+  <!-- <link href="./.eternal/css/bootstrap.min.css" rel="stylesheet"> -->
+  <!-- <link href="./.eternal/css/font-awesome.min.css" rel="stylesheet"> -->
+  <link href="./.eternal/css/style.css" rel="stylesheet">
 
   <!-- JS -->
-  <script src="./eternal/js/bootstrap.bundle.min.js"></script>
-  <script src="./eternal/js/easymde.min.js"></script>
-  <!-- <script src="./eternal/js/simplemde.min.js"></script> -->
-  <script src="./eternal/js/notifications.js"></script>
-  <script src="./eternal/js/main.js"></script>
+  <script src="./.eternal/js/bootstrap.bundle.min.js"></script>
+  <script src="./.eternal/js/easymde.min.js"></script>
+  <!-- <script src="./.eternal/js/simplemde.min.js"></script> -->
+  <script src="./.eternal/js/notifications.js"></script>
+  <script src="./.eternal/js/main.js"></script>
 
   <!-- Head Bar -->
   <div id="head-card"></div>
@@ -71,11 +72,21 @@
           pageCard = new Card()
           pageCard.renderFromHTML(inputUrl)
             .then(() => {
+              notificationGreen = window.createNotification({
+                theme: 'success'
+              });
+
+              notificationRed = window.createNotification({
+                theme: 'error'
+              });
+
               // Renders Editor
               pageEditor = new PageEditor(pageCard)
               pageEditor.loadEditor()
-                .then(()=> {
-
+                .then(() => {
+                  document.getElementById('modalbtn').click();
+                  document.getElementById('editorAreaBtns').getElementsByTagName('button')[2].click()
+                  // printIDList()
                 })
             })
         }
@@ -85,7 +96,12 @@
       openModal('editor-modal')
     }
   </script>
+
   <script>
+    function myNewFunction(sel) {
+      let selected = sel.value;
+      console.log(selected);
+    }
   </script>
 
 </body>

@@ -1,7 +1,7 @@
 @mixin innerBorder($size, $color) {
-  -webkit-box-shadow: inset 0px 0px 0px $size $color;
-  -moz-box-shadow: inset 0px 0px 0px $size $color;
-  box-shadow: inset 0px 0px 0px $size $color;
+  -webkit-box-shadow: inset 0px 0px 0px $size $color !important;
+  -moz-box-shadow: inset 0px 0px 0px $size $color !important;
+  box-shadow: inset 0px 0px 0px $size $color !important;
 }
 
 // Modal 
@@ -24,19 +24,20 @@
   left: 0;
   right: 0;
   bottom: 0;
-  display: none;
+  display: grid;
+  place-items: center;
   align-items: center;
   justify-content: center;
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s, opacity 0.5s linear;
+  transition: visibility 0s, opacity 0.3s linear;
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.4);
 
   .modal-card {
     background-color: $Card;
     margin: 5em auto;
-    width: 45%;
+    width: 47%;
     height: fit-content;
     border-radius: 0.5em;
     // padding: 1em;
@@ -124,8 +125,6 @@
 }
 
 #editorContentDiv {
-  // margin-top: 1em;
-
   .tab-active {
     background-color: $Color1;
     color: $FontColor2;
@@ -136,5 +135,32 @@
 
 #editorManageTabs {
   min-height: 10em;
-  height: 10em;
+  height: fit-content;
+
+  select {
+    max-width: 100%;
+    margin-bottom: 0.5em;
+  }
+  .navButtons {
+    width: 100% !important;
+    position: relative;
+    display: inline-flex;
+    
+    button {
+      width: 100%;
+      font-size: small;
+    }
+  }
+  .btn-one {
+    margin-top: 0.3em !important;
+  }
+  #editorManageTabsLeft {
+    max-width: 20em;
+  }
+  .side-line {
+    width: 100%;
+  }
+  #managetab-contentarea-list {
+    font-weight: 200 !important;
+  }
 }

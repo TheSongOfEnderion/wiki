@@ -1,4 +1,4 @@
-// Variables  
+// Variables 
 $fontFamily: 'Helvetica';
 $FontColor1: #3a3a3a;
 $FontColor2: whitesmoke;
@@ -15,7 +15,12 @@ $ToolTipBG: #eb4034;
 $ToolTipColor: #ffffff;
 $BorderColor: #ced4da;
 
-// Imports   
+
+$notifySuccess: #21be4b;
+$notifyError: #eb4034;
+
+// Imports  
+@import './bootstrap.min';
 @import './navbar';
 @import './spoiler';
 @import './default';
@@ -26,7 +31,8 @@ $BorderColor: #ced4da;
 @import './utility';
 @import './easymde.min';
 
-// CSS  
+
+// CSS 
 @mixin center {    
   display: grid;
   place-items: center;
@@ -39,9 +45,9 @@ $BorderColor: #ced4da;
 }
 
 @mixin innerBorder($size, $color) {
-  -webkit-box-shadow: inset 0px 0px 0px $size $color;
-  -moz-box-shadow: inset 0px 0px 0px $size $color;
-  box-shadow: inset 0px 0px 0px $size $color;
+  -webkit-box-shadow: inset 0px 0px 0px $size $color !important;
+  -moz-box-shadow: inset 0px 0px 0px $size $color !important;
+  box-shadow: inset 0px 0px 0px $size $color !important;
 }
 
 #page-title {
@@ -52,17 +58,16 @@ $BorderColor: #ced4da;
   #page-breadcrumbs {
     background-color: $BG2;
     color: $FontColor3;
-    // border: 1px solid $FontColor3;
     border-radius: 0.3em;
+    margin-bottom: 0.8em;
     padding: 0.5em 1em;
     font-size: smaller;
     display: flex;
     justify-content: center;
     align-content: center;
     flex-direction: column;
-    // width: fit-content;
   }
-}
+} 
 
 #head-card {
   @include center();
@@ -99,6 +104,10 @@ body {
   #page-tags {
     border-top: 1px solid $BG;
   }
+}
+
+.page-tab {
+  display: none;
 }
 
 @media (max-width: 1200px) {
