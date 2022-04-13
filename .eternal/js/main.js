@@ -702,7 +702,7 @@ class Card {
     spoilerDiv.innerHTML = `
     
       <label class="switch" >
-        <input type="checkbox" onclick="toggleSpoilers()" >
+        <input type="checkbox" onclick="toggleSpoilers()" id="spoilerBoxInputPage">
         <span class="slider round"></span>
       </label>
       <span class="tooltipStyletext" id="spoilerTooltipTexts">Show Spoilers</span>`;
@@ -785,8 +785,12 @@ class Card {
 
   setSpoilers(isVisible) {
     pageData.functions.createSpoilers = isVisible;
+    let checkbox = document.getElementById('spoilerBoxInputPage');
+    checkbox.checked = isVisible;
     setSpoilersVisibility(isVisible);
-    document.getElementById('spoiler-button').style.display = (isVisible == true) ? "block" : "none"
+    document.getElementById('spoiler-button').style.display = (isVisible == true) ? "block" : "none";
+
+
   }
 
   renameTab(area, oldTabId, newTab) {
