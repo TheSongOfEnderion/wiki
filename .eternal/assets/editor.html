@@ -7,7 +7,7 @@
       <h1>Page Editor</h1>
       <div>
         <button class="btn btn-one small-font" onclick="pageEditor.saveEditor()">Save Changes</button>
-        <button class="btn btn-two small-font" onclick="openModal('editor-modal')">Close</button>
+        <button class="btn btn-two small-font" onclick="openModal('editor-modal', true)">Close</button>
       </div>
     </div>
 
@@ -39,7 +39,7 @@
           </div>
 
           <div class="form-check">
-            <input class="form-check-input check-box" type="checkbox" value="" id="editorSpoilerCheck" onclick="pageEditor.showSpoilers()">
+            <input class="form-check-input check-box" type="checkbox" value="" id="editorSpoilerCheck" onclick="pageEditor.showSpoilers()" onchange="pageEditor.editorModified()">
             <label class="form-check-label" for="editorSpoilerCheck">
                 Enable Spoilers
               </label>
@@ -74,12 +74,9 @@
 
         <div id="editorManageTabsLeft" class="col">
           <select class="form-select no-select" name="Tabs" size="11" id="managetab-contentarea-list" onchange="pageEditor.tabSelectedOption(this)">
-            <optgroup label="Non Spoilers" id="managetab-nonspoiler-list">
-              <!-- <option value="nonspoiler-default">default</option> -->
+            <optgroup class="editorTabGroup" label="Non Spoilers" id="managetab-nonspoiler-list">
             </optgroup>
-            <optgroup label="Spoilers" id="managetab-spoiler-list">
-              <!-- <option value="spoiler-overview">Overview</option>
-              <option value="spoiler-relationship">Relationship</option> -->
+            <optgroup class="editorTabGroup" label="Spoilers" id="managetab-spoiler-list">
             </optgroup>
 
           </select>
@@ -101,8 +98,9 @@
 
             <div class="side-line navButtons">
               <button type="button" class="btn btn-one" onclick="pageEditor.tabRename()">Rename</button>
-              <button type="button" class="btn btn-one mb-1" onclick="pageEditor.tabDelete()">Remove</button>
+              <button type="button" class="btn btn-one mb-1" onclick="pageEditor.tabRemove()">Remove</button>
               <button type="button" class="btn btn-one" onclick="pageEditor.tabClear('tabReNameInput')">Clear</button>
+              <button type="button" class="btn btn-one ml-1">True Delete</button>
             </div>
           </div>
           <br>
@@ -127,7 +125,7 @@
             </div>
   
             <div class="side-line navButtons">
-              <button type="button" class="btn btn-one mr-1" onclick="pageEditor.tabAppend()">Add</button>
+              <button type="button" class="btn btn-one mr-1" onclick="pageEditor.tabAdd()">Add</button>
               <button type="button" class="btn btn-one" onclick="pageEditor.tabClear('tabNewNameInput')">Clear</button>
             </div>
 

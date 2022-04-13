@@ -19,7 +19,7 @@ $BorderColor: #ced4da;
 $notifySuccess: #21be4b;
 $notifyError: #eb4034;
 
-// Imports  
+// Imports       
 @import './bootstrap.min';
 @import './navbar';
 @import './spoiler';
@@ -32,7 +32,7 @@ $notifyError: #eb4034;
 @import './easymde.min';
 
 
-// CSS 
+// CSS   
 @mixin center {    
   display: grid;
   place-items: center;

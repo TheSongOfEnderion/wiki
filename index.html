@@ -7,14 +7,11 @@
   <title>Eternal Writer</title>
 
   <!-- CSS -->
-  <!-- <link href="./.eternal/css/bootstrap.min.css" rel="stylesheet"> -->
-  <!-- <link href="./.eternal/css/font-awesome.min.css" rel="stylesheet"> -->
   <link href="./.eternal/css/style.css" rel="stylesheet">
 
   <!-- JS -->
   <script src="./.eternal/js/bootstrap.bundle.min.js"></script>
   <script src="./.eternal/js/easymde.min.js"></script>
-  <!-- <script src="./.eternal/js/simplemde.min.js"></script> -->
   <script src="./.eternal/js/notifications.js"></script>
   <script src="./.eternal/js/main.js"></script>
 
@@ -65,30 +62,7 @@
       .then(() => {
         // Gets Input Url
         if (window.location.search != "") {
-          let urlParams = new URLSearchParams(window.location.search);
-          let inputUrl = urlParams.get('p').trim();
-
-          // Renders Page
-          pageCard = new Card()
-          pageCard.renderFromHTML(inputUrl)
-            .then(() => {
-              notificationGreen = window.createNotification({
-                theme: 'success'
-              });
-
-              notificationRed = window.createNotification({
-                theme: 'error'
-              });
-
-              // Renders Editor
-              pageEditor = new PageEditor(pageCard)
-              pageEditor.loadEditor()
-                .then(() => {
-                  document.getElementById('modalbtn').click();
-                  document.getElementById('editorAreaBtns').getElementsByTagName('button')[2].click()
-                  // printIDList()
-                })
-            })
+          renderPage();
         }
       })
 

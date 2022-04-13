@@ -2,7 +2,8 @@
   font-size: 14px;
   box-sizing: border-box;
   position: fixed;
-  z-index: 999999
+  z-index: 999999;
+  width: fit-content;
 }
 
 .ncf-container.nfc-top-left {
@@ -32,6 +33,10 @@
   }
 }
 
+.ncf {
+  width: fit-content;
+}
+
 .ncf-container .ncf {
   background: #fff;
   transition: .3s ease;
@@ -40,8 +45,8 @@
   overflow: hidden;
   margin: 0 0 6px;
   padding: 30px;
-  width: 300px;
-  border-radius: 3px 3px 3px 3px;
+
+  border-radius: 0.5em;
   /* box-shadow: 0 0 12px #999; */
   color: #000;
   opacity: .9;

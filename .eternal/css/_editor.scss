@@ -156,6 +156,16 @@
   }
   #editorManageTabsLeft {
     max-width: 20em;
+    optgroup  {
+      font-weight: bold;
+      color: $FontColor1;
+    }
+    option {
+      background-color: white;
+      color: $FontColor1;
+      font-weight: normal;
+    }
+
   }
   .side-line {
     width: 100%;
