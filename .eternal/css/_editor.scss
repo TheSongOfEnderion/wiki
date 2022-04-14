@@ -132,6 +132,18 @@
   }
 }
 
+#editorProfileBox {
+  #editorProfileBoxMenu {
+    padding: 0em 0.95em;
+  }
+  #editorProfileBoxCenter {
+    text-align: center;
+    margin: auto;
+    input {
+      transform: scale(1.5) !important;
+    }
+  }
+}
 
 #editorManageTabs {
   min-height: 10em;

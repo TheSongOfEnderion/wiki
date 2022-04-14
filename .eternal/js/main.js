@@ -2,10 +2,12 @@
 var directory; // Obj containing directory.json
 var idList = []; // List of randomly generated ids
 var pageCard; // Contains the page card Class
+var pageEditor;
 var editorData; // Contains parsed data for the editor
 var isEditorChanged = false;
 var notificationGreen;
 var notificationRed;
+var tempProfilesData = {};
 
 function renderPage() {
   isEditorChanged = false;
@@ -28,19 +30,31 @@ function renderPage() {
       pageEditor = new PageEditor(pageCard)
       pageEditor.loadEditor()
         .then(() => {
+
+          // Others
           // document.getElementById('modalbtn').click();
-          // document.getElementById('editorAreaBtns').getElementsByTagName('button')[2].click()
-          // printIDList()
+          // document.getElementById('editorAreaBtns').getElementsByTagName('button')[1].click()
+          isEditorChanged = false;
+          tempProfilesData = {};
         })
     })
 }
 
 function printIDList() {
-  console.log(idList)
+  console.log(idList);
 }
 
 // Functions
-
+/**
+ * Notification Pop-Up.
+ *
+ * Shows a pop-up screen to notify the user.
+ *
+ * @access     public
+ * @param {string}   type  "success" (green) or "error" (red).
+ * @param {string}   title  title string of the pop-up.
+ * @param {string}   message  message string of the pop-up.
+ */
 function notify(type, title, message) {
   switch (type) {
     case "success":
@@ -60,12 +74,15 @@ function notify(type, title, message) {
   }
 }
 
-
-
-
-
-
-
+/**
+ * Get Asset from .eternal/ folder.
+ *
+ * Returns a promise that gives the string data of the file.
+ *
+ * @access     public
+ * @param {string}   filename  name of asset inside the .eternal/
+ * @return {string}  Returns a promise with the string data.
+ */
 function getAsset(filename) {
   let raw = filename.split(".");
   const filetype = raw[raw.length - 1];
@@ -77,14 +94,12 @@ function getAsset(filename) {
         .then(data => {
           return data;
         })
-      break;
     case 'json':
       return fetch(`.eternal/${filename}`)
         .then(response => response.json())
         .then(data => {
           return data;
         })
-      break;
     default:
       break;
   }
@@ -96,8 +111,8 @@ function getAsset(filename) {
  * Fetches the html file with its fileURL.
  *
  * @access     public
- * @param {string}   fileUrl   url of the html page
- * @return {string}  the html file string. null if not found
+ * @param {string}   fileUrl   url of the html page.
+ * @return {string}  the html file string. null if not found.
  */
 function getPage(fileUrl) {
   return fetch(fileUrl)
@@ -117,8 +132,8 @@ function getPage(fileUrl) {
  * Parses an HTML string into a Node object.
  *
  * @access     public
- * @param {string}   html   html string
- * @return {Node}  a node with the parsed html string
+ * @param {string}   html   html string.
+ * @return {Node}  a node with the parsed html string.
  */
 function parseHTML(html) {
   let t = document.createElement('template');
@@ -129,12 +144,12 @@ function parseHTML(html) {
 /**
  * Checks if Object is Empty or not.
  *
- * Uses typeof and key check to validate whether the object
+ * Uses typeof and key check to validate whether the object.
  * is null or has no keys.
  *
  * @access     public
- * @param {Object}   object   object var to check
- * @return {boolean}  true if object is empty. false if not empty
+ * @param {Object}   object   object var to check.
+ * @return {boolean}  true if object is empty. false if not empty.
  */
 function isObjEmpty(object) {
   if (typeof object !== 'undefined' && Object.keys(object).length != 0) {
@@ -143,13 +158,32 @@ function isObjEmpty(object) {
   return true;
 }
 
+/**
+ * Is variable an Object?
+ *
+ * Checks whether the variable is an object or not
+ *
+ * @access     public
+ * @param {any}   obj  variable to check
+ * @return {boolean}  true - vars is an Object. false - not.
+ */
+function isObj(obj) {
+  if (typeof obj === 'object') return true
+  return false
+}
 
+/**
+ * Insert after node
+ *
+ * Inserts a node right next to reference node.
+ *
+ * @access     public
+ * @param {Node}   newNode  node obj to insert,
+ * @param {Node}   referenceNode  node obj to insert next to.
+ */
 function insertAfter(newNode, referenceNode) {
   referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
-
-
-
 
 /**
  * Generate Random String ID.
@@ -175,15 +209,26 @@ function makeid(length) {
   }
 }
 
-function openTab(btn, tabName, content_group_class, btn_group_id) {
-  var tabs = document.getElementsByClassName(content_group_class);
+/**
+ * Open Tab.
+ *
+ * Opens the tab of a tabview item.
+ *
+ * @access     public
+ * @param {Node}   btn   the btn node of the particular tab. i.e. (this).
+ * @param {string}   tabId   id of tab containing the contents.
+ * @param {string}   contentGroupClass   class name of the tabview content group.
+ * @param {string}   btnGroupId   id name of the tabview button group.
+ */
+function openTab(btn, tabId, contentGroupClass, btnGroupId) {
+  var tabs = document.getElementsByClassName(contentGroupClass);
 
   // Removes Active Class on other Tabs
   for (const tab of tabs) {
     tab.style.display = "none"
   }
 
-  let btngroup = document.getElementById(btn_group_id).getElementsByTagName('button')
+  let btngroup = document.getElementById(btnGroupId).getElementsByTagName('button')
   for (const gbtn of btngroup) {
     if (gbtn == btn) continue
     if (!gbtn.classList.contains("tab-active")) continue
@@ -191,44 +236,30 @@ function openTab(btn, tabName, content_group_class, btn_group_id) {
   }
 
   // Adds Active Class on Current Tab
-  let tab_content = document.getElementById(tabName)
+  let tab_content = document.getElementById(tabId)
   tab_content.style.display = "block"
 
   btn.classList.add("tab-active")
 }
 
 
-function openModal(modalID, renderPageAgain=false) {
-  if (renderPageAgain && isEditorChanged) {
-    renderPage()
-    console.log('what')
-  }
 
-  let modal = document.getElementById(modalID)
-  modal.classList.toggle('modal-visible')
-    // Hide scrollbar
-  document.getElementsByTagName("body")[0].classList.toggle("disable-srolling")
-  document.getElementsByTagName("html")[0].classList.toggle("disable-srolling")
 
-  // Exits modal if clicked outsie
-  if (modal.onclick != null) return;
-  modal.onclick = (event) => {
-    if (event.target == modal) {
-      modal.classList.remove('modal-visible')
-        // Reveal Scrollbar
-      document.getElementsByTagName("body")[0].classList.remove("disable-srolling")
-      document.getElementsByTagName("html")[0].classList.remove("disable-srolling")
-    }
-  }
-
-}
-
-function createTabs(button_id_div, tabIdsObj) {
+/**
+ * Create Tabs.
+ *
+ * Creates a Tabview.
+ *
+ * @access     public
+ * @param {string}   btnGroupId  string ID of the tabview button group.
+ * @param {Object}   tabIdsObj  object containing tab data {id, name}
+ */
+function createTabs(btnGroupId, tabIdsObj) {
 
   const content_group_class = makeid(7)
   const btn_group_id = makeid(7)
 
-  const div = document.getElementById(button_id_div)
+  const div = document.getElementById(btnGroupId)
   const btn_div = document.createElement("div")
   btn_div.id = btn_group_id
 
@@ -255,6 +286,39 @@ function createTabs(button_id_div, tabIdsObj) {
   div.appendChild(btn_div)
 }
 
+/**
+ * Open Editor Modal
+ *
+ * Opens the modal, specifically the editor.
+ *
+ * @access     public
+ * @param {string}   modalID   the id of the modal div
+ * @param {boolean}   renderPageAgain   true - renders the page. false- don't.
+ */
+function openModal(modalID, renderPageAgain = false) {
+  if (renderPageAgain && isEditorChanged) {
+    renderPage()
+  }
+
+  let modal = document.getElementById(modalID)
+  modal.classList.toggle('modal-visible')
+    // Hide scrollbar
+  document.getElementsByTagName("body")[0].classList.toggle("disable-srolling")
+  document.getElementsByTagName("html")[0].classList.toggle("disable-srolling")
+
+  // Exits modal if clicked outsie
+  if (modal.onclick != null) return;
+  modal.onclick = (event) => {
+    if (event.target == modal) {
+      modal.classList.remove('modal-visible')
+        // Reveal Scrollbar
+      document.getElementsByTagName("body")[0].classList.remove("disable-srolling")
+      document.getElementsByTagName("html")[0].classList.remove("disable-srolling")
+    }
+  }
+
+}
+
 function toggleSpoilers() {
   if (document.getElementById("spoiler").style.display == "none") {
     setSpoilersVisibility(true);
@@ -263,16 +327,24 @@ function toggleSpoilers() {
   }
 }
 
+/**
+ * Set Spoilers Visibility.
+ *
+ * Sets the spoilers visibility and saves the false/true value in
+ * `localStorage["theSongOfEnderion_isSpoiler"]`
+ *
+ * @access     public
+ * @param {boolean}   isVisible   true - visible spoiler area. false - not.
+ */
 function setSpoilersVisibility(isVisible) {
   let spoiler_div = document.getElementById("spoiler");
   let non_spoiler_div = document.getElementById("nonspoiler");
 
-  spoiler_div.style.display = (isVisible == true ) ? "block" : 'none';
-  non_spoiler_div.style.display = (isVisible == true ) ? "none" : 'block';
+  spoiler_div.style.display = (isVisible == true) ? "block" : 'none';
+  non_spoiler_div.style.display = (isVisible == true) ? "none" : 'block';
   localStorage["theSongOfEnderion_isSpoiler"] = isVisible;
-  document.getElementById('spoilerTooltipTexts').innerText = (isVisible == true ) ? "Hide Spoilers" : "Show Spoilers";
+  document.getElementById('spoilerTooltipTexts').innerText = (isVisible == true) ? "Hide Spoilers" : "Show Spoilers";
 }
-
 
 
 class TextRenderer {
@@ -287,8 +359,17 @@ class TextRenderer {
     };
   }
 
-  renderText(filedata) {
-    const lines = filedata.split("\n");
+  /**
+   * Render Markdown Text
+   *
+   * Parses the markdown content of the html string and
+   * applies markdown rules as well as custom rendering.
+   *
+   * @access     public
+   * @param {string}   htmlContentString   raw string content of the html
+   */
+  renderText(htmlContentString) {
+    const lines = htmlContentString.split("\n");
     let htmlContent = '';
 
     for (const line of lines) {
@@ -321,6 +402,16 @@ class TextRenderer {
     return htmlContent;
   }
 
+  /**
+   * Render Bold Words.
+   *
+   * Renders words containing ** {word} ** and turns it into a
+   * bold html tag.
+   *
+   * @access     public
+   * @param {string}   value   word to check if it has a bold format.
+   * @return {string}  `<b>${content}</b>`
+   */
   renderWordBold(value) {
     const bold_words = value.match(/\*\*(.*?)\*\*/g);
     if (bold_words) {
@@ -331,6 +422,16 @@ class TextRenderer {
     return value;
   }
 
+  /**
+   * Render Italic Words.
+   *
+   * Renders words containing * {word} * and turns it into an
+   * italicized html tag.
+   *
+   * @access     public
+   * @param {string}   value   word to check if it has a bold format.
+   * @return {string}  `<b>${content}</b>`
+   */
   renderWordItalic(value) {
     const italic_words = value.match(/\*(.*?)\*/g);
     if (italic_words) {
@@ -347,26 +448,26 @@ class TextRenderer {
 // Class
 class Card {
 
-
-  constructor() {
-
-  }
-
   async renderFromHTML(inputUrl) {
     let htmlData = await this.findFileData(inputUrl);
     if (!htmlData) return;
     await this.renderPage(htmlData)
   }
 
-  async renderPage(htmlData, full = true) {
+  /**
+   * Render Page.
+   *
+   * An async function which renders the entire body card
+   * contents.
+   *
+   * @access     public
+   * @param {string}   htmlData   raw html string data.
+   * @param {boolean}  readScripts whether to read the scrips or not.
+   */
+  async renderPage(htmlData, readScripts = true) {
 
     // Loads the Page and Renders Data
-    await this.loadPage(htmlData, full);
-
-    // if (full) {
-    //   pageData = pageData;
-    //   profileData = profileData;
-    // }
+    await this.loadPage(htmlData, readScripts);
 
     // Create Table of Content
     this.createTOC();
@@ -391,7 +492,7 @@ class Card {
    * @see  TextRenderer 
    * @param {string}   htmlData   A string of the html file.
    */
-  async loadPage(htmlData, full) {
+  async loadPage(htmlData, readScripts) {
     // Variables
 
     idList = []
@@ -399,7 +500,7 @@ class Card {
     // Parses the data into a node
     const splitData = htmlData.split('<!-- File Content -->');
 
-    if (full) {
+    if (readScripts) {
       // Loads the Scripts
       this.loadScripts(splitData[0]);
     }
@@ -549,6 +650,7 @@ class Card {
     if (isObjEmpty(profileData)) return;
 
     for (const pageTabId in profileData) {
+      if (pageData.disabledProfileData.includes(pageTabId)) continue;
       let divToPlaceProfileBoxIn = document.getElementById(pageTabId);
       if (!divToPlaceProfileBoxIn) continue;
       const profle_obj = profileData[pageTabId];
@@ -609,7 +711,6 @@ class Card {
                   <img src="${profle_obj['Image'][image]}" class="img-fluid mx-auto d-block" alt="...">
                 </div>`);
         }
-
       }
 
       // Create Table
@@ -619,57 +720,61 @@ class Card {
 
       const tbody = document.createElement("tbody");
 
-      for (const category in profle_obj['Content']) {
+      for (const category_ in profle_obj['Content']) {
+        let category = category_.trim()
+        if (!isObj(profle_obj['Content'][category])) continue
 
         // Category Name
-        if (category != "Desc") {
+        if (category.toLowerCase() != "desc") {
           tbody.insertAdjacentHTML('beforeend', `<tr><td class="bold profile-category" colspan="2">${category}</td></tr>`)
         }
 
         // Category Row-Cell values
-        for (const type in profle_obj['Content'][category]) {
+        for (const cellName in profle_obj['Content'][category]) {
+          let cellValue = profle_obj['Content'][category][cellName];
+
+          // Validation Check
+          if (!Array.isArray(cellValue) && isObj(cellValue)) continuel
           if (category == "Image") continue;
-          const tr = document.createElement("tr");
 
-          // Type Name
-          let type_name_td = document.createElement("td");
-          type_name_td.classList.add("bold", "profile-cell");
-          type_name_td.style = "width: 35%;";
-          type_name_td.innerText = type;
+          // Cell Content
+          let cellContent = ''
 
-          // Type Value
-          let type_value_td = document.createElement("td");
-          type_value_td.classList.add("profile-cell");
-
-          if (Array.isArray(profle_obj['Content'][category][type])) {
-            for (const item of profle_obj['Content'][category][type]) {
-              let item_content = item;
-              if (item.includes("|")) {
-                let raw_list = item.split("|");
-                item_content = `<a href=${raw_list[1]}>${raw_list[0]}</a>`;
+          // Checks if value contains a list
+          if (Array.isArray(cellValue)) {
+            for (const item of cellValue) {
+              if (isObj(item)) continue
+              if (isNaN(item) && item.includes("|")) {
+                let rawSplit = item.split("|");
+                cellContent = `• <a href=${rawSplit[1]}>${rawSplit[0]}</a> <br>`;
+                continue
               }
-              type_value_td.innerHTML += `• ${item_content} <br>`;
+              cellContent += `• ${item} <br>`;
+
             }
           } else {
-            let item_content = profle_obj['Content'][category][type];
-            if (profle_obj['Content'][category][type].includes("|")) {
-              let raw_list = item.split("|");
-              item_content = `<a href=${raw_list[1]}>${raw_list[0]}</a>`;
+            if (isNaN(cellValue) && cellValue.includes("|")) {
+              let rawSplit = item.split("|");
+              cellContent = `<a href=${rawSplit[1]}>${rawSplit[0]}</a>`;
+            } else {
+              cellContent = cellValue;
             }
-            type_value_td.innerText = item_content;
           }
 
           // Add to Table
-          tr.appendChild(type_name_td);
-          tr.appendChild(type_value_td);
-          tbody.append(tr);
+          tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td class="bold profile-cell" style="width: 35%;">${cellName}</td>
+            <td class="profile-cell">${cellContent}</td>
+          </tr>
+          `)
         }
 
       }
+
       // Add to Page
       table.appendChild(tbody);
       div.appendChild(table);
-
 
       let parentDiv = document.createElement("div")
       parentDiv.classList.add("profile-box-parent")
@@ -689,7 +794,6 @@ class Card {
    * @access     private
    */
   createSpoiler() {
-
     if (!pageData.functions.hasOwnProperty('createSpoilers') && pageData.functions.createSpoilers != true) {
       // Hides spoiler div if createSpoilers is not enabled
       let spoilerDiv = document.getElementById('spoiler');
@@ -707,7 +811,7 @@ class Card {
       </label>
       <span class="tooltipStyletext" id="spoilerTooltipTexts">Show Spoilers</span>`;
 
-    
+
     if (localStorage["theSongOfEnderion_isSpoiler"] == 'true') {
       spoilerDiv.getElementsByTagName('input')[0].checked = true;
       setSpoilersVisibility(true)
@@ -745,54 +849,95 @@ class Card {
       }
       createTabs(btn.id, tabsObj)
     }
-
-  }
-  getPageData() {
-    return pageData;
   }
 
-  getProfileData() {
-    return profileData;
-  }
-
+  /**
+   * Set Card Title
+   *
+   * Change the card title.
+   *
+   * @access     public
+   * @param {string}   name   new name of the card.
+   */
   setTitle(name) {
     document.getElementById('page-title').getElementsByTagName('h1')[0].innerText = name;
   }
+
+  /**
+   * Set Tags
+   *
+   * Changes the bottom tags of the body-card.
+   * Example entry: "tboah human orc hunter"
+   *
+   * @access     public
+   * @param {string}   tags   strings of tags separated by comma.
+   */
   setTags(tags) {
+    // Step 1. Validation. Checks if [tags] is empty
     if (!tags) {
       document.getElementById('page-tags').style.display = 'none';
       return
     }
 
+    // Step 2. Process tags
     let tagsHTML = '';
     for (const tag of tags.trim().split(" ")) {
       tagsHTML += `<a href="#" _target="blank">${tag}</a> `;
     }
+
+    // Step 3. Insert tags
     let tagsDiv = document.getElementById('page-tags');
     tagsDiv.innerHTML = tagsHTML;
     tagsDiv.style.display = 'block';
   }
+
+  /**
+   * Set BreadCrumbs
+   *
+   * Gets the breadcrumbs of the parent if there is one
+   * and forms a chain of crumbs.
+   *
+   * @access     public
+   * @param {string}   crumbs   parent page name.
+   */
   setBreadCrumbs(crumbs) {
+    // Step 1. Validation. Checks if [crumbs] is empty
     let crumbDiv = document.getElementById("page-breadcrumbs");
     if (!crumbs) {
       crumbDiv.style.display = "none";
       return
     }
 
+    // Step 2. Insert crumbs. Floating status. Will Change
+    //         on electron port.
     crumbDiv.style.display = "block";
     crumbDiv.innerText = crumbs;
   }
 
-  setSpoilers(isVisible) {
+  /**
+   * Set Spoilers Status
+   *
+   * Whether the spoiler area is enabled or disabled.
+   *
+   * @access     public
+   * @param {boolean}   isVisible   true - enabled. false - disabled.
+   */
+  setSpoilersStatus(isVisible) {
     pageData.functions.createSpoilers = isVisible;
     let checkbox = document.getElementById('spoilerBoxInputPage');
     checkbox.checked = isVisible;
     setSpoilersVisibility(isVisible);
     document.getElementById('spoiler-button').style.display = (isVisible == true) ? "block" : "none";
-
-
   }
 
+  /**
+   * Rename tab in Manage Tabs.
+   *
+   * Renames the tab while keeping the order.
+   *
+   * @access     public
+   * @param {boolean}   isVisible   true - enabled. false - disabled.
+   */
   renameTab(area, oldTabId, newTab) {
     let fskeys = Object.keys(pageData.fileStructure[area]);
     let index = fskeys.indexOf(oldTabId)
@@ -808,21 +953,42 @@ class Card {
     if (profileData.hasOwnProperty(oldTabId)) {
       let x = profileData[oldTabId];
       delete profileData[oldTabId];
+
       profileData[newTab.id] = x;
-      console.log(profileData)
+      console.log(profileData);
     }
   }
 
+  /**
+   * Remove tab in Manage Tabs.
+   *
+   * Removes a tab in the filestructure, but the data
+   * remains hidden in the file.
+   *
+   * @access     public
+   * @param {string}   area   'spoiler' or 'nonspoiler'
+   * @param {string}   tabID   id of the tab.
+   */
   removeTab(area, tabID) {
     delete pageData.fileStructure[area][tabID];
   }
 
+  /**
+   * Add tab in Manage Tabs.
+   *
+   * Adds new tab.
+   *
+   * @access     public
+   * @param {string}   area   'spoiler' or 'nonspoiler'
+   * @param {string}   tabID   id of the tab.
+   * @param {string}   tabName   name of the tab.
+   */
   addTab(area, tabID, tabName) {
     pageData.fileStructure[area][tabID] = tabName;
 
-    let tabDiv = document.createElement('div')
+    let tabDiv = document.createElement('div');
     tabDiv.id = tabID;
-    tabDiv.classList.add("page-tab")
+    tabDiv.classList.add("page-tab");
 
     editorData.getElementById(area).appendChild(tabDiv);
     console.log(tabID + " " + tabName);
@@ -831,17 +997,19 @@ class Card {
 
 class PageEditor {
   constructor(card) {
-    this.card = card
-    this.filestructure = {}
+    this.card = card;
+    this.filestructure = {};;
 
     this.editorAreaIDs = [
       "editorContentDiv",
-      "editorProfileBoxDiv",
+      "editorProfileBox",
       "editorManageTabs",
-    ]
+    ];
 
     // Manage tab
-    this.manageTabSelected
+    this.manageTabSelected;
+    this.profileTabSelected;
+    this.profileEditor;
   }
 
   loadEditor() {
@@ -879,24 +1047,30 @@ class PageEditor {
         document.getElementById('editorTags').value = pageData.tags
 
         // Manage Tabs Area
-        this.generateTabArea('spoiler');
-        this.generateTabArea('nonspoiler');
+        this.generateTabArea('managetab');
+        this.generateTabArea('profilebox');
+
+        // Create Profile 
+        this.profileEditor = new ProfileEditor(this.profileTabSelected.value);
       })
   }
 
   saveEditor() {
- 
+
+    // Save Profile Data
+    Object.assign(profileData, tempProfilesData);
+    
     // Save Content
-    let htmlContent = '<!-- File Content -->\n\n'
+    let htmlContent = '<!-- File Content -->\n\n';
 
     for (const area in this.filestructure) {
       let innerValue = ''
 
       for (const tab in this.filestructure[area]) {
         let tabValue = document.getElementById(tab).value;
-        innerValue += `\n<div id="${this.filestructure[area][tab].htmlId}" class="page-tab">\n${tabValue}\n</div>\n`
+        innerValue += `\n<div id="${this.filestructure[area][tab].htmlId}" class="page-tab">\n${tabValue}\n</div>\n`;
       }
-      htmlContent += `<div id="${area}">${innerValue}</div>\n`
+      htmlContent += `<div id="${area}">${innerValue}</div>\n`;
     }
 
     this.card.renderPage(htmlContent, false)
@@ -905,10 +1079,11 @@ class PageEditor {
         this.card.setTitle(document.getElementById('editorPageTitle').value);
         this.card.setTags(document.getElementById('editorTags').value);
         this.card.setBreadCrumbs(document.getElementById('editorParent').value);
-        this.card.setSpoilers(document.getElementById('editorSpoilerCheck').checked);
+        this.card.setSpoilersStatus(document.getElementById('editorSpoilerCheck').checked);
 
-        notify("success", "Successful Save", "Page has been re-rendered.")
+        notify("success", "Successful Save", "Page has been re-rendered.");
         isEditorChanged = false;
+        tempProfilesData = {};
       })
   }
 
@@ -927,14 +1102,14 @@ class PageEditor {
   }
 
   generateTextArea(area) {
-    if (!pageData.fileStructure.hasOwnProperty(area)) return
+    if (!pageData.fileStructure.hasOwnProperty(area)) return;
 
     this.filestructure[area] = {};
 
     let contentArea = document.getElementById(`editor-${area}-content-tab`);
     contentArea.innerHTML = '';
 
-    let btnArea = document.getElementById(`editor-${area}-tab-btns`)
+    let btnArea = document.getElementById(`editor-${area}-tab-btns`);
     btnArea.innerHTML = '';
 
     let tabs = [];
@@ -981,17 +1156,37 @@ class PageEditor {
     return id;
   }
 
-  generateTabArea(area) {
-    let selectGroup = document.getElementById(`managetab-${area}-list`);
-    selectGroup.innerHTML = '';
-    for (const tab in pageData.fileStructure[area]) {
-      let optionId = tab;
-      if (idList.includes(optionId)) {
-        optionId += "-" + makeid(4);
+  generateTabArea(location) {
+    for (const area of['spoiler', 'nonspoiler']) {
+      let selectGroup = document.getElementById(`${location}-${area}-list`);
+      selectGroup.innerHTML = '';
+      let first = true;
+      for (const tab in pageData.fileStructure[area]) {
+        let optionId = tab;
+        idList.push(optionId);
+        if (first) {
+          if (profileData.hasOwnProperty(optionId)) {
+            document.getElementById('editorProfileBoxCheck').checked = true;
+          }
+          selectGroup.insertAdjacentHTML('beforeend', `<option value="${optionId}" selected="selected">${pageData.fileStructure[area][tab]}</option>`);
+          first = false;
+          continue;
+        }
+        selectGroup.insertAdjacentHTML('beforeend', `<option value="${optionId}">${pageData.fileStructure[area][tab]}</option>`);
       }
-      idList.push(optionId);
-      selectGroup.insertAdjacentHTML('beforeend', `<option value="${optionId}">${pageData.fileStructure[area][tab]}</option>`);
+
+      if (area === 'nonspoiler') {
+        switch (location) {
+          case 'managetab':
+            this.manageTabSelected = selectGroup.childNodes[0];
+            break;
+          default:
+            this.profileTabSelected = selectGroup.childNodes[0];
+            break;
+        }
+      }
     }
+
   }
   switchEditorArea(targetBtn, targetId) {
     let btns = document.getElementById('editorAreaBtns').getElementsByTagName('button');
@@ -1039,11 +1234,12 @@ class PageEditor {
   }
   tabSelectedOption(sel) {
     this.manageTabSelected = sel.options[sel.selectedIndex];
+    console.log(this.manageTabSelected);
     document.getElementById('tabReNameInput').value = this.manageTabSelected.innerText;
   }
 
   tabClear(inputId) {
-    document.getElementById(inputId).value = ''
+    document.getElementById(inputId).value = '';
   }
 
   tabRename() {
@@ -1077,6 +1273,7 @@ class PageEditor {
 
     // Content Areas
     this.generateTextArea(area);
+    this.generateTabArea('profilebox');
     notify("success", "Successfully Renamed", "");
     this.editorModified();
   }
@@ -1090,13 +1287,14 @@ class PageEditor {
       return;
     }
 
-    let areaList = document.getElementById('managetab-spoiler-list');
+    let areaList = document.getElementById(`managetab-${area}-list`);
     areaList.removeChild(this.manageTabSelected);
 
     this.tabClear('tabReNameInput');
 
     this.card.removeTab(area, this.manageTabSelected.value);
     this.generateTextArea(area);
+    this.generateTabArea('profilebox');
     this.editorModified();
 
     this.manageTabSelected = undefined;
@@ -1115,6 +1313,7 @@ class PageEditor {
 
     this.card.addTab(area, tabId, tabName);
     this.generateTextArea(area);
+    this.generateTabArea('profilebox');
     this.editorModified();
 
     notify('success', 'Add Successful', 'New tab added');
@@ -1122,6 +1321,227 @@ class PageEditor {
 
   editorModified() {
     if (isEditorChanged) return;
-    isEditorChanged =  true;
-  }  
+    isEditorChanged = true;
+  }
+
+  profileRemoveDisable(profileId) {
+    if (!pageData.disabledProfileData.includes(profileId)) return;
+    let index = pageData.disabledProfileData.indexOf(profileId);
+    pageData.disabledProfileData.splice(index, 1);
+  }
+
+  profileSelectedOption(sel) {
+    this.profileTabSelected = sel.options[sel.selectedIndex];
+    let check = document.getElementById('editorProfileBoxCheck');
+
+    if (profileData.hasOwnProperty(this.profileTabSelected.value)) {
+      this.profileEditor.setData(profileData[this.profileTabSelected.value]);
+      this.profileEditor.expand();
+      check.checked = true;
+    } else if (tempProfilesData.hasOwnProperty(this.profileTabSelected.value)) {
+      this.profileEditor.setData(tempProfilesData[this.profileTabSelected.value]);
+      this.profileEditor.expand();
+      check.checked = true;
+    } else {
+      this.profileEditor.setData({});
+      check.checked = false;
+    }
+    this.editorModified();
+  }
+
+  profileEnable(check) {
+    this.editorModified();
+    let profileId = this.profileTabSelected.value;
+    if (check.checked && profileData.hasOwnProperty(profileId)) {
+      this.profileEditor.setData(profileData[profileId]);
+      this.profileRemoveDisable(profileId);
+      return;
+    }
+    else if (check.checked && !profileData.hasOwnProperty(profileId)) {
+      this.profileEditor.insertGeneric();
+      tempProfilesData[profileId] = this.profileEditor.initialValue();
+      this.profileRemoveDisable(profileId)
+      return;
+    } else if (check.checked && !tempProfilesData.hasOwnProperty(profileId)) {
+      this.profileEditor.setData(tempProfilesData[profileId]);
+      this.profileRemoveDisable(profileId);
+      return;
+    } else {
+      pageData.disabledProfileData.push(profileId);
+      this.profileEditor.setData({});
+    }
+  }
+
+  getSelectedProfileId() {
+    return this.profileTabSelected.value;
+  }
+}
+
+
+class ProfileEditor {
+  constructor(defaultProfileID) {
+    // create the editor
+    this.container = document.getElementById("jsoneditor");
+    this.main = new JSONEditor(this.container, {
+      onCreateMenu: this.onCreateMenu,
+      limitDragging: true,
+      mainMenuBar: false,
+      navigationBar: true,
+      onChangeJSON: this.onChangeJSON,
+    });
+    this.container.style.width = "100%";
+    this.container.style.height = 'fit-content';
+
+    if (profileData.hasOwnProperty(defaultProfileID)) {
+      this.main.set(profileData[defaultProfileID]);
+    } else {
+      this.main.set({});
+    }
+
+    this.main.expandAll();
+  }
+
+  printData() {
+    console.log(JSON.stringify(this.main.get(), null, 2));
+  }
+
+  setData(json) {
+    this.main.set(json);
+  }
+
+  collapse() {
+    this.main.collapseAll();
+  }
+
+  expand() {
+    this.main.expandAll();
+  }
+
+  onCreateMenu(items, node) {
+    // console.log('items:', items, '\nnode:', node);
+    let newItems = [];
+    let level = node.path.length;
+    const notAllowed = ['Transform', 'Sort', 'Type', 'Extract', 'Auto'];
+    const notAllowedSub = ['Object'];
+
+    // Top Items
+    if (level === 1 || level === 0) return [];
+
+
+
+    for (const item of items) {
+      if (notAllowed.includes(item.text)) continue;
+      if (item.hasOwnProperty('type') && item.type == 'separator') continue;
+
+      if (node.path.includes('Image') || level >= 4 || (level == 3 && node.type === 'append')) {
+        if (item.hasOwnProperty('submenu')) {
+          delete item.submenu;
+          delete item.submenuTitle;
+        }
+      }
+
+      if (level >= 3) {
+        if (item.hasOwnProperty('submenu')) {
+          for (const subItem of item.submenu) {
+            if (notAllowedSub.includes(subItem.text)) {
+              let index = item.submenu.indexOf(subItem);
+              item.submenu.splice(index, 1);
+            }
+          }
+        }
+      }
+
+      if (item.hasOwnProperty('submenu')) {
+        for (const subItem of item.submenu) {
+          if (subItem.text == 'Auto') {
+            let index = item.submenu.indexOf(subItem);
+            item.submenu.splice(index, 1);
+          }
+          if (level == 2) {
+            if (subItem.text == 'Object' && node.type == 'append') {
+              let index = item.submenu.indexOf(subItem);
+              item.submenu.splice(index, 1);
+            }
+          }
+        }
+      }
+
+      if (level == 2 && node.type == 'single') {
+        if (item.text == 'Insert') {
+          newItems.unshift(item.submenu[1]);
+          delete item.submenu;
+          delete item.submenuTitle;
+          continue;
+        }
+      }
+
+      newItems.push(item);
+    }
+
+    return newItems;
+  }
+
+  insertGeneric() {
+    this.main.set(this.initialValue())
+  }
+
+  initialValue() {
+    return {
+      'Title': 'John Doe',
+      'Image': {
+        "Original Art": "assets/images/Ethan-Morales.png",
+        "Uniform": "assets/images/Eltia-Axolin-Uniform.png",
+        "Hero Suit": "assets/images/Eltia Axolin.png"
+      },
+      'Content': {
+        'Desc': {
+          'Full Name': 'John R. Doe',
+          'Alias': ['Tantan', 'Lunatic', 'Crazy Sociopath']
+        },
+        'Biography': {
+          'Race': 'Human',
+          'Birthday': '15 June',
+          'Age': '15',
+          'Gender': 'Male',
+          'Height': '168 cm',
+          'Weight': '58 kg',
+          'Hair Color': 'Orange-Red',
+          'Skin Color': 'Light-Beige',
+          'Blood Type': 'AB'
+        },
+        'Power': {
+          'Rank': 'Sixth Awakener',
+          'Ability': [
+            'Candlefire',
+            'Pyrokinesis',
+            'Thermal Manipulation | https://www.w3schools.com/howto/howto_js_tabs.asp',
+            'Kinetic Manipulation',
+            'Molecular Binding',
+            'Atomic Manipulation',
+          ]
+        },
+        'Status': {
+          'Status': 'Alive',
+          'Birthplace': 'Desteria, Shanty Town',
+          'Family': [
+            'Madelyn Morales (Mother)',
+            'Nathaniel Morales (Father)',
+            'Isaac Morales (Little Brother)',
+            'Graniel Morales (Grandfather)',
+          ]
+        }
+      }
+    };
+  }
+
+  onChangeJSON(json) {
+    let id = pageEditor.getSelectedProfileId();
+    if (tempProfilesData.hasOwnProperty(id)) {
+      tempProfilesData[id] = json;
+      return;
+    }
+    if (profileData.hasOwnProperty(id)) {
+      profileData[id] = json;
+    }
+  }
 }

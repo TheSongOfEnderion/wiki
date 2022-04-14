@@ -30,9 +30,9 @@ $notifyError: #eb4034;
 @import './notifications';
 @import './utility';
 @import './easymde.min';
+@import './jsoneditor';
 
-
-// CSS   
+// CSS                  
 @mixin center {    
   display: grid;
   place-items: center;

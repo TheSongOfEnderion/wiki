@@ -34,7 +34,7 @@
         <div class="col-3 editor-right">
           <div class="btn-group-vertical" role="group" aria-label="Basic example" id="editorAreaBtns">
             <button type="button" class="btn btn-one btn-active" onclick="pageEditor.switchEditorArea(this, 'editorContentDiv')">Edit Content</button>
-            <button type="button" class="btn btn-one" onclick="pageEditor.switchEditorArea(this, 'editorProfileBoxDiv')">Profile Box</button>
+            <button type="button" class="btn btn-one" onclick="pageEditor.switchEditorArea(this, 'editorProfileBox')">Profile Box</button>
             <button type="button" class="btn btn-one" onclick="pageEditor.switchEditorArea(this, 'editorManageTabs')">Manage Tabs</button>
           </div>
 
@@ -65,21 +65,50 @@
       </div>
 
 
-      <div id="editorProfileBoxDiv" class="row hide">
+      <div id="editorProfileBox" class="row hide">
         <h1>Profile Box</h1>
+        <div id="editorProfileBoxMenu" class="d-flex justify-content-between">
+
+          <div>
+            <select class="form-select no-select" name="Tabs" id="profilebox-contentarea-list" onchange="pageEditor.profileSelectedOption(this)">
+              <optgroup class="editorTabGroup" label="Non-Spoilers" id="profilebox-nonspoiler-list">
+              </optgroup>
+              <optgroup class="editorTabGroup" label="Spoilers" id="profilebox-spoiler-list">
+              </optgroup>
+            </select>
+          </div>
+
+
+
+          <div id="editorProfileBoxCenter">
+            <div class="form-check">
+              <input class="form-check-input check-box" type="checkbox" value="" id="editorProfileBoxCheck" onchange="pageEditor.profileEnable(this)">
+              <label class="form-check-label" for="editorProfileBoxCheck">
+                  Enable Profile Box
+                </label>
+            </div>
+          </div>
+
+          <div>
+            <button class="btn btn-one mr-1" onclick="pageEditor.profileEditor.collapse()">Collapse</button>
+            <button class="btn btn-one"  onclick="pageEditor.profileEditor.expand()">Expand</button>
+          </div>
+        </div>
+
+        <div id="jsoneditor" style="width: 400px; height: 400px;"></div>
+
       </div>
 
       <div id="editorManageTabs" class="row hide">
         <h1>Manage Tabs</h1>
-
         <div id="editorManageTabsLeft" class="col">
           <select class="form-select no-select" name="Tabs" size="11" id="managetab-contentarea-list" onchange="pageEditor.tabSelectedOption(this)">
-            <optgroup class="editorTabGroup" label="Non Spoilers" id="managetab-nonspoiler-list">
+            <optgroup class="editorTabGroup" label="Non-Spoilers" id="managetab-nonspoiler-list">
             </optgroup>
             <optgroup class="editorTabGroup" label="Spoilers" id="managetab-spoiler-list">
             </optgroup>
-
           </select>
+
           <div class="navButtons" role="group" aria-label="Basic example">
             <button type="button" class="btn btn-one  mr-1" onclick="pageEditor.tabUp()">▲</button>
             <button type="button" class="btn btn-one">▼</button>
@@ -87,8 +116,6 @@
         </div>
 
         <div id="editorManageTabsRight" class="col">
-
-
           <div>
             <h2>Rename</h2>
             <div class="side-line">
@@ -103,35 +130,33 @@
               <button type="button" class="btn btn-one ml-1">True Delete</button>
             </div>
           </div>
+
           <br>
+
           <div>
             <h2>New</h2>
-
             <div>
               <div class="form-check form-check-inline">
                 <input class="form-check-input  no-select" type="radio" name="contentAreaRadio" id="inlineRadio-nonspoiler" value="nonspoiler" checked>
-                <label class="form-check-label" for="inlineRadio1">Non-Spoiler</label>
+                <label class="form-check-label" for="inlineRadio1">Non-Spoilers</label>
               </div>
               <div class="form-check form-check-inline">
                 <input class="form-check-input no-select" type="radio" name="contentAreaRadio" id="inlineRadio-spoiler" value="spoiler">
-                <label class="form-check-label" for="inlineRadio2">Spoiler</label>
+                <label class="form-check-label" for="inlineRadio2">Spoilers</label>
               </div>
             </div>
 
-            
             <div class="side-line">
               <label for="tabNameInput" class="block-color border-radius-none-right ">Name</label>
               <input class="input-one w-100p" type="text" name="tabName" id="tabNewNameInput">
             </div>
-  
+
             <div class="side-line navButtons">
               <button type="button" class="btn btn-one mr-1" onclick="pageEditor.tabAdd()">Add</button>
               <button type="button" class="btn btn-one" onclick="pageEditor.tabClear('tabNewNameInput')">Clear</button>
             </div>
-
           </div>
         </div>
-
       </div>
 
     </div>
