@@ -286,6 +286,17 @@ function createTabs(btnGroupId, tabIdsObj) {
   div.appendChild(btn_div)
 }
 
+function toggleScrollbarVisibility() {
+
+  document.getElementsByTagName("body")[0].classList.toggle("disable-srolling")
+  document.getElementsByTagName("html")[0].classList.toggle("disable-srolling")
+}
+
+function removeScrollbarVisibility() {
+  document.getElementsByTagName("body")[0].classList.remove("disable-srolling")
+  document.getElementsByTagName("html")[0].classList.remove("disable-srolling")
+}
+
 /**
  * Open Editor Modal
  *
@@ -303,8 +314,7 @@ function openModal(modalID, renderPageAgain = false) {
   let modal = document.getElementById(modalID)
   modal.classList.toggle('modal-visible')
     // Hide scrollbar
-  document.getElementsByTagName("body")[0].classList.toggle("disable-srolling")
-  document.getElementsByTagName("html")[0].classList.toggle("disable-srolling")
+  toggleScrollbarVisibility();
 
   // Exits modal if clicked outsie
   if (modal.onclick != null) return;
@@ -312,8 +322,7 @@ function openModal(modalID, renderPageAgain = false) {
     if (event.target == modal) {
       modal.classList.remove('modal-visible')
         // Reveal Scrollbar
-      document.getElementsByTagName("body")[0].classList.remove("disable-srolling")
-      document.getElementsByTagName("html")[0].classList.remove("disable-srolling")
+        removeScrollbarVisibility();
     }
   }
 
@@ -1059,7 +1068,7 @@ class PageEditor {
 
     // Save Profile Data
     Object.assign(profileData, tempProfilesData);
-    
+
     // Save Content
     let htmlContent = '<!-- File Content -->\n\n';
 
@@ -1356,8 +1365,7 @@ class PageEditor {
       this.profileEditor.setData(profileData[profileId]);
       this.profileRemoveDisable(profileId);
       return;
-    }
-    else if (check.checked && !profileData.hasOwnProperty(profileId)) {
+    } else if (check.checked && !profileData.hasOwnProperty(profileId)) {
       this.profileEditor.insertGeneric();
       tempProfilesData[profileId] = this.profileEditor.initialValue();
       this.profileRemoveDisable(profileId)
@@ -1388,6 +1396,7 @@ class ProfileEditor {
       mainMenuBar: false,
       navigationBar: true,
       onChangeJSON: this.onChangeJSON,
+      enableSort: false,
     });
     this.container.style.width = "100%";
     this.container.style.height = 'fit-content';

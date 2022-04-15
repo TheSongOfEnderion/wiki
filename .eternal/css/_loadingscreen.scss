@@ -1,0 +1,119 @@
+$loadingDuration: 2s;
+$loadingSize: 2rem;
+
+#loading-screen {
+  display: block;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 0;
+  background: $Color1;
+  width: 100%;
+  z-index: 999;
+  top: 0;
+  left: 0;
+}
+
+
+.loading-div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: $loadingSize;
+    width: $loadingSize;
+    transform: translateX(-50%) translateY(-50%); 
+}
+
+// .loading-container {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     height: $loadingSize;
+//     width: $loadingSize;
+
+// }
+
+.loading-block {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: $loadingSize;
+    width: $loadingSize;
+    
+    .loading-item {
+        position: absolute;
+        height: $loadingSize;
+        width: $loadingSize;
+        background: #fff;
+        animation: move $loadingDuration linear infinite;
+        
+        &:nth-of-type(1) {
+            top: -$loadingSize;
+            left: -$loadingSize;
+            animation-delay: -7 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(2) {
+            top: -$loadingSize;
+            left: 0;
+            animation-delay: -6 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(3) {
+            top: -$loadingSize;
+            left: $loadingSize;
+            animation-delay: -5 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(4) {
+            top: 0;
+            left: $loadingSize;
+            animation-delay: -4 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(5) {
+            top: $loadingSize;
+            left: $loadingSize;
+            animation-delay: -3 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(6) {
+            top: $loadingSize;
+            left: 0;
+            animation-delay: -2 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(7) {
+            top: $loadingSize;
+            left: -$loadingSize;
+            animation-delay: -1 * $loadingDuration / 8;
+        }
+        
+        &:nth-of-type(8) {
+            top: 0;
+            left: -$loadingSize;
+            animation-delay: 0 * $loadingDuration / 8;
+        }
+    }
+}
+
+@keyframes move {
+    0% {
+        transform: rotate(0) scale(1);
+        animation-timing-function: ease-in;
+    }
+    10% {
+        transform: rotate(90deg) scale(0);
+    }
+    50% {
+        transform: rotate(90deg) scale(0);
+        animation-timing-function: ease-out;
+    }
+    60% {
+        transform: rotate(180deg) scale(1);
+    }
+    100% {
+        transform: rotate(180deg) scale(1);
+    }
+}
