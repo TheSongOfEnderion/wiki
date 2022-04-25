@@ -1,0 +1,51 @@
+/* link margins */
+
+.toc-H2 {
+  margin-left: 1em;
+}
+
+.toc-H3 {
+  margin-left: 2em;
+}
+
+.toc-H4 {
+  margin-left: 3em;
+}
+
+.toc-H5 {
+  margin-left: 4em;
+}
+
+.toc-H6 {
+  margin-left: 5em;
+}
+
+
+/* box css */
+
+.toc {
+  background-color: $toc-bg;
+  width: fit-content;
+  height: fit-content;
+  padding: 1em;
+  margin: 0.5em 0em;
+  border-radius: 0.5em;
+  p {
+    margin: 0em;
+    text-align: center;
+    padding: 0.2em 0.5em;
+  }
+}
+
+
+/* link to top of page */
+
+.arrow-up {
+  font-size: 0.5em !important;
+  text-decoration: none;
+  color: $font-color-primary;
+}
+
+.h {
+  margin: 0em !important;
+}

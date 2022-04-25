@@ -1,110 +1,41 @@
-<!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Eternal Writer</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Template</title>
 
-  <!-- CSS -->
-  <link href="./.eternal/css/style.css" rel="stylesheet">
+  <!-- Style -->
+  <link rel="stylesheet" href=".eternal/css/style.css">
 
-  <!-- JS -->
-  <script src="./.eternal/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-  <script src="./.eternal/js/easymde.min.js" type="text/javascript"></script>
-  <script src="./.eternal/js/notifications.min.js" type="text/javascript"></script>
-  <script src="./.eternal/js/jsoneditor.js" type="text/javascript"></script>
-  <script src="./.eternal/js/main.js" type="text/javascript"></script>
+  <script rel="modulepreload" src=".eternal/js/vue.global.js"></script>
+  <script rel="modulepreload" src=".eternal/js/component.js"></script>
+  <script rel="modulepreload" src=".eternal/js/main.js"></script>
 
 
-
-  <!-- Head Bar -->
-  <div id="head-card"></div>
 </head>
 
-<div id="loading-screen">
-  <div class='loading-div'>
-    <div class='loading-block'>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
-      <div class='loading-item'></div>
+<body>
+
+
+  <div id="app" v-cloak>
+    <div class="d-flex flex-column center">
+
+      <div id="header" class="row container">
+        <header-card :title="projectTitle" :subtitle="projectSubtitle" :btn-list="headerNavBtn" />
+      </div>
+
+      <div class="row card card--visual">
+        <h1 id="page-title">{{ pageTitle }}</h1>
+        <card :html="pageContents" :page-data="pageData" :dir="dir">
+      </div>
+
     </div>
   </div>
-</div>
-
-<body class="hide">
-  <button id="modalbtn" onclick="createEditor()">open modal</button>
-  <div id="page-editor"> </div>
-
-  <div class="container body-card">
-    <div id="spoiler-button"></div>
-
-    <div id="page-title">
-      <h1></h1>
-      <div id="page-breadcrumbs"></div>
-    </div>
-
-    <div id="page-content"><a href="?p=story-a">Test go</a></div>
-
-    <div id="page-tags"></div>
-  </div>
 
   <script>
-    // Add Site Head
-    getAsset('headbar.html')
-      .then(data => {
-        document.getElementById('head-card').innerHTML = data
-
-        getAsset('eternal.json') // Website Title
-          .then(data => {
-            document.getElementById('project-title').innerText = data['projectTitle']
-          })
-
-        // Add Horizontal Navigation Bar
-        getAsset('navbar.html')
-          .then(data => {
-            document.getElementById('nav-card').innerHTML = data
-          })
-      })
-
-    // Gets Directory
-    getAsset('directory.json')
-      .then(async(data) => {
-        directory = data;
-      })
-      .then(() => {
-        // Gets Input Url
-        if (window.location.search != "") {
-          toggleScrollbarVisibility();
-          renderPage();
-        } else {
-
-        }
-      })
-      .then(() => {
-        document.getElementsByTagName('body')[0].classList.remove('hide');
-        toggleScrollbarVisibility();
-        document.getElementById('loading-screen').classList.add('hide');
-      })
-
-    function createEditor() {
-      openModal('editor-modal')
-    }
-  </script>
-
-  <script>
-    function myNewFunction(sel) {
-      let selected = sel.value;
-      console.log(selected);
-    }
-  </script>
-
-  <script>
+    renderPage()
   </script>
 
 </body>

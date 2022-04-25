@@ -1,186 +1,156 @@
-// Variables 
-$fontFamily: 'Helvetica';
-$FontColor1: #3a3a3a;
-$FontColor2: whitesmoke;
-$FontColor3: #666;
-$FontShadow: #212121;
-$Color1: #0d6efd;
-$Color2: #6cfb92;
-$Color1Dark: #0e59ca;
-$BG: #E7E7E2;
-$BG2: #F7F7F7;
-$BG3: #d1d1cd;
-$Card: #FFFFFF;
-$ToolTipBG: #eb4034;
-$ToolTipColor: #ffffff;
-$BorderColor: #ced4da;
+// ======== VARIABLE AREA ========
 
+$body-bg: #E7E7E2;
+$card-bg: white;
 
-$notifySuccess: #21be4b;
-$notifyError: #eb4034;
+$color-primary: #0d6efd;
+$color-light: #E7E7E2;
+$color-light2: #F7F7F7;
 
-// Imports        
-@import './bootstrap.min';
-@import './navbar';
-@import './spoiler';
-@import './default';
-@import './toc';
-@import './profilebox';
-@import './editor';
-@import './notifications';
+$font-color-primary: $color-primary;
+$font-color-light: #fff;
+$font-color-dark: #2b2b2b;
+
+$font-family: 'Rubik Regular';
+$outline: lighten($color-primary, 30);
+
+// Button Variables
+$btn-primary: $color-primary;
+$btn-primary--darken: 15%;
+$btn-primary--font: $font-color-light;
+
+// Header Variables
+$header-font: $font-family;
+
+// BreadCrumb Variables
+$breadcrumbs-bg: $color-light2;
+$breadcrumbs-font-color: $font-color-dark;
+
+// TOC
+$toc-bg: $color-light2;
+
+// ======== VARIABLE AREA ======== (DO NOT REMOVE THIS COMMENT)
+
+// Fonts 
+@font-face {
+  font-family: 'Rubik Light';
+  src: local('Rubik Light'), local('Rubik-Light'),
+      url('font/Rubik-Light.woff2') format('woff2'),
+      url('font/Rubik-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rubik Regular';
+  src: local('Rubik Regular'), local('Rubik-Regular'),
+      url('font/Rubik-Regular.woff2') format('woff2'),
+      url('font/Rubik-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Imports              
+@import './boostrap/bootstrap-grid';
+@import './boostrap/bootstrap-reboot';
+
+@import './buttons';
 @import './utility';
-@import './easymde.min';
-@import './jsoneditor';
-@import './loadingscreen';
+@import './default';
 
-// CSS    
-@mixin center {    
+// Imports Components 
+@import './components/card';
+@import './components/header';
+@import './components/toggle';
+@import './components/breadcrumbs';
+@import './components/toc';
+
+// Mixins     
+@mixin outline {
+  outline: 3px solid $outline;
+}
+
+@mixin center-contents {
   display: grid;
   place-items: center;
 }
 
-@mixin removeSelect {
-  outline: 0px !important;
-  -webkit-appearance: none;
-  box-shadow: none !important;
+// CSS All         
+* {
+  font-family: $font-family;
+  color: $font-color-dark;
+  font-size: 0.97em;
+  &:focus {
+    @include outline();
+  }
 }
 
-@mixin innerBorder($size, $color) {
-  -webkit-box-shadow: inset 0px 0px 0px $size $color !important;
-  -moz-box-shadow: inset 0px 0px 0px $size $color !important;
-  box-shadow: inset 0px 0px 0px $size $color !important;
-}
-
-#page-title {
-  h1 {
-    font-size: 2.5em;
-    font-weight: 400;
-  }
-  #page-breadcrumbs {
-    background-color: $BG2;
-    color: $FontColor3;
-    border-radius: 0.3em;
-    margin-bottom: 0.8em;
-    padding: 0.5em 1em;
-    font-size: smaller;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    flex-direction: column;
-  }
-} 
-
-#head-card {
-  @include center();
-  margin: 6em 0em 3em 0em;
-  h1 {
-    color: $FontColor1;
-    text-shadow: 1px 1px 2px $FontShadow;
-  }
-  // Website Title  
-  #project-title {
-    text-align: center;
-    font-size: 3.4em;
-  }
-  #nav-card {
-    text-align: center;
-  }
+// Defaults
+html {
+  overflow: auto;
 }
 
 body {
-  @include center();
-  background-color: $BG;
-  color: $FontColor1;
-  font-family: $fontFamily;
-  font-weight: 400;
-  font-size: small;
-  .body-card {
-    width: 60em;
-    background-color: $Card;
-    color: $FontColor1;
-    border-radius: 0.5em;
-    padding: 2em 3em;
-  }
-
-  #page-tags {
-    border-top: 1px solid $BG;
-  }
+  background-color: $body-bg;
+  margin: 0em;
+  overflow: auto;
 }
 
-.page-tab {
-  display: none;
-}
 
-@media (max-width: 1200px) {
-  .modal-card {
-    width: 70% !important;
-  }
-}
 
-@media (max-width: 750px) {
-  .container,
-  .container-sm {
-    max-width: 575px;
+.toggle {
+  cursor: pointer;
+  margin: 0.5em 1em;
+  height: 32px;
+  width: 52px;
+  border-radius: 16px;
+  display: inline-block;
+  position: relative;
+  outline: 0;
+  top: 0;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
   }
-  .modal-card {
-    width: 100% !important;
-  }
-}
-
-@media (max-width: 575px) {
-  .container,
-  .container-sm {
-    max-width: 500px;
-  }
-  .body-card {
-    padding: 2em 1.5em !important;
-  }
-  .modal-card {
-    width: 90% !important;
-  }
-}
-
-@media (max-width: 350px) {
-  .container,
-  .container-sm {
-    max-width: 300px;
-  }
-  .body-card {
-    padding: 2em 1em !important;
-  }
-  #project-title {
-    font-size: 2.5em !important;
-  }
-  .profile-box {
-    float: none !important;
-    margin: auto;
-  }
-  .profile-box-parent {
-    display: grid !important;
-    place-items: center !important;
-  }
-  #page-title {
-    h1 {
-      font-size: 2em;
+  &:checked {
+    &:after {
+      transform: translatex(20px);
     }
   }
-  .modal-card {
-    width: 300px !important;
+}
+
+.toggle-visual {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+
+  background: $color-light;
+  transition: all .2s ease;
+
+  &:after {
+    background: white;
+    box-shadow: 0 1px 2px rgba(44, 44, 44, .2);
+    transition: all .2s cubic-bezier(.5, .1, .75, 1.35);
+  }
+  &:checked {
+    background-color: lighten($color-primary, 30);
+  }
+  &:hover {
+    background-color: darken($color-light, 10);
+    &:checked {
+      background-color: $color-primary;
+    }
+    
+    transition: background-color 0.5s ease;
   }
 }
- 
-@media (max-width: 300px) {
-  .container,
-  .container-sm {
-    max-width: 250px;
-  }
-  .body-card {
-    padding: 0em;
-    margin: 0em;
-    width: 100% !important;
-  }
-  #project-title {
-    font-size: 2em !important;
-  }
-}
+
 

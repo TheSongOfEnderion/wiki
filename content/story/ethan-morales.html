@@ -2,20 +2,23 @@
 <script>
   window.pageData = {
     title: "Ethan Morales",
-    parent: "Birth of a Hero",
+    urlName: "ethan-morales",
+    parent: "tboah-characters",
     tags: "",
     description: "Stuff stuff",
-    functions: {
-      createSpoilers: true,
-      createProfileBox: true,      
-    },
-    fileStructure: {
-      nonspoiler: {
-        "nonspoiler-overview": "Default",
+    createSpoilers: true,
+    tabs: {
+      "nonspoiler-overview": {
+        name: "Default",
+        area: "nonspoiler"
       },
-      spoiler: {
-        "spoiler-overview": "Overview",
-        "spoiler-relationships": "Relationships"
+      "spoiler-overview": {
+        name: "Overview",
+        area: "spoiler"
+      },
+      "spoiler-relationships": {
+        name: "Relationship",
+        area: "spoiler"
       }
     },
     disabledProfileData: [],
@@ -23,12 +26,12 @@
 
   window.profileData = {
     'nonspoiler-overview': {
-      'Title': 'Ethan Morales',
-      'Image': {
+      Title: 'Ethan Morales',
+      Image: {
         "Original Art": "assets/images/Ethan-Morales.png",
         "Uniform": "assets/images/Eltia-Axolin-Uniform.png",
       },
-      'Content': {
+      Content: {
         'Desc': {
           'Full Name': 'Ethan R. Morales',
           'Alias': ['Tantan', 'Lunatic', 'Crazy Sociopath']
@@ -67,13 +70,13 @@
 
     },
     'spoiler-overview': {
-      'Title': 'Ethan Morales',
-      'Image': {
+      Title: 'Ethan Morales',
+      Image: {
         "Original Art": "assets/images/Ethan-Morales.png",
         "Uniform": "assets/images/Eltia-Axolin-Uniform.png",
         "Hero Suit": "assets/images/Eltia Axolin.png"
       },
-      'Content': {
+      Content: {
         'Desc': {
           'Full Name': 'Ethan R. Morales',
           'Alias': ['Tantan', 'Lunatic', 'Crazy Sociopath', 'The Unchained Predator']
@@ -133,47 +136,45 @@
 
 <!-- File Content -->
 
+
+
 <div id="nonspoiler">
-
   <div id="nonspoiler-overview" class="page-tab">
-    Ethan Morales is the Main Protagonist of the novel "The Birth of a Hero" and the **the central** point of the story. He is a student studying in U.H.A. and is part of E-Class. He has the power to create physical objects using his body fats which he apparently "Awakened" randomly in the past.
-    
-    [[toc]]
+    Ethan Morales __is__ the Main __**Protagonist**__ of the novel __"The Birth of a Hero"__ and the **the central** point of the story. He is a student studying in U.H.A. and is part of E-Class. He has the power to create physical objects using his body fats which he apparently "Awakened" randomly in the past.
 
+    [[toc]]
+    
     # Appearance
     Ethan is a Desterian Teenager. Like most Desterian, he has dark hair and light beige skin. *His* eyes are orange-red, inherited from his mother and he has a tall build, inherited from his dad. His eyebrows are thin like his mother and his nose is straight from his father's. His hair is kept slightly long, giving him a pair of bangs on his forehead.
-
+    
     While Ethan is always seen wearing glasses, he does not have a bad eyesight. Rather, he wears his glasses as a convenient computer and to help enhance his ability. He does not like contact lens since he's too lazy to wear those.
-
+    
     When not in school, he always wears a dark, baggy sweater and a pair of dark pants. When he goes outside, he wears a dark track suit with orange-red stripes.
-
-
+    
     # Personality
     Ethan first appeared to have a stoic and quiet personality.
     However, his true personality eventually appears, revealing a chaotic and mischievous person. He does not like rules and laws, preferring to do as he pleases. Although he do respect the law, up until its convenient to him, that is.
-
+    
     Ethan's perspective on what is 'Right' is very skewed from the norm, preferring to achieve pragmatic results regardless of the means. Sometimes, things that are really dangerous and blatantly wrong to the average person is seen by Ethan as something 'obvious'. This caused his friends and classmates to view him as an unhinged sociopath.
     However, this kind of Morality is not unique to Ethan as Kevin sometimes displays them, albeit to a lesser degree, clearly influenced by the two of them grewing up pratically together.
-
-
+    
     # Ability
     ## Candlefire
     The ability to create a small candle fire in his palm
-
-
-    ## Creation 
+    
+    ## Creation
     The ability to turn body fats into a any physical objects. The following is the current limits.
     * The user's understanding of molecular and atomic structure.
     * Amount of fats in his body
     * Brain Processing Power
     * Size of Creation no more than his body's surface area
-
+    
     ## Fire Resistance
     Ability to resist intense heat. Inherited from his mother.
   </div>
 </div>
 <div id="spoiler">
-  <div id="spoiler-overview" class="page-tab">
+  <div id="spoiler-overview"  class="page-tab">
     Ethan Morales is the Main Protagonist of the novel "The Birth of a Hero" and the the central point of the story. He is a student studying in U.H.A. and is part of E-Class.
 
     He and his family are Desterian Immigrants who migrated to Arlika in order to seek a better life. The first six years of his life was spent in Desteria, witnessing the cruelty of drug cartels and the ghetto, caused a life-long influenced on Ethan's psyche that even he didn't knew he had.
@@ -197,7 +198,6 @@
     After the events with the Crawler, Ethan changed and became sociopathic. He became cold, cunning, hateful, and vengeful. The event broke him, causing him to lose a great deal of his empathy. After much consolation and love from his parents, a part of the Original Ethan returned back, however he was permanently changed. He changed into a mature and unsociable person, barely smiling and always living in his own world. It was only after living with E-Class did Ethan grew and retained his original personality back.
 
     Inspired by the Elucid King, Ethan started studying Strange Social Laws and Scheming books, causing him to turn into a rather deceptive and highly opportunistic person.
-
 
     # Motivation
     Ethan is a good person at heart. He was raised by his parents to be kind, courageous, and heroic. While his parents never told him to become a hero, he saw through the lines of what they subconsciously wanted him to become.
@@ -227,7 +227,6 @@
     # Equipment
     # Trivia
     # Gallery
-
   </div>
   <div id="spoiler-relationships" class="page-tab">
     # Relationships

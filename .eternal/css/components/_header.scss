@@ -1,0 +1,78 @@
+.project-title {
+  font-size: 2.8em;
+  font-weight: 500;
+  font-family: $header-font;
+  align-content: center;
+  margin-bottom: 0.2em;
+}
+
+.project-subtitle {
+  font-size: 1em;
+  font-family: $header-font;
+}
+
+@media screen and (min-width: 100px) {
+  .project-title {
+    font-size: 1.5em;
+  }
+  .btns-header {
+    justify-content: flex-start !important;
+  }
+}
+
+@media screen and (min-width: 200px) {
+  .project-title {
+    font-size: 1.9em;
+    margin-top: 0.6em !important;
+  }
+  .project-subtitle {
+    margin-bottom: 1em !important;
+  }
+  #header {
+    margin: 1em 0.5em;
+    width: 100%;
+    padding: 0em;
+  }
+  .btns-header {
+    justify-content: flex-start !important;
+  }
+}
+
+@media screen and (min-width: 250px) {
+  .btns-header {
+    justify-content: flex-start !important;
+  }
+}
+
+@media screen and (min-width: 300px) {
+  #header {
+    justify-content: flex-start !important;
+  }
+  .btns-header {
+    justify-content: center !important;
+  }
+}
+
+@media screen and (min-width: 400px) {
+  .project-title {
+    font-size: 2em;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .project-title {
+    font-size: 2.5em;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .project-title {
+    font-size: 3em;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .project-title {
+    font-size: 3.5em;
+  }
+}
