@@ -9,10 +9,7 @@
   a {
     text-decoration: none;
     color: $font-color-dark;
-    transition: color 0.2s ease;
     text-align: left;
-    &:hover {
-      color: $color-primary;
-    }
+    padding: 0em 0.3em;
   }
 }

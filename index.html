@@ -9,11 +9,12 @@
   <!-- Style -->
   <link rel="stylesheet" href=".eternal/css/style.css">
 
-  <script rel="modulepreload" src=".eternal/js/vue.global.js"></script>
+  <script rel="modulepreload" src=".eternal/js/vue/vue.global.js"></script>
   <script rel="modulepreload" src=".eternal/js/component.js"></script>
   <script rel="modulepreload" src=".eternal/js/main.js"></script>
 
-
+  <script rel="modulepreload" src=".eternal/js/editor/jsoneditor.js"></script>
+  <script rel="modulepreload" src=".eternal/js/editor/easymde.min.js"></script>
 </head>
 
 <body>
@@ -22,20 +23,32 @@
   <div id="app" v-cloak>
     <div class="d-flex flex-column center">
 
-      <div id="header" class="row container">
+      <!-- Page Header -->
+      <div id="header" class="row">
         <header-card :title="projectTitle" :subtitle="projectSubtitle" :btn-list="headerNavBtn" />
       </div>
 
-      <div class="row card card--visual">
-        <h1 id="page-title">{{ pageTitle }}</h1>
-        <card :html="pageContents" :page-data="pageData" :dir="dir">
+      <!-- Editor -->
+      <div class="row editor-div">
+        <editor :editor-data="editorData"/>
+      </div>
+     
+      
+
+      <!-- Page Card -->
+      <div class="row card card--visual mb-5" id="page-content">
+        <!-- Content -->
+          <h1 class="page-title d-flex justify-content-between" v-cloak>{{ pageTitle }}
+            <toggle v-show="pageData.createSpoilers === true" @toggled="areaToggleHandler" />
+          </h1>
+          <page-content :html="pageContents" :page-data="pageData" :dir="dir" :area-toggle="areaToggle">
       </div>
 
     </div>
   </div>
 
   <script>
-    renderPage()
+    startPage()
   </script>
 
 </body>

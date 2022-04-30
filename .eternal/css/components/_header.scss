@@ -11,6 +11,12 @@
   font-family: $header-font;
 }
 
+.btn--header {
+  border-radius: 0.1em;
+  font-size: medium;
+  // color: $font-color-dark;
+}
+
 @media screen and (min-width: 100px) {
   .project-title {
     font-size: 1.5em;

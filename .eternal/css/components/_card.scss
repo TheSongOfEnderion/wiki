@@ -1,7 +1,7 @@
 .card {
   width: 90%;
-  height: 100%;
-  margin: 2em 0em 2em 0em;
+  height: auto;
+  // margin: 2em 0em 0em 0em;
   padding: 2em;
   overflow: auto;
   border-radius: 0.8em;
@@ -13,7 +13,12 @@
   background-color: $card-bg;
 }
 
-#page-title {
+.editor-div {
+  display: grid;
+  place-items: center;
+}
+
+.page-title {
   font-size: 2.5em;
   font-family: 'Rubik Regular';
 }
@@ -23,7 +28,7 @@
     width: 100%;
     padding: 0.5em;
   }
-  #page-title {
+  .page-title {
     font-size: 1.3em;
     margin-top: 0.5em;
   }
@@ -34,7 +39,7 @@
     width: 100%;
     padding: 0.5em;
   }
-  #page-title {
+  .page-title {
     font-size: 1.9em;
     margin-top: 0.5em;
   }
@@ -45,9 +50,13 @@
     width: 95%;
     padding: 1em;
   }
-  #page-title {
+  .page-title {
     font-size: 1.9em;
     margin-top: 0em;
+  }
+  .editor-div {
+    display: grid !important;
+    place-items: center !important;
   }
 }
 
@@ -56,9 +65,13 @@
     width: 90%;
     padding: 1.5em;
   }
-  #page-title {
+  .page-title {
     font-size: 2.5em;
     margin-top: 0em;
+  }
+  .editor-div {
+    display: grid !important;
+    place-items: center !important;
   }
 }
 
@@ -66,6 +79,10 @@
   .card {
     width: 700px;
     padding: 2em;
+  }
+  .editor-div {
+    display: grid !important;
+    place-items: center !important;
   }
 }
 

@@ -1,3 +1,4 @@
+/*jshint esversion: 9 */
 var Vue = (function (exports) {
   'use strict';
 

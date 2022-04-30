@@ -1,0 +1,37 @@
+// CSS All
+#editor {
+  display: grid;
+  place-items: center;
+}
+
+.editor-table {
+  tbody {
+    width: 100%;
+    tr {
+      width: 100%;
+      td {
+        font-size: small;
+        input {
+          font-size: small;
+          width: 100%;
+        }
+        label {
+          width: 6em;
+        }
+      }
+      .textinput-input {
+        width: 100%;
+      }
+    }
+  }
+  // .textinput-input {
+}
+
+.textinput-label {
+  width: max-content;
+}
+
+.EasyMDEContainer {
+  height: fit-content;
+  font-size: medium;
+}

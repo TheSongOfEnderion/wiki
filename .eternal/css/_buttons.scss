@@ -9,42 +9,20 @@
 }
 
 .btn-primary {
-  // Colors
-  color: $btn-primary--font;
-  background-color: $btn-primary;
-  box-shadow: 0px 0px 12px -1px rgba(0, 0, 0, 0.3);
-  text-decoration: none;
-  line-height: 1.25;
-  letter-spacing: .08em;
-  transition: background-color .6s ease;
-  &:after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    top: 50%;
-    left: 50%;
-    top: var(--mouse-y);
-    left: var(--mouse-x);
-    transform-style: flat;
-    transform: translate3d(-50%, -50%, 0);
-    background: rgba(white, .1);
-    border-radius: 100%;
-    transition: width .2s ease, height .3s ease;
-  }
-  &:focus,
-  &:hover {
-    color: $btn-primary--font;
-    background-color: darken($btn-primary, $btn-primary--darken);
-    outline: none;
-  }
-}
-
-.btn-secondary {
   text-decoration: none;
   transition-duration: 0.4s;
   padding: 0.2em 0.5em;
   border-radius: 0.2em;
+}
+
+.btn--color-primary {
+  color: $font-color-light;
+  background-color: $color-primary;
+  &:hover {
+    background-color: lighten($color-primary, 10%);
+    color: $font-color-light;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  }
 }
 
 .btn--color-secondary {
@@ -70,5 +48,9 @@
   color: $btn-primary;
 }
 
+.btn--active2 {
+  background-color: darken($color-primary, 30%);
+  color: $font-color-light;
+}
 
 

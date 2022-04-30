@@ -1,156 +1,54 @@
 // ======== VARIABLE AREA ========
-
 $body-bg: #E7E7E2;
 $card-bg: white;
-
 $color-primary: #0d6efd;
 $color-light: #E7E7E2;
 $color-light2: #F7F7F7;
-
 $font-color-primary: $color-primary;
 $font-color-light: #fff;
 $font-color-dark: #2b2b2b;
-
 $font-family: 'Rubik Regular';
 $outline: lighten($color-primary, 30);
-
 // Button Variables
 $btn-primary: $color-primary;
 $btn-primary--darken: 15%;
 $btn-primary--font: $font-color-light;
-
 // Header Variables
 $header-font: $font-family;
-
 // BreadCrumb Variables
 $breadcrumbs-bg: $color-light2;
 $breadcrumbs-font-color: $font-color-dark;
-
 // TOC
 $toc-bg: $color-light2;
-
 // ======== VARIABLE AREA ======== (DO NOT REMOVE THIS COMMENT)
-
-// Fonts 
-@font-face {
-  font-family: 'Rubik Light';
-  src: local('Rubik Light'), local('Rubik-Light'),
-      url('font/Rubik-Light.woff2') format('woff2'),
-      url('font/Rubik-Light.woff') format('woff');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Rubik Regular';
-  src: local('Rubik Regular'), local('Rubik-Regular'),
-      url('font/Rubik-Regular.woff2') format('woff2'),
-      url('font/Rubik-Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-// Imports              
-@import './boostrap/bootstrap-grid';
+// Imports 
 @import './boostrap/bootstrap-reboot';
-
+@import './boostrap/bootstrap-grid';
+@import './editor/easymde';
+@import './font/font';
 @import './buttons';
 @import './utility';
 @import './default';
 
-// Imports Components 
+@import './input';
+// Imports Components         
 @import './components/card';
 @import './components/header';
 @import './components/toggle';
 @import './components/breadcrumbs';
 @import './components/toc';
-
-// Mixins     
-@mixin outline {
-  outline: 3px solid $outline;
-}
+@import './components/profilebox';
+@import './components/editor';
 
 @mixin center-contents {
   display: grid;
   place-items: center;
 }
 
-// CSS All         
-* {
-  font-family: $font-family;
-  color: $font-color-dark;
-  font-size: 0.97em;
-  &:focus {
-    @include outline();
-  }
+@mixin innerBorder($size, $color) {
+  -webkit-box-shadow: inset 0px 0px 0px $size $color !important;
+  -moz-box-shadow: inset 0px 0px 0px $size $color !important;
+  box-shadow: inset 0px 0px 0px $size $color !important;
 }
 
-// Defaults
-html {
-  overflow: auto;
-}
-
-body {
-  background-color: $body-bg;
-  margin: 0em;
-  overflow: auto;
-}
-
-
-
-.toggle {
-  cursor: pointer;
-  margin: 0.5em 1em;
-  height: 32px;
-  width: 52px;
-  border-radius: 16px;
-  display: inline-block;
-  position: relative;
-  outline: 0;
-  top: 0;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-  }
-  &:checked {
-    &:after {
-      transform: translatex(20px);
-    }
-  }
-}
-
-.toggle-visual {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  -webkit-tap-highlight-color: transparent;
-
-  background: $color-light;
-  transition: all .2s ease;
-
-  &:after {
-    background: white;
-    box-shadow: 0 1px 2px rgba(44, 44, 44, .2);
-    transition: all .2s cubic-bezier(.5, .1, .75, 1.35);
-  }
-  &:checked {
-    background-color: lighten($color-primary, 30);
-  }
-  &:hover {
-    background-color: darken($color-light, 10);
-    &:checked {
-      background-color: $color-primary;
-    }
     
-    transition: background-color 0.5s ease;
-  }
-}
-
-

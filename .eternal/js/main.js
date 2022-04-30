@@ -4,7 +4,7 @@ var areas = ['spoiler', 'nonspoiler'];
 var pageName = '';
 var idList = [];
 
-function renderPage() {
+function startPage() {
   const app = Vue.createApp({
     data() {
       return {
@@ -18,7 +18,6 @@ function renderPage() {
 
 
         // Page Variables
-
         pageData: {},
         pageTitle: '',
         pageContents: {
@@ -27,10 +26,14 @@ function renderPage() {
         },
 
         // Others
-        textRenderer: new TextRenderer(),
+        areaToggle: getSpoilerStorageValue(),
+        editorData: {},
       };
     },
     methods: {
+      areaToggleHandler(checked) {
+        this.areaToggle = checked;
+      },
       getPageUrl() {
         if (window.location.search) {
           let urlParams = new URLSearchParams(window.location.search);
@@ -45,12 +48,11 @@ function renderPage() {
     },
     async mounted() {
       // Step 1. Retrieves Necessary Files
-      const metaRes = await fetch(`.eternal/eternal.json`);       // Get Metadata
+      const metaRes = await fetch(`.eternal/eternal.json`); // Get Metadata
       this.meta = await metaRes.json();
 
-      const dirRes = await fetch(`.eternal/directory.json`);       // Get Directory
+      const dirRes = await fetch(`.eternal/directory.json`); // Get Directory
       this.dir = await dirRes.json();
-
 
       // Step 2. Gets Page URL
       pageName = this.getPageUrl();
@@ -59,63 +61,96 @@ function renderPage() {
         return;
       }
 
-
-      // Step 3. Gets Page HTML
-      const pageFile = await fetch(this.dir[pageName].path);
-      let html = await pageFile.text();
-
-      let pageRaw = html.trim().split("<!-- File Content -->");
+      await renderPage(this, this.dir[pageName].path);
 
 
-      // Step 4. Processing Window Variables
-      loadScripts(pageRaw[0]);
-
-
-      // Step 5. Set Page General Data
-      this.headerNavBtn = this.meta.headerNavigation;
-      this.projectTitle = this.meta.projectTitle;
-      this.projectSubtitle = this.meta.projectSubtitle;
-
-
-      // Step 6. Set Page Specific Data
-      this.pageData = window.pageData;
-      this.pageTitle = window.pageData.title;
-      this.pageParent = window.pageData.parent;
-      
-
-      // Step 7. Process Contents
-      const parsedContent = parseHTML(pageRaw[1]);
-      let content = []; // Separating Each Part
-      for (const area of areas) {
-        let areaDiv = parsedContent.getElementById(area);
-        if (!areaDiv) continue;
-        for (let item of areaDiv.querySelectorAll('.page-tab')) {
-          content.push(`<div id="${item.id}" class="page-tag">\n` + item.innerHTML.trim() + "\n</div>");
-        }
-      }
-      
-
-      // Step 8. Add Contents to render
-      content.forEach((item, index) => { // Adding them to the tab
-        let data = getPageData(item);
-        this.pageContents[data.type].push({ html: this.textRenderer.renderText(item, data.type), ...data.data });
-      });
     }
   });
 
   // Register Components
   app.component(btn.name, btn);
   app.component(header.name, header);
-  app.component(card.name, card);
+  app.component(pageContent.name, pageContent);
   app.component(tab.name, tab);
   app.component(toggle.name, toggle);
   app.component(breadcrumbs.name, breadcrumbs);
+  app.component(profilebox.name, profilebox);
+  app.component(tabs.name, tabs);
+
+  app.component(editor.name, editor);
+  app.component(contentEditor.name, contentEditor);
+  app.component(textInput.name, textInput);
+  app.component(markdown.name, markdown);
   // Mount
   app.mount('#app');
 }
 
 
+async function renderPage(mainApp, url) {
 
+    // Step 3. Gets Page HTML
+    const pageFile = await fetch(url);
+    let html = await pageFile.text();
+
+    let pageRaw = html.trim().split("<!-- File Content -->");
+
+
+    // Step 4. Processing Window Variables
+    loadScripts(pageRaw[0]);
+
+
+    // Step 5. Set Page General Data
+    mainApp.headerNavBtn = mainApp.meta.headerNavigation;
+    mainApp.projectTitle = mainApp.meta.projectTitle;
+    mainApp.projectSubtitle = mainApp.meta.projectSubtitle;
+
+
+    // Step 6. Set Page Specific Data
+    mainApp.pageData = window.pageData;
+    mainApp.pageTitle = window.pageData.title;
+    mainApp.pageParent = window.pageData.parent;
+
+    let editorContentDataTemp = {};    
+    
+
+    // Step 7. Process Contents
+    const parsedContent = parseHTML(pageRaw[1]);
+    let content = []; // Separating Each Part
+    for (const area of areas) {
+      let areaDiv = parsedContent.getElementById(area);
+      if (!areaDiv) continue;
+      for (let item of areaDiv.querySelectorAll('.page-tab')) {
+        let itemHtml = superTrim(item.innerHTML);
+        editorContentDataTemp[item.id] = itemHtml;
+        content.push(`<div id="${item.id}" class="page-tag">\n` + itemHtml + "\n</div>");
+      }
+    }
+
+    const textRenderer = new TextRenderer(mainApp.dir);
+
+    // Step 8. Add Contents to render
+    content.forEach((item, index) => { // Adding them to the tab
+      let data = getPageData(item);
+      let profileBox = {};
+      if (window.profileData.hasOwnProperty(data.data.id)) {
+        profileBox = window.profileData[data.data.id];
+      }
+      mainApp.pageContents[data.type].push({ html: textRenderer.renderText(item, data.type), profileBox: profileBox, ...data.data });
+    });
+
+    
+
+    let editorDataTemp = { pageData: window.pageData, profileData: window.profileData, contentData: JSON.parse(JSON.stringify(mainApp.pageContents))};
+    for (const area in editorDataTemp.contentData) {
+      for (const item of editorDataTemp.contentData[area]) {
+        item.html = editorContentDataTemp[item.id];
+        delete item.profileBox;
+      }
+    }
+    
+    mainApp.editorData = editorDataTemp;
+    console.log(mainApp.editorData);
+  }
 
 function getPageData(html) {
   const id = html.match(/<div id=\"(.+?)\"/)[1];
@@ -182,23 +217,20 @@ function loadScripts(scriptData) {
 
 
 
- /**
-   * Create Table of Contents.
-   *
-   * Replaces the [[toc]] with a table of content linking
-   * to all the headers.
-   *
-   * @access     private
-   */
-
-
-
+function superTrim(text) {
+  let content = text.trim().split("\n");
+  let result = "";
+  for (let con of content) {
+    result += `${con.trim()}\n`;
+  }
+  return result;
+}
 
 
 
 
 class TextRenderer {
-  constructor() {
+  constructor(dir) {
     this.headerConvertionTable = {
       '# ': 'h1',
       '## ': 'h2',
@@ -209,6 +241,7 @@ class TextRenderer {
     };
     this.renderTOC = false;
     this.TOClist = {};
+    this.dir = dir;
   }
 
   /**
@@ -226,7 +259,6 @@ class TextRenderer {
     }
     // let remove = html.match(/<\/div>([\s\S]*?)<div id="spoiler">/gm);
     // let htmlContentString = html.replace(remove[0], `</div>\n<div id="spoiler">`);
-    // console.log(htmlContentString);
     const lines = htmlContentString.trim().split("\n");
 
     let htmlContent = '';
@@ -257,19 +289,44 @@ class TextRenderer {
           if (idList.includes(id)) {
             id += makeid(5);
           }
-          htmlContent += `<${h} id="${id}" class="h">${value_}</${h}>\n`;
-          this.TOClist[value_] = {id: id, h: h.toUpperCase()};
+          htmlContent += `<${h} id="${id}" class="h">${value_} <a href="#" class="arrow-up">↑</a></${h}>\n`;
+          this.TOClist[value_] = { id: id, h: h.toUpperCase() };
         } else {
           htmlContent += `<${h} class="h">${value.replace(hres[0], "")}</${h}>\n`;
         }
-        
+
         if (h == "h1") htmlContent += '<hr>\n';
         continue;
       }
-      if (value == "</div>" || value.match(/<div(.+?)\>/)) {
-        htmlContent += value;
-        continue;
+
+
+      // Link
+      let links = value.match(/\[\[(.*?)\]\]/g);
+      if (links) {
+        for (const link of links) {
+          if (link === '[[toc]]') continue;
+          let linkName = link.trim().replace(/(\[|\])/g, '');
+          
+          // // Search Directly
+          let linkNameLowered = linkName.toLowerCase();
+          if (this.dir.hasOwnProperty(linkNameLowered)) {
+            let dirItem = this.dir[linkNameLowered];
+            value = value.replace(link, `<a href="${dirItem.path}}">${dirItem.title}</a>`);
+            continue;
+          }
+
+          // // Search Indirectly
+          for (const pageName in this.dir) {
+            let dirItem = this.dir[pageName];
+            if (dirItem.title.toLowerCase() === linkNameLowered) {
+              value = value.replace(link, `<a href="${dirItem.path}}">${dirItem.title}</a>`);
+              break;
+            }
+          }
+        }
       }
+
+      // Add Value
       htmlContent += value;
     }
 
@@ -278,9 +335,9 @@ class TextRenderer {
     let toc = `
       <p class="font--small"><b>Table of Contents</b></p>
     `;
-    
+
     for (const head in this.TOClist) {
-      toc += `\n<a href="#${this.TOClist[head].id}" class="toc-${this.TOClist[head].h} btn-secondary btn--color-secondary">${head}</a><br>`;
+      toc += `\n<a href="#${this.TOClist[head].id}" class="toc-${this.TOClist[head].h} btn-primary btn--color-secondary">${head}</a><br>`;
     }
 
     htmlContent = htmlContent.replace("[[toc]]", `<div class="toc">${toc}</div>`);
@@ -356,7 +413,7 @@ class TextRenderer {
  * @param {int}   length   length of random id string
  * @return {string}  randomly generated id string
  */
- function makeid(length) {
+function makeid(length) {
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let charactersLength = characters.length;
   while (true) {
