@@ -1,18 +1,12 @@
-// Mixins       
-@mixin outline {
-  outline: 3px solid $outline;
-}
-
-* {
+ 
+@mixin font {
   font-family: $font-family;
   color: $font-color-dark;
-  font-size: 0.97em;
-  &:focus {
-    // @include outline();
-  }
+  font-size: small ;
 }
 
 html {
+  @include font();
   overflow: auto;
   scrollbar-width: 1em;
   scrollbar-color: $color-primary $card-bg;
@@ -30,6 +24,7 @@ html {
 }
 
 body {
+  @include font();
   background-color: $body-bg;
   margin: 0em;
   overflow: auto;

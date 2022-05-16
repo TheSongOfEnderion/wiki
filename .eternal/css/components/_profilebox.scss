@@ -1,19 +1,32 @@
+$profilebox-font-size: 0.98em;
+
+@mixin font {
+  font-family: $font-family;
+  color: $font-color-dark;
+  font-size: $profilebox-font-size ;
+} 
+
 .profile-box {
-  width: 18em;
+  * {
+    @include font();
+  }
+
+  width: 25em;
   padding: 0.5em;
   margin-left: 1em;
   border-radius: 0.5em;
   word-wrap: normal;
-  font-size: small;
   table {
     border-collapse: collapse;
     tbody {
+      
       td {
         max-width: 18em;
         line-height: 1.5em;
       }
-      tr td.type {
+      tr .type {
         vertical-align: text-top;
+        // font-size: $profilebox-font-size ;
       }
     }
   }
@@ -22,9 +35,12 @@
       width: 100%;
       border-radius: 0.3em;
       text-align: center;
-      font-size: 1.1em;
+      font-size: 1em;
       padding: 0.2em 3em;
     }
+  }
+  .btn {
+    font-size: smaller;
   }
 }
 
@@ -45,12 +61,13 @@
   background-color: $color-primary;
   color: $color-light;
   font-weight: 400;
-  letter-spacing: 0.1em;
+  // letter-spacing: 0.1em;
   display: inline-block;
   width: 100%;
-  padding: 0.7em 2em;
+  padding: 0.4em 2em;
   border-radius: 0.3em;
   text-align: center;
+  font-size: 1.2em;
 }
 
 .profile-image {

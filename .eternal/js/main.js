@@ -2,7 +2,26 @@
 
 var areas = ['spoiler', 'nonspoiler'];
 var pageName = '';
+var pageUrlPath = '';
 var idList = [];
+var root;
+var projectPath = '';
+
+const isObject = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+
+try {
+  window.api.receive("fromMain", (data) => {
+    if (data.name == 'path') {
+      if (projectPath != '') return;
+      projectPath = data.value;
+      console.log("Path: ", projectPath);
+    }
+  });
+} catch (error) {}
+
 
 function startPage() {
   const app = Vue.createApp({
@@ -28,6 +47,8 @@ function startPage() {
         // Others
         areaToggle: getSpoilerStorageValue(),
         editorData: {},
+
+        isEmptyPage: false,
       };
     },
     methods: {
@@ -43,8 +64,204 @@ function startPage() {
         } else {
           return 'home';
         }
+      },
+      clearVars() {
+        this.editorData = {};
 
+        this.pageData = {};
+        this.pageTitle = '';
+        this.pageContents = {
+          spoiler: [],
+          nonspoiler: []
+        };
+      },
+      isElectron() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        // renderEditor(true);
+        
+        if (userAgent.indexOf(' electron/') == -1) {
+          // Not electron
+          console.log("Not on electron");
+          return false;
+        } else {
+          // Electron
+          return true;
+        }
+      },
+      cloneObj(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      },
+      capitalize(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      },
+      test(value) {
+        console.log(value);
+      },
+      async readPage(pagename_) {
+        pageName = pagename_.replace(/\s/g, '-').trim();
+        if (pageName !== 'home') {
+          window.history.replaceState(null, null, `?p=${pageName}`);
+        } else {
+          window.history.replaceState(null, null, window.location.pathname);
+        }
+        this.clearVars();
+        if (!this.dir.hasOwnProperty(pageName)) {
+          // Null Render
+          try {
+            await this.renderPage('pageNull', 'assets/page-not-found.html');
+          } catch (error) { console.log(error); }
+          return;
+        }
+        // Standard Render
+        await this.renderPage('normal', this.dir[pageName].path);
+      },
+      async saveContent(data) {
+        let isElectron = this.isElectron();
+        if (isElectron) {
+
+          window.api.send('toMain', {
+            name: 'project:render',
+            data: {
+              content: data.contentData,
+              pageData: this.cloneObj(data.pageData),
+              profileData: this.cloneObj(data.profileData),
+              pageName: data.pageData.name,
+              pageUrl: pageUrlPath,
+              path: projectPath,
+              isNewPage: this.isEmptyPage,
+            }
+          });
+
+          this.dir[data.pageData.urlName] = {
+            "title": data.pageData.title,
+            "path": pageUrlPath,
+            "parent": data.pageData.parent,
+          };
+        }
+        this.clearVars();
+        // Rerender
+        await this.renderPage('rerender', data);
+      },
+      async renderPage(mode, data) {
+        // Step 3. Set Page General Data
+        this.headerNavBtn = this.meta.headerNavigation;
+        this.projectTitle = this.meta.projectTitle;
+        this.projectSubtitle = this.meta.projectSubtitle;
+        this.areaToggle = getSpoilerStorageValue();
+        let pageRaw = '';
+        let html = '';
+        var pageFile;
+
+        switch (mode) {
+          case 'normal':
+            try {
+              pageFile = await fetch(data);
+              if (pageFile.status == 404) {
+                await this.renderPage('pageNull', 'assets/page-not-found.html');
+                return;
+              }
+            } catch (error) {
+              await this.renderPage('pageNull', 'assets/page-not-found.html');
+              return;
+            }
+
+            html = await pageFile.text();
+            pageRaw = html.trim().split("<!-- File Content -->");
+
+            // Step 5. Processing Window Variables
+            loadScripts(pageRaw[0]);
+            window.pageData.urlPath = this.dir[window.pageData.urlName].path;
+            pageUrlPath = this.dir[window.pageData.urlName].path;
+
+            this.isEmptyPage = false;
+            break;
+
+          case 'pageNull':
+            pageFile = await fetch(data);
+            html = (await pageFile.text()).replace('[[pageName]]', pageName);
+            pageRaw = html.trim().split("<!-- File Content -->");
+
+            // Step 5. Processing Window Variables
+            loadScripts(pageRaw[0]);
+            window.pageData.urlPath = 'content/' + pageName + '.html';
+            pageUrlPath = 'content/' + pageName + '.html';
+            window.pageData.title = this.capitalize(pageName.replace(/\-/g, " ")).trim();
+            this.isEmptyPage = true;
+            break; 
+
+          case 'rerender':
+            window.profileData = data.profileData;
+            window.pageData = data.pageData;
+            window.pageData.urlPath = this.dir[window.pageData.urlName].path;
+            pageUrlPath = this.dir[window.pageData.urlName].path;
+
+            this.isEmptyPage = false;
+            break;
+        }
+        let pathSplit = window.pageData.urlPath.split("/");
+        window.pageData.urlName = pathSplit[pathSplit.length-1].split(".html")[0];
+
+        // Step 6. Set Page Specific Data
+        this.pageData = window.pageData;
+        this.pageTitle = window.pageData.title;
+        this.pageParent = window.pageData.parent;
+
+        let editorContentDataTemp = {};
+
+
+        // Step 7. Process Contents
+        let parsedContent = {};
+
+        if (mode == 'rerender') {
+          parsedContent = parseHTML(data.contentData);
+        } else {
+          parsedContent = parseHTML(pageRaw[1]);
+        }
+
+
+        let content = []; // Separating Each Part
+        for (const area of areas) {
+          let areaDiv = parsedContent.getElementById(area);
+          if (!areaDiv) continue;
+          for (let item of areaDiv.querySelectorAll('.page-tab')) {
+            let itemHtml = superTrim(item.innerHTML);
+            editorContentDataTemp[item.id] = itemHtml;
+            content.push(`<div id="${item.id}" class="page-tag">\n` + itemHtml + "\n</div>");
+          }
+        }
+
+        const textRenderer = new TextRenderer(this.dir);
+
+        // Step 8. Add Contents to render
+        content.forEach((item, index) => { // Adding them to the tab
+          let data = getPageData(item);
+          let profileBox = {};
+          if (window.profileData.hasOwnProperty(data.data.id)) {
+            profileBox = window.profileData[data.data.id];
+          }
+          this.pageContents[data.type].push({ html: textRenderer.renderText(item, data.type), profileBox: profileBox, ...data.data });
+        });
+
+
+
+        let editorDataTemp = { pageData: window.pageData, profileData: window.profileData, contentData: JSON.parse(JSON.stringify(this.pageContents)) };
+        for (const area in editorDataTemp.contentData) {
+          for (const item of editorDataTemp.contentData[area]) {
+            item.html = editorContentDataTemp[item.id];
+            delete item.profileBox;
+          }
+        }
+
+        this.editorData = editorDataTemp;
+        console.log(this.editorData);
+
+        // Tape and Stapler solution. I have no fucking idea why the nonspoiler div gets hidden at the start
+        // when you opened a spoiler=true page from a link.
+        if (this.areaToggle == false) {
+          document.getElementById('nonspoiler').classList.remove('hide');
+        }
       }
+
     },
     async mounted() {
       // Step 1. Retrieves Necessary Files
@@ -56,12 +273,9 @@ function startPage() {
 
       // Step 2. Gets Page URL
       pageName = this.getPageUrl();
-      if (!this.dir.hasOwnProperty(pageName)) {
-        // Step 2.5 Return something if page does not exist.
-        return;
-      }
+  
+      await this.readPage(pageName);
 
-      await renderPage(this, this.dir[pageName].path);
 
 
     }
@@ -69,6 +283,7 @@ function startPage() {
 
   // Register Components
   app.component(btn.name, btn);
+  app.component(btntoggle.name, btntoggle);
   app.component(header.name, header);
   app.component(pageContent.name, pageContent);
   app.component(tab.name, tab);
@@ -78,79 +293,18 @@ function startPage() {
   app.component(tabs.name, tabs);
 
   app.component(editor.name, editor);
+  app.component(metaEditor.name, metaEditor);
+  app.component(tabEditor.name, tabEditor);
   app.component(contentEditor.name, contentEditor);
+  app.component(profileEditor.name, profileEditor);
   app.component(textInput.name, textInput);
-  app.component(markdown.name, markdown);
+  app.component(selectDrop.name, selectDrop);
+
   // Mount
-  app.mount('#app');
+  root = app.mount('#app');
 }
 
 
-async function renderPage(mainApp, url) {
-
-    // Step 3. Gets Page HTML
-    const pageFile = await fetch(url);
-    let html = await pageFile.text();
-
-    let pageRaw = html.trim().split("<!-- File Content -->");
-
-
-    // Step 4. Processing Window Variables
-    loadScripts(pageRaw[0]);
-
-
-    // Step 5. Set Page General Data
-    mainApp.headerNavBtn = mainApp.meta.headerNavigation;
-    mainApp.projectTitle = mainApp.meta.projectTitle;
-    mainApp.projectSubtitle = mainApp.meta.projectSubtitle;
-
-
-    // Step 6. Set Page Specific Data
-    mainApp.pageData = window.pageData;
-    mainApp.pageTitle = window.pageData.title;
-    mainApp.pageParent = window.pageData.parent;
-
-    let editorContentDataTemp = {};    
-    
-
-    // Step 7. Process Contents
-    const parsedContent = parseHTML(pageRaw[1]);
-    let content = []; // Separating Each Part
-    for (const area of areas) {
-      let areaDiv = parsedContent.getElementById(area);
-      if (!areaDiv) continue;
-      for (let item of areaDiv.querySelectorAll('.page-tab')) {
-        let itemHtml = superTrim(item.innerHTML);
-        editorContentDataTemp[item.id] = itemHtml;
-        content.push(`<div id="${item.id}" class="page-tag">\n` + itemHtml + "\n</div>");
-      }
-    }
-
-    const textRenderer = new TextRenderer(mainApp.dir);
-
-    // Step 8. Add Contents to render
-    content.forEach((item, index) => { // Adding them to the tab
-      let data = getPageData(item);
-      let profileBox = {};
-      if (window.profileData.hasOwnProperty(data.data.id)) {
-        profileBox = window.profileData[data.data.id];
-      }
-      mainApp.pageContents[data.type].push({ html: textRenderer.renderText(item, data.type), profileBox: profileBox, ...data.data });
-    });
-
-    
-
-    let editorDataTemp = { pageData: window.pageData, profileData: window.profileData, contentData: JSON.parse(JSON.stringify(mainApp.pageContents))};
-    for (const area in editorDataTemp.contentData) {
-      for (const item of editorDataTemp.contentData[area]) {
-        item.html = editorContentDataTemp[item.id];
-        delete item.profileBox;
-      }
-    }
-    
-    mainApp.editorData = editorDataTemp;
-    console.log(mainApp.editorData);
-  }
 
 function getPageData(html) {
   const id = html.match(/<div id=\"(.+?)\"/)[1];
@@ -306,12 +460,13 @@ class TextRenderer {
         for (const link of links) {
           if (link === '[[toc]]') continue;
           let linkName = link.trim().replace(/(\[|\])/g, '');
-          
+
           // // Search Directly
-          let linkNameLowered = linkName.toLowerCase();
+          let linkNameLowered = linkName.toLowerCase().replace(/\s/g, '-');
           if (this.dir.hasOwnProperty(linkNameLowered)) {
             let dirItem = this.dir[linkNameLowered];
-            value = value.replace(link, `<a href="${dirItem.path}}">${dirItem.title}</a>`);
+
+            value = value.replace(link, `<a class="btn btn-primary btn--color-secondary" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
             continue;
           }
 
@@ -319,10 +474,12 @@ class TextRenderer {
           for (const pageName in this.dir) {
             let dirItem = this.dir[pageName];
             if (dirItem.title.toLowerCase() === linkNameLowered) {
-              value = value.replace(link, `<a href="${dirItem.path}}">${dirItem.title}</a>`);
+              value = value.replace(link, `<a class="btn btn-primary btn--color-secondary" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
               break;
             }
           }
+          value = value.replace(link, `<a class="btn btn-primary btn--color-secondary red" onclick="root.readPage('${linkNameLowered}')">${link.replace(/\]/g, '').replace(/\[/g, '').trim()}</a>`);
+          
         }
       }
 

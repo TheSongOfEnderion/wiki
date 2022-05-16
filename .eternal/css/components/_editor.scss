@@ -1,7 +1,17 @@
-// CSS All
+@mixin font {
+  font-family: $font-family;
+  color: $font-color-dark;
+  font-size: small ;
+} 
+
+.CodeMirror-lines   {
+  @include font();
+}
+
 #editor {
   display: grid;
   place-items: center;
+  @include font();
 }
 
 .editor-table {
@@ -24,7 +34,6 @@
       }
     }
   }
-  // .textinput-input {
 }
 
 .textinput-label {
@@ -35,3 +44,4 @@
   height: fit-content;
   font-size: medium;
 }
+

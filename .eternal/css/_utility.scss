@@ -24,6 +24,11 @@
   font-size: 2.5em;
 }
 
+// Font allignment
+.text-left {
+  text-align: left;
+}
+
 // Font Color
 .font--dark {
   color: $font-color-dark;
@@ -36,6 +41,11 @@
 // weight
 .font--w-bold {
   font-weight: 400;
+}
+
+// Width
+.width-100 {
+  width: 100%;
 }
 
 
@@ -74,6 +84,7 @@
   background-color: $color-primary;
   color: $color-light;
 }
+
 
 
 

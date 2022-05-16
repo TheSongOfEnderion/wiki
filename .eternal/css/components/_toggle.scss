@@ -50,7 +50,7 @@
 .tooltip {
   position: relative;
   display: inline-block;
-  width: fit-content;
+  width: max-content;
   &:hover {
     .tooltiptext {
       visibility: visible;

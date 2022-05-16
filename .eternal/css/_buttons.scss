@@ -1,11 +1,18 @@
+@mixin font {
+  font-family: $font-family;
+  color: $font-color-dark;
+  font-size: small ;
+} 
+
 // BUTTON
 .btn {
-  width: fit-content;
+  width: max-content;
   padding: 0.5em 1.2em;
   margin: 0.2em;
   border: none;
   cursor: pointer;
   background-color: transparent;
+  @include font();
 }
 
 .btn-primary {
@@ -45,12 +52,23 @@
 }
 
 .btn--active {
-  color: $btn-primary;
+  color: $btn-primary !important;
+  &:hover {
+    color: white;
+  }
 }
 
 .btn--active2 {
   background-color: darken($color-primary, 30%);
   color: $font-color-light;
+}
+
+
+.red {
+  color: $color-error;
+  &:hover {
+    background-color: $color-error;
+  } 
 }
 
 

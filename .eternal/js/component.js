@@ -1,18 +1,97 @@
 /*jshint esversion: 9 */
+const initialJson = {
+  Title: 'Ethan Morales',
+  Image: {
+    "Original Art": "assets/images/Ethan-Morales.png",
+    "Uniform": "assets/images/Ethan Morales.png",
+    "Hero Suit": "assets/images/Eltia Axolin.png"
+  },
+  Content: {
+    'Desc': {
+      'Full Name': 'Ethan R. Morales',
+      'Alias': ['Tantan', 'Lunatic', 'Crazy Sociopath', 'The Unchained Predator']
+    },
+    'Biography': {
+      'Race': 'Human',
+      'Birthday': '15 June',
+      'Age': '15',
+      'Gender': 'Male',
+      'Height': '168 cm',
+      'Weight': '58 kg',
+      'Hair Color': 'Orange-Red',
+      'Skin Color': 'Light-Beige',
+      'Blood Type': 'AB'
+    },
+    'Power': {
+      'Rank': '6th Awakener',
+      'Active': [
+        'Candlefire',
+        'Pyrokinesis',
+        'Thermal Manipulation',
+        'Kinetic Manipulation',
+        'Molecular Binding',
+        'Atomic Manipulation',
+      ],
+      'Passive': [
+        'Fire Immunity',
+        'Tough Skin',
+        'Atomic Sense',
+        'Enhanced Brain',
+      ]
+    },
+    'Status': {
+      'Status': 'Alive',
+      'Birthplace': 'Desteria, Shanty Town',
+      'Family': [
+        'Madelyn Morales (Mother)',
+        'Nathaniel Morales (Father)',
+        'Isaac Morales (Little Brother)',
+        'Graniel Morales (Grandfather)',
+      ]
+    }
+  }
+};
+
+
 
 const btn = {
   name: 'btn',
+  emits: ['btn-click'],
   props: {
-    text: { type: String, default: 'Button Text', },
+    text: { type: String, default: 'Button Text' },
     btnId: { type: String },
+  },
+  template: `<button type='button' @click="$emit('btn-click')" :id="btnId" :class="['btn', 'btn-primary', 'btn--color-primary']">{{ text }}</button>`,
+};
+
+const btntoggle = {
+  name: 'btnToggle',
+  data() {
+    return {
+      isToggledVal: false
+    };
+  },
+  emits: ['toggle-click'],
+  props: {
+    text: { type: String, default: 'Button Text' },
+    btnId: { type: String },
+    isToggled: { type: Boolean, default: false },
+  },
+  watch: {
+    isToggled: {
+      immediate: true,
+      handler(newVal) {
+        this.isToggledVal = newVal;
+      }
+    }
   },
   methods: {
     onClick() {
-      this.$emit('btn-click');
+      this.isToggledVal = !this.isToggledVal;
+      this.$emit('toggle-click', this.isToggledVal);
     }
   },
-  template: `<button type='button' @click="onClick()" :id="btnId" :class="['btn', 'btn-primary', 'btn--color-primary']">{{ text }}</button>`,
-
+  template: `<button type='button' @click="onClick()" :id="btnId" :class="['btn', 'btn-primary', 'btn--color-primary', isToggledVal === true ? 'btn--active2' : '']">{{ text }}</button>`,
 };
 
 const header = {
@@ -56,8 +135,9 @@ const pageContent = {
       }
     };
   },
+  emits: ['read-page'],
   props: {
-    html: { type: Object, default: { nonspoiler: [], spoiler: [] }, required: true },
+    pageContents: { type: Object, default: { nonspoiler: [], spoiler: [] }, required: true },
     pageData: { type: Object, default: {} },
     dir: { type: Object, default: {} },
     areaToggle: { type: Boolean, default: false }
@@ -65,7 +145,8 @@ const pageContent = {
   components: ['tab', 'breadcrumbs'],
   methods: {
     selectedTab(area, pageid) {
-      for (let tab of this.html[area]) {
+
+      for (let tab of this.pageContents[area]) {
         let tabDiv = document.getElementById(tab.pageid);
         let btn = document.getElementById(tab.pageid.replace('-page', '-btn'));
 
@@ -95,6 +176,9 @@ const pageContent = {
           return;
       }
     },
+    readPage(value) {
+      this.$emit('read-page', value);
+    }
   },
   watch: {
     areaToggle: {
@@ -109,28 +193,28 @@ const pageContent = {
   template: `
     <div v-cloak>
       
-      <breadcrumbs :parent="pageData.parent" :page-title="pageData.title" :dir="dir"/>
+      <breadcrumbs :parent="pageData.parent" :page-title="pageData.title" :dir="dir" @read-page="readPage"/>
       
       <div id="nonspoiler" :class="['content-area', pageData.createSpoilers === false ? '' : 'hide']" v-cloak>
 
         <!-- Create Non-Spoiler Buttons -->
-        <div class="page-tab-btns"  v-show="html.nonspoiler.length > 1">
-            <button v-for="(html, index) in html.nonspoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('nonspoiler', html.pageid)">{{ html.name }}</button>
+        <div class="page-tab-btns"  v-show="pageContents.nonspoiler.length > 1">
+            <button v-for="(html, index) in pageContents.nonspoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('nonspoiler', html.pageid)">{{ html.name }}</button>
         </div>
         <!-- Create Non-Spoiler Content Area -->
-        <tab v-for="(html, index) in html.nonspoiler" :html="html.html" :id="html.pageid" :profile-data="html.profileBox" :class="{hide: index != 0}"/>
+        <tab v-for="(html, index) in pageContents.nonspoiler" :html="html.html" :id="html.pageid" :profile-data="html.profileBox" :class="{hide: index != 0}"/>
 
       </div>
 
 
-      <div id="spoiler" class="content-area" v-show="html.spoiler.length > 1 && pageData.createSpoilers === true" v-cloak> 
+      <div id="spoiler" class="content-area" v-show="pageData.createSpoilers === true" v-cloak> 
 
         <!-- Create Spoiler Buttons -->
-        <div class="page-tab-btns" v-show="html.spoiler.length > 1">
-            <button v-for="(html, index) in html.spoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('spoiler', html.pageid)">{{ html.name }}</button>
+        <div class="page-tab-btns" v-show="pageContents.spoiler.length > 1">
+            <button v-for="(html, index) in pageContents.spoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('spoiler', html.pageid)">{{ html.name }}</button>
         </div>
         <!-- Create Spoiler Content Area -->
-        <tab v-for="(html, index) in html.spoiler" :html="html.html" :id="html.pageid" :profile-data="html.profileBox" :class="{hide: index != 0}"/>
+        <tab v-for="(html, index) in pageContents.spoiler" :html="html.html" :id="html.pageid" :profile-data="html.profileBox" :class="{hide: index != 0}"/>
 
       </div>
     </div>`
@@ -139,7 +223,10 @@ const pageContent = {
 const tabs = {
   name: 'tabs',
   props: {
-    html: { type: Object, required: true },
+    html: {
+      type: Object,
+      required: true
+    },
   },
   methods: {
     selectedTab(area, id) {
@@ -218,9 +305,14 @@ const profilebox = {
       immediate: true,
       handler(newVal) {
         if (Object.keys(newVal) === 0) return;
+        this.imageData = {};
         for (const img in newVal.Image) {
-          this.imageData[img.trim().replace(/\s/, '-').toLowerCase() + "-" + makeid(8)] = { name: img, path: newVal.Image[img] };
+          this.imageData[img.trim().replace(/\s/, '-').toLowerCase() + "-" + makeid(8)] = {
+            name: img,
+            path: newVal.Image[img]
+          };
         }
+        // this.$forceUpdate();
       }
     }
   },
@@ -228,7 +320,7 @@ const profilebox = {
     <div class="profile-box profile-box--visual float-end">
       <div class="profile-title"> {{ profileData.Title }}</div>
 
-      <div class="profile-image">
+      <div class="profile-image" v-if="Object.keys(imageData).length !== 0">
         <template v-for="(value, name, index) in imageData">
             <button @click="selectedTab(name)" :id="name + '-btn'" 
               :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', 'font--smaller', index == 0 ? 'btn--active' : '' ]"> 
@@ -300,6 +392,8 @@ const breadcrumbs = {
       show: false,
     };
   },
+  emits: ['read-page'],
+  components: ['btn'],
   props: {
     parent: { type: String, default: null },
     pageTitle: { type: String, default: null },
@@ -307,6 +401,7 @@ const breadcrumbs = {
   },
   methods: {
     updateCrumbs() {
+      this.breadcrumbs = [];
       let target = this.parent;
       let isFound = false;
       while (true) {
@@ -327,7 +422,7 @@ const breadcrumbs = {
           });
           this.breadcrumbs.unshift({
             title: this.dir[name].title,
-            path: this.dir[name].path,
+            urlName: name,
             type: "link"
           });
           isFound = true;
@@ -336,19 +431,16 @@ const breadcrumbs = {
         if (!isFound) break;
       }
       this.show = true;
-
       if (this.breadcrumbs.length === 0) {
         return;
       }
-
       this.breadcrumbs.push({
         title: this.pageTitle,
-        path: null,
+        urlName: null,
         type: "arrow"
       });
     },
   },
-
   watch: {
     parent: {
       immediate: true,
@@ -363,32 +455,61 @@ const breadcrumbs = {
   template: `
     <div class="page-breadcrumbs" v-if="this.breadcrumbs.length !== 0">
       <template v-for="crumb in breadcrumbs">
-        <a v-if="crumb.type == 'link'" :href="crumb.path">{{ crumb.title }} </a>
-        <span v-if="crumb.type === 'arrow'">{{ crumb.title }} </span>
+        <btn v-if="crumb.type == 'link'" @btn-click="$emit('read-page', crumb.urlName)" :text="crumb.title"/>
+        <button v-if="crumb.type === 'arrow'" class="btn clear">{{ crumb.title }}</button>
       </template>
     </div>  
   `
 };
 
-
 const editor = {
   name: 'editor',
-  props: {
-    editorData: { type: Object, required: true }
+  data() {
+    return {
+
+      selectedTabId: '',
+      tempProfileData: {},
+      tempContentData: {},
+      tempPageData: {},
+      tempCreateSpoilers: false,
+
+      isEditorChanged: false, // Checks if the user changed/edited the editor
+
+      sendToChild: "",
+
+      // Misc
+      spoilertoggletext: "Spoilers Enabled",
+
+      // Essential
+      editorData: {},
+      editorDataBackup: {},
+    };
   },
-  components: ['textinput', 'markdown', 'btn', 'content-editor'],
+  props: {
+    passedEditorData: { type: Object, required: true },
+  },
+  emits: ['saveContent'],
+  components: ['markdown', 'btn', 'content-editor', 'profile-editor','meta-editor', 'tab-editor', 'select-drop', 'btnToggle'],
+  watch: {
+    passedEditorData: {
+      immediate: true,
+      async handler(newVal) {
+        if (Object.keys(newVal).length === 0) return;
+        this.editorData = newVal;
+        this.editorDataBackup = JSON.parse(JSON.stringify(newVal));
+        this.tempCreateSpoilers = this.editorData.pageData.createSpoilers;
+        await this.$nextTick();
+        await this.toggleSpoiler(this.tempCreateSpoilers);
+      }
+    }
+  },
   methods: {
-    hidePageContent() {
+    toggleEditorView() {
       document.getElementById('page-content').classList.toggle("hide");
-
       document.getElementById('editor').classList.toggle("hide");
-
-    },
-    saveContent() {
-      this.$emit('save-page');
     },
     openEditorTab(tabName) {
-      const tabList = ['content-editor', 'manage-tab'];
+      const tabList = ['content-editor', 'manage-tab', 'profile-box', 'scripts-tab'];
       for (let tab of tabList) {
         if (tab === tabName) {
           document.getElementById(tabName).classList.remove("hide");
@@ -396,93 +517,398 @@ const editor = {
         }
         document.getElementById(tab).classList.add("hide");
       }
+    },
+    editorChanged() {
+      if (!this.isEditorChanged) this.isEditorChanged = true;
+    },
+    async saveEditor() {
+      this.sendToChild = "sendData";
+      await this.$nextTick();
+      this.sendToChild = "";
+
+      let content = '';
+      for (const area in this.tempContentData) {
+        content += `<div id="${area}">\n`;
+        for (const item of this.tempContentData[area]) {
+          content += `<div id="${item.id}" class="page-tab">\n${item.html.trim()}\n</div>\n`;
+        }
+        content += `</div>\n`;
+      }
+
+      this.tempPageData.createSpoilers = this.tempCreateSpoilers;
+      this.tempPageData.tabs = this.editorData.pageData.tabs;
+
+      this.$emit('saveContent', {
+        contentData: content,
+        profileData: this.tempProfileData,
+        pageData: this.tempPageData
+      });
+    },
+    async closeEditor() {
+      this.editorData = JSON.parse(JSON.stringify(this.editorDataBackup));
+      await this.toggleSpoiler(this.editorData.pageData.createSpoilers);
+      this.sendToChild = "refresh";
+      await this.$nextTick();
+      this.sendToChild = "";
+    },
+    async toggleSpoiler(value) {
+      this.spoilertoggletext = value === false ? 'Spoilers Disabled' : 'Spoilers Enabled';
+      this.tempCreateSpoilers = value;
+
+      this.sendToChild = value === false ?  "createSpoilersFalse" : "createSpoilersTrue";
+      await this.$nextTick();
+      this.sendToChild = "";
+    },
+
+    async tempChangeEditorData(value) {
+      const skipIds = [];
+
+      // Exclude Already Existing Ids
+      this.editorData.pageData.tabs = JSON.parse(JSON.stringify(value.tabs));
+
+      // Get list of native tabs
+      for (const area in this.editorData.contentData) {
+        for (let tab of this.editorData.contentData[area]) {
+          skipIds.push(tab.id);
+        }
+      }
+
+      // Delete tabs
+      for (const area in this.editorData.contentData) {
+        for (let tab of this.editorData.contentData[area]) {
+          if (!value.deletedTabs.includes(tab.id)) continue;
+          const index = this.editorData.contentData[area].indexOf(tab);
+          this.editorData.contentData[area].splice(index, 1);
+        }
+      }
+
+      // Add new stuff
+      for (const tab in value.tabs) {
+        if (skipIds.includes(tab)) continue;
+        const area = value.tabs[tab].area;
+        
+        // Rename
+        if (value.tabs[tab].hasOwnProperty('originalId')) {
+          let orig = value.tabs[tab].originalId;
+          
+          for (const area in this.editorData.contentData) {
+            for (const tabItem of this.editorData.contentData[area]) {
+              if (tabItem.id == orig) {
+                tabItem.id = tab;
+                tabItem.name = value.tabs[tab].name;
+                tabItem.pageid = tab + "-page";
+              }
+            }
+          }
+          continue;
+
+        // Add New
+        } else {
+          let obj = {
+            html: " ",
+            id: tab,
+            name: value.tabs[tab].name,
+            pageid: tab + "-page",
+          };
+          this.editorData.contentData[area].push(obj);
+          console.log(obj);
+        }
+      }
+
+      
+      
+      this.sendToChild = "refresh";
+      await this.$nextTick();
+      this.sendToChild = "";
+      console.log(this.editorData);
+    }
+  },
+  computed: {
+    getSpoilerStorageValue() {
+      if (Object.keys(this.editorData).length === 0) return;
+      return this.tempCreateSpoilers;
     }
   },
   template: `
-  <btn @btn-click="hidePageContent" text="Open Editor"/>
-  <div id="editor" class="container hide">
-    <div id="editor-menu" class="row card card--visual mt-1 mb-4">
-      <h1 class="font--25 mb-2 ps-1">Editor</h1>
+    <div>
+      <btn class="font--medium btn-side" text="⚙" @btn-click="toggleEditorView"/>
+    </div>
 
-      <div class="container px-0 pb-3">
-        <div class="row">
-          <table class="editor-table me-5">
-            <tbody>
-              <tr class="input-text input-text--visual">
-                <textinput id="pageTitle" name="Page Title" place-holder="Awesome page title!" /> </tr>
-              <tr class="input-text input-text--visual">
-                <textinput id="pageParent" name="Parent" place-holder="Parent page for breadcrumbs" /> </tr>
-              <tr class="input-text input-text--visual">
-                <textinput id="Tags" name="Tags" place-holder="TagA TagB TagC" /> </tr>
-            </tbody>
-          </table>
-        </div>
+    <div id="editor" class="container hide">
+      <div id="editor-menu" class="row card card--visual mt-1 mb-4">
+        <h1 class="font--25 mb-2 ps-1">Editor</h1>
 
-        <div class="row mt-2 ">
-          <div class="col">
-            <div class="d-flex justify-content-start">
-              <btn class="font--small" text="Edit Contents" @btn-click="openEditorTab('content-editor')"/>
-              <btn class="font--small" text="Manage Tabs" @btn-click="openEditorTab('manage-tab')"/>
-              <btn class="font--small" text="Script" />
+        <div class="container px-0 pb-3">
+          <div class="row">
+            <meta-editor :editor-data="editorData" @editor-changed="editorChanged" :order-from-parent="sendToChild" @send-data="(data) => tempPageData = data"/>
+          </div>
+
+          <div class="row mt-2 ">
+            <div class="col">
+              <div class="d-flex justify-content-start">
+                <btn class="font--small" text="Edit Contents" @btn-click="openEditorTab('content-editor')"/>
+                <btn class="font--small" text="Manage Tabs" @btn-click="openEditorTab('manage-tab')"/>
+                <btn class="font--small" text="Profile Box" @btn-click="openEditorTab('profile-box')"/>
+                <!-- <btn class="font--small" text="Script" @btn-click="openEditorTab('scripts-tab')"/> -->
+                <btnToggle class="font--small" :text="spoilertoggletext" @toggle-click="toggleSpoiler" :isToggled="getSpoilerStorageValue"/>
+                
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="d-flex justify-content-end">
+                <btn class="font--small" text="Save" @btn-click="saveEditor" />
+                <btn class="font--small" text="Reset" @btn-click="closeEditor"/>
+              </div>
             </div>
           </div>
 
-          <div class="col">
-            <div class="d-flex justify-content-end">
-              <btn class="font--small" text="Save" @btn-click="saveContent" />
-              <btn class="font--small" text="Close" />
-            </div>
-          </div>
+        </div>
+      </div>
+
+      <div class="row card card--visual card--editor mb-5">
+
+        <!-- Content Editor -->
+        <div id="content-editor" class="">
+          <h1 class="page-title d-flex justify-content-between" v-cloak>Content Editor</h1>
+          <content-editor :editor-data="editorData" @editor-changed="editorChanged" :order-from-parent="sendToChild" @send-data="(data) => tempContentData = data"/>
+        </div>
+
+        <!-- Manage Tab Editor -->
+        <div id="manage-tab" class="hide">
+          <h1 class="page-title d-flex justify-content-between" v-cloak>Manage Tab</h1>
+          <tab-editor :editor-data="editorData" @editor-changed="editorChanged" :order-from-parent="sendToChild" @changed-select="tempChangeEditorData"/>
+        </div>
+
+        <!-- Profile Editor -->
+        <div id="profile-box" class="hide">
+          <h1 class="page-title d-flex justify-content-between" v-cloak>Profile Box</h1>
+          <profile-editor :editor-data="editorData"  @editor-changed="editorChanged" :order-from-parent="sendToChild" @send-data="(data) => tempProfileData = data"/>
+        </div>
+
+        <div id="scripts-tab" class="hide">
+          <h1 class="page-title d-flex justify-content-between" v-cloak>Scripts</h1>
         </div>
 
       </div>
-    </div>
+    </div>`
+};
 
-    <div class="row card card--visual mb-5">
+const profileEditor = {
+  name: 'profile-editor',
+  data() {
+    return {
+      profileData: {},
+      tempProfileData: {},
+      selectedTabId: "",
 
-      <div id="content-editor">
-        <h1 class="page-title d-flex justify-content-between" v-cloak>Content Editor</h1>
-        <content-editor :editor-data="editorData" />
-      </div>
+      selectDropData: {},
 
-      <div id="manage-tab" class="hide">
-        <h1 class="page-title d-flex justify-content-between" v-cloak>Manage Tab</h1>
+      // Spoilers
+      createSpoilers: false,
+    };
+  },
+  emits: ['editor-changed', 'send-data'],
+  props: {
+    editorData: { type: Object, required: true, default: {} },
+    orderFromParent: { type: String }
+  },
+  watch: {
+    orderFromParent: {
+      immediate: true,
+      handler(newVal) {
+        if (!newVal) return;
+        switch (newVal) {
+          case "sendData":
+            this.$emit('send-data', this.tempProfileData);
+            return;
+          case "refresh":
+            this.profileData = this.editorData.profileData;
+            this.generateSelectDropData();
+            this.tempProfileData = JSON.parse(JSON.stringify(this.profileData));
+            this.changeProfileBox(this.selectedTabId);
+            this.createSpoilers = this.editorData.pageData.createSpoilers;
+            return;
+          case "createSpoilersFalse":
+            this.createSpoilers = false;
+            return;
+          case "createSpoilersTrue":
+            this.createSpoilers = true;
+            return;
+        }
+      }
+    },
+    editorData: {
+      immediate: true,
+      handler(newVal) {
+        if (Object.keys(newVal).length === 0) return;
 
-      </div>
+        this.profileData = this.editorData.profileData;
 
-    </div>
+        // Get Default opened
+        let nonspoilerKeys = Object.keys(this.profileData);
+        if (nonspoilerKeys.length !== 0) {
+          this.selectedTabId = nonspoilerKeys[0];
+        }
 
+        this.generateSelectDropData();
+        this.tempProfileData = JSON.parse(JSON.stringify(this.profileData));
+        this.changeProfileBox(this.selectedTabId);
 
-    
-    
+        // Spoilers
+        // this.createSpoilers = this.editorData.pageData.createSpoilers;
+      }
+    }
+  },
+  methods: {
+    generateSelectDropData() {
+      this.selectDropData = {};
+      for (const area in this.editorData.contentData) {
+        for (const item of this.editorData.contentData[area]) {
+          this.selectDropData[item.id] = {
+            name: item.name,
+            data: this.editorData.profileData[item.id],
+            type: area
+          };
+        }
+      }
+    },
+    changeProfileBox(id) {
+      if (id === "") return;
+      this.selectedTabId = id;
 
-  </div>
-  `
+      const data = this.tempProfileData[id];
+      if (data === undefined) {
+        this.jsonEditor.set({});
+        return;
+      }
+      this.jsonEditor.set(data);
+    },
+    tempSaveProfile() {
+      let data = {};
+      try {
+        data = this.jsonEditor.get();
+      } catch (error) {
+        console.log("Not Proper JSON");
+        return;
+      }
+      this.$emit('editor-changed');
+      this.tempProfileData[this.selectedTabId] = data;
+    },
+  },
+  mounted() {
+    const container = document.getElementById("jsoneditor-div");
+    const options = {
+      mode: 'code',
+      onChange: this.tempSaveProfile
+    };
+    this.jsonEditor = new JSONEditor(container, options);
+  },
+  template: `
+    <select-drop :data="selectDropData" @changed-select="changeProfileBox" :createSpoilers="createSpoilers"/>
+    <div id="jsoneditor-div" style="height: 500px;"></div>
+    `
 };
 
 const contentEditor = {
   name: 'content-editor',
+  emits: ['editor-changed', 'send-data'],
+  components: ['btn'],
+  data() {
+    return {
+      tempContentData: "",
+
+      selectedTabId: {},
+      selectedContent: "",
+
+      spoilerSelectedTab: "",
+      nonspoilerSelectedTab: "",
+
+      // Spoiler
+      createSpoilers: false,
+    };
+  },
   props: {
-    editorData: { type: Object, required: true }
+    editorData: { type: Object, required: true, default: {} },
+    orderFromParent: { type: String }
+  },
+  watch: {
+    orderFromParent: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal === '') return;
+        switch (newVal) {
+          case "sendData":
+            this.$emit('send-data', this.tempContentData);
+            return;
+          case "refresh":
+            for (const item of this.editorData.contentData[this.selectedTabId.area]) {
+              if (item.id != this.selectedTabId.id) continue;
+              this.md.value(item.html);
+              break;
+            }
+            this.tempContentData = JSON.parse(JSON.stringify(this.editorData.contentData));
+            this.createSpoilers = this.editorData.pageData.createSpoilers;
+            return;
+          case "createSpoilersFalse":
+            this.openArea('nonspoiler');
+            this.createSpoilers = false;
+            
+            return;
+          case "createSpoilersTrue":
+            this.createSpoilers = true;
+            return;
+        }
+      }
+    },
+    editorData: {
+      immediate: true,
+      handler(newVal) {
+        if (Object.keys(newVal).length === 0) return;
+        const contentData = this.editorData.contentData;
+        this.selectedContent = contentData.nonspoiler[0].html;
+
+        if (contentData.spoiler.length != 0) {
+          this.spoilerSelectedTab = contentData.spoiler[0].id;
+        }
+
+        if (contentData.nonspoiler.length != 0) {
+          this.nonspoilerSelectedTab = contentData.nonspoiler[0].id;
+        }
+        this.selectedTabId = { area: 'nonspoiler', id: this.nonspoilerSelectedTab };
+
+        this.tempContentData = JSON.parse(JSON.stringify(contentData));
+      }
+    },
+    selectedContent: {
+      immediate: true,
+      handler(newVal) {
+        if (!newVal) return;
+        this.md.value(this.selectedContent);
+      }
+    }
   },
   methods: {
     selectedTab(area, tabId) {
-
-      for (let item of this.editorData.contentData[area]) {
-        const id = item.id;
-        let tabDiv = document.getElementById(id + '-editor');
-        if (!tabDiv) continue;
-        let btn = document.getElementById(id + '-editor-btn');
-        // console.log(id + '-btn');
-        if (id === tabId) {
-          tabDiv.classList.remove('hide');
-
+      this.selectedTabId = { area: area, id: tabId };
+      for (let item of this.tempContentData[area]) {
+        let btn = document.getElementById(item.id + '-editor-btn');
+        if (!btn) continue;
+        if (item.id === tabId) {
+          this.selectedContent = item.html;
           btn.classList.add('btn--active');
-          console.log(btn.classList);
           continue;
+        } else {
+          btn.classList.remove('btn--active');
         }
-        tabDiv.classList.add('hide');
-        btn.classList.remove('btn--active');
+      }
+      switch (area) {
+        case 'spoiler':
+          this.spoilerSelectedTab = tabId;
+          return;
+        case 'nonspoiler':
+          this.nonspoilerSelectedTab = tabId;
+          return;
       }
     },
     openArea(area) {
@@ -492,66 +918,30 @@ const contentEditor = {
       let divSpoiler = document.getElementById('spoiler-editor');
       let divNonSpoiler = document.getElementById('nonspoiler-editor');
 
-      btnSpoiler.classList.toggle('btn--active2');
-      btnNonSpoiler.classList.toggle('btn--active2');
-
       switch (area) {
         case 'spoiler':
+          this.selectedTab('spoiler', this.spoilerSelectedTab);
           divSpoiler.classList.remove('hide');
           divNonSpoiler.classList.add('hide');
+
+          btnSpoiler.classList.remove('btn--active2');
+          btnNonSpoiler.classList.add('btn--active2');
           return;
+
         case 'nonspoiler':
+          this.selectedTab('nonspoiler', this.nonspoilerSelectedTab);
           divSpoiler.classList.add('hide');
           divNonSpoiler.classList.remove('hide');
+
+          btnSpoiler.classList.add('btn--active2');
+          btnNonSpoiler.classList.remove('btn--active2');
           return;
       }
-    }
-  },
-  components: ['markdown', 'btn'],
-  template: `
-
-    <div>
-      <btn @btn-click="openArea('nonspoiler')" text="Non-Spoiler" btn-id="nonspoiler-editor-area-btn" class="btn--active2"/>
-      <btn @btn-click="openArea('spoiler')" text="Spoiler" btn-id="spoiler-editor-area-btn"/>
-    </div>
-
-
-    <template v-for="(area, areaName, areaIndex) in editorData.contentData">
-      <!-- Areas -->
-      <div :id="areaName + '-editor'" :class="[ areaName !== 'nonspoiler' ? 'hide' : '']">
-        <!-- Buttons -->
-        <template v-for="(content, contentIndex) in area">
-          <button @click="selectedTab(areaName, content.id)" :id="content.id + '-editor-btn'"  
-            :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', 'font--smaller', contentIndex == 0 ? 'btn--active' : '' ]"> 
-            {{ content.name }}
-          </button>
-        </template>
-
-        <!-- Page Contents -->
-        <template v-for="(content, contentIndex) in area">
-          <div :class="[ contentIndex == 0 ? '' : 'hide']" :id="content.id + '-editor'">
-            <markdown  :text-id="content.id + '-md'" :content="content.html"/>
-          </div>
-        </template>
-      </div>
-
-    </template>
-    `
-};
-
-
-
-const markdown = {
-  name: 'markdown',
-  props: {
-    textId: { type: String, required: true },
-    content: { type: String, default: " " }
-  },
-  methods: {
-    generateMDEditor(textarea, initialValue) {
-      const md = new EasyMDE({
+    },
+    generateMDEditor(textarea) {
+      this.md = new EasyMDE({
         element: textarea,
-        initialValue: initialValue,
+        initialValue: '',
         autofocus: true,
         hideIcons: [
           "guide",
@@ -560,31 +950,383 @@ const markdown = {
         ],
         forceSync: true,
       });
-      md.value(this.content);
+
+      this.md.value('');
+      this.md.codemirror.on("change", () => {
+        for (const item of this.tempContentData[this.selectedTabId.area]) {
+          if (item.id == this.selectedTabId.id) {
+            item.html = this.md.value();
+            return;
+          }
+        }
+      });
     }
   },
   mounted() {
-    let ta = document.getElementById(this.textId);
-    this.generateMDEditor(ta, ``);
+    let textarea = document.getElementById('content-textarea-editor');
+    this.generateMDEditor(textarea);
   },
   template: `
-  <div>
-    <textarea :id="textId"></textarea>
+
+    <div>
+      <btn @btn-click="openArea('nonspoiler')" text="Non-Spoiler" btn-id="nonspoiler-editor-area-btn" class="btn--active2"/>
+      <btn @btn-click="openArea('spoiler')" text="Spoiler" btn-id="spoiler-editor-area-btn" v-show="createSpoilers == true"/>
+    </div>
+    <!-- v-show="areaName == 'nonspoiler' || (areaName == 'spoiler' && createSpoilers == true)" -->
+    <template v-for="(area, areaName, areaIndex) in editorData.contentData">
+      <!-- Areas -->
+      <div :id="areaName + '-editor'" :class="[ areaName !== 'nonspoiler' ? 'hide' : '']">
+
+        <!-- Buttons -->
+          <button v-for="(content, contentIndex) in area" @click="selectedTab(areaName, content.id)" :id="content.id + '-editor-btn'"  
+            :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', 'font--smaller', contentIndex == 0 ? 'btn--active' : '' ]"> 
+            {{ content.name }}
+          </button>
+
+      </div>
+
+    </template>
+
+    <!-- Page Contents -->
+    <div id="content-markdown-editor">
+      <textarea id="content-textarea-editor"></textarea>
+    </div>
+
+    `
+};
+
+const metaEditor = {
+  name: 'meta-editor',
+  data() {
+    return {
+      titleVal: "",
+      parentVal: "",
+      tagsVal: "",
+      urlVal: "",
+      descVal: "",
+
+      tempPageData: {}
+    };
+  },
+  emits: ['editor-changed', 'send-data'],
+  props: {
+    editorData: { type: Object, required: true },
+    orderFromParent: { type: String }
+  },
+  components: ['textinput'],
+  watch: {
+    editorData: {
+      immediate: true,
+      handler(newVal) {
+        if (Object.keys(newVal).length === 0) return;
+
+
+        this.tempPageData = JSON.parse(JSON.stringify(this.editorData.pageData));
+
+        this.titleVal = this.editorData.pageData.title;
+        this.urlVal = this.editorData.pageData.urlPath;
+        this.parentVal = this.editorData.pageData.parent;
+        this.tagsVal = this.editorData.pageData.tags;
+        this.descVal = this.editorData.pageData.description;
+      }
+    },
+    orderFromParent: {
+      immediate: true,
+      handler(newVal) {
+        if (!newVal) return;
+        switch (newVal) {
+          case "sendData":
+            this.tempPageData.title = this.titleVal;
+            this.tempPageData.parent = this.parentVal;
+            this.tempPageData.tags = this.tagsVal;
+            this.tempPageData.urlPath = this.urlVal;
+            this.tempPageData.description = this.descVal;
+
+            this.$emit('send-data', this.tempPageData);
+            return;
+          case "refresh":
+            this.titleVal = this.tempPageData.title;
+            this.parentVal = this.tempPageData.parent;
+            this.tagsVal = this.tempPageData.tags;
+            this.urlVal = this.tempPageData.urlPath;
+            this.descVal = this.tempPageData.description ;
+            return;
+        }
+      }
+    },
+  },
+  template: `
+    <table class="editor-table me-5">
+      <tbody>
+        <tr class="input-text input-text--visual">
+          <textinput id="pageTitle" name="Page Title" place-holder="Awesome page title!" v-model="titleVal" @editor-changed="$emit('editor-changed')"/> </tr>
+          <tr class="input-text input-text--visual">
+          <textinput id="pageTitle" name="Page URL" place-holder="page file name" v-model="urlVal" @editor-changed="$emit('editor-changed')"/> </tr>
+        <tr class="input-text input-text--visual">
+          <textinput id="pageParent" name="Parent" place-holder="Parent page for breadcrumbs" v-model="parentVal" @editor-changed="$emit('editor-changed')"/> </tr>
+        <tr class="input-text input-text--visual">
+          <textinput id="Tags" name="Tags" place-holder="TagA TagB TagC" v-model="tagsVal" @editor-changed="$emit('editor-changed')"/> </tr>
+          <tr class="input-text input-text--visual">
+          <textinput id="Tags" name="Description" place-holder="Page Description" v-model="descVal" @editor-changed="$emit('editor-changed')"/> </tr>
+      </tbody>
+    </table>`
+};
+
+const tabEditor = {
+  name: 'tab-editor',
+  data() {
+    return {
+      createSpoilers: false,
+
+      tabName: "",
+      selectedTabId: '',
+      selectData: {},
+      deletedTab: []
+    };
+  },
+  emits: ['editor-changed', 'send-data', 'changedSelect'],
+  props: {
+    editorData: { type: Object, required: true },
+    orderFromParent: { type: String }
+  },
+  watch: {
+    editorData: {
+      immediate: true,
+      handler(newVal) {
+        if (Object.keys(newVal).length === 0) return;
+        this.generateSelectData();
+        this.createSpoilers = this.editorData.pageData.createSpoilers;
+      }
+    },
+    orderFromParent: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal === '') return;
+        switch (newVal) {
+          case "refresh":
+            this.generateSelectData();
+            return;
+
+          case "createSpoilersFalse":
+            this.createSpoilers = false;
+            this.tabName = "";
+            return;
+
+          case "createSpoilersTrue":
+            this.createSpoilers = true;
+            this.tabName = "";
+            return;
+        }
+      }
+    }
+  },
+  methods: {
+    generateSelectData() {
+      this.selectData = {};
+      this.deletedTab = [];
+      for (const area in this.editorData.contentData) {
+        for (const item of this.editorData.contentData[area]) {
+          this.selectData[item.id] = {
+            name: item.name,
+            area: area
+          };
+        }
+      }
+    },
+    onChange(event) {
+      this.tabName = this.selectData[event.target.value].name;
+      this.selectedTabId = event.target.value;
+    },
+    tabClear() {
+      this.tabName = '';
+      this.selectedTabId = '';
+
+      this.sendData();
+    },
+    tabRename() {
+      if (this.selectedTabId === '') return;
+      
+      const area = this.selectData[this.selectedTabId].area;
+      const id = area + "-" + this.tabName.replace(/\s/g, '-').trim().toLowerCase();
+      
+      delete this.selectData[this.selectedTabId];
+
+      this.selectData[id] = {
+        name: this.tabName,
+        area: area, 
+        originalId: this.selectedTabId,
+      };
+
+      this.selectedTabId = id;
+      console.log(this.tabName);
+      this.sendData();
+    },
+    tabAdd(area) {
+      if (this.tabName === '') return;
+      const id = area + "-" + this.tabName.replace(/\s/g, '-').trim().toLowerCase();
+      if (this.selectData.hasOwnProperty(id)) return;
+      this.selectData[id] = {
+        name: this.tabName,
+        area: area
+      };
+
+      this.sendData();
+    },
+    tabDelete() {
+      if (this.selectedTabId === '') return;
+      if (!this.selectData.hasOwnProperty(this.selectedTabId)) return;
+      delete this.selectData[this.selectedTabId];
+
+      this.deletedTab.push(this.selectedTabId);
+      this.selectedTabId = "";
+      this.tabName = "";
+      this.sendData();
+    },
+    sendData() {
+      this.$emit('changedSelect', {tabs: this.selectData, deletedTabs: this.deletedTab} );
+    }
+  },
+  template: `
+  <div class="container m-0 p-0">
+    <div class="row">
+
+      <div class="col-3">
+        <select class="width-100" name="Tabs" size="11" id="managetab-contentarea-list" @change="onChange($event)">
+          <optgroup id="editorTabGroupNonSpoiler" label="Non-Spoiler">
+            <template v-for="(value, id, index) in selectData">
+              <option v-if="value.area === 'nonspoiler'" :value="id" >{{ value.name }}</option>
+            </template>
+          </optgroup>
+            
+          <optgroup id="editorTabGroupSpoiler"  label="Spoiler" v-show="createSpoilers == true">
+            <template v-for="(value, id, index) in selectData">
+              <option v-if="value.area === 'spoiler'" :value="id" >{{ value.name }}</option>
+            </template>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="col-9">
+
+        <table class="editor-table me-5 width-100">
+          <tbody>
+            <tr class="input-text input-text--visual">
+              <p class="m-0 text-left">Tab Name:</p>
+              <textinput id="tabName"  name="Tab Name" :no-name='true' place-holder="Place a name here" v-model="tabName" @editor-changed="$emit('editor-changed')"/> </tr>
+            <tr class="ps-5">
+              <btn class="font--small" text="Rename" @btn-click="tabRename"/>
+              <btn class="font--small" text="Delete" @btn-click="tabDelete"/>
+              <btn class="font--small" text="Clear" @btn-click="tabClear"/>
+              <btn class="font--small" text="Add (Non-Spoilers)" @btn-click="tabAdd('nonspoiler')"/>
+              <btn class="font--small" text="Add (Spoilers)" @btn-click="tabAdd('spoiler')" v-show="createSpoilers == true"/>
+
+            </tr>
+              
+          </tbody>
+        </table>
+  
+      
+      </div>
+
+    </div>
   </div>
+
   `
 };
 
 const textInput = {
   name: `textinput`,
+  emits: ['editor-changed', 'update:modelValue'],
   props: {
     id: { type: String, required: true },
-    name: { type: String, required: true },
+    name: { type: String, default: "" },
     placeHolder: { type: String, default: "" },
-    classBorderUp: { type: String, default: "" },
-    classBorderDown: { type: String, default: "" },
+    modelValue: { type: String, default: "" },
+    noName: { type: Boolean, default: false },
+  },
+  computed: {
+    value: {
+      get() { 
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+        this.$emit('editor-changed');
+      }
+    }
   },
   template: `
-    <td class="textinput-label"><label :for="id" > {{ name }}: </label></td>
-    <td class="textinput-input"><input type="text" :id="id" :name="name" class="outline-primary" :placeHolder="placeHolder"/></td>
+    <td class="textinput-label" ><label :for="id" v-if="noName == false"> {{ name }}: </label></td>
+    <td class="textinput-input" ><input type="text" :id="id" :name="name" class="outline-primary" :placeHolder="placeHolder" v-model="value" /></td>
   `
 };
+
+const selectDrop = {
+  name: 'select-drop',
+  data() {
+    return {
+      selectedArea: "Non-Spoiler",
+      tabList: [],
+    };
+  },
+  props: {
+    data: { type: Object, required: true },
+    createSpoilers: { type: Boolean }
+  },
+  emits: ['changedSelect'],
+  methods: {
+    onChange(event) {
+      for (const tabId in this.data) {
+        if (tabId !== event.target.value) continue;
+        this.selectedArea = this.data[tabId].type === 'nonspoiler' ? 'Non-Spoiler': 'Spoiler';
+      }
+      this.$emit('changedSelect', event.target.value);
+    }
+  },
+  watch: {
+    createSpoilers: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal == null) return;
+        if (Object.keys(this.data).length == 0) return;
+
+        let selectedKey = '';
+        for (const key of Object.keys(this.data)) {
+          if (key.includes("nonspoiler")) {
+            selectedKey = key;
+            break;
+          }
+        }
+
+        let select = document.getElementById('areaTab');
+        select.value = selectedKey;
+        select.dispatchEvent(new Event('change'));
+      }
+    }
+  },
+  template: `
+    <label for="areaTab" class="me-1"> {{ selectedArea }} Tab: </label>
+    <select name="areaTab" id="areaTab" @change="onChange($event)"> 
+
+      <optgroup id="editorSelectDropNonSpoiler" label="Non-Spoiler">
+        <template v-for="(value, id, index) in data">
+          <option v-if="value.type === 'nonspoiler'" :value="id" >{{ value.name }}</option>
+        </template>
+      </optgroup>
+        
+      <optgroup id="editorSelectDropSpoiler"  label="Spoiler" v-show="createSpoilers == true">
+        <template v-for="(value, id, index) in data">
+          <option v-if="value.type === 'spoiler'" :value="id" >{{ value.name }}</option>
+        </template>
+      </optgroup>
+
+    </select>
+
+    `
+};
+
+// const sideButton = {
+//   name: `side-btn`,
+//   components: 
+//   template: ``
+// };
