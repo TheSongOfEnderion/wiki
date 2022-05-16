@@ -106,6 +106,7 @@ const header = {
     subtitle: String,
     btnList: Object,
   },
+  emits: ['read-page'],
   components: ['btn'],
   computed: {
     getNavBtns() {
@@ -119,7 +120,14 @@ const header = {
       <h2 class="project-subtitle mx-0 mt-2 mb-5">{{ subtitle }}</h2>
 
         <div class="d-flex flex-wrap justify-content-center btns-header">
-          <btn :text="item" v-for="item in getNavBtns" class="btn--header"/>
+          <div class="dropdown" v-for="(value, name) in btnList">
+            <btn :text="name" class="btn--header font--medium" @btn-click="$emit('read-page', value._default)"/>
+            <div v-if="Object.keys(value).length > 1" class="dropdown-content">
+              <template v-for="(item, name) in value">
+                <btn v-if="name !== '_default'" :text="name" class="font--small btn--header btn-nav" @btn-click="$emit('read-page', item)"/>
+              </template>
+            </div>
+          </div>
         </div>
     </div>`,
 };
@@ -489,7 +497,7 @@ const editor = {
     passedEditorData: { type: Object, required: true },
   },
   emits: ['saveContent'],
-  components: ['markdown', 'btn', 'content-editor', 'profile-editor','meta-editor', 'tab-editor', 'select-drop', 'btnToggle'],
+  components: ['markdown', 'btn', 'content-editor', 'profile-editor', 'meta-editor', 'tab-editor', 'select-drop', 'btnToggle'],
   watch: {
     passedEditorData: {
       immediate: true,
@@ -555,7 +563,7 @@ const editor = {
       this.spoilertoggletext = value === false ? 'Spoilers Disabled' : 'Spoilers Enabled';
       this.tempCreateSpoilers = value;
 
-      this.sendToChild = value === false ?  "createSpoilersFalse" : "createSpoilersTrue";
+      this.sendToChild = value === false ? "createSpoilersFalse" : "createSpoilersTrue";
       await this.$nextTick();
       this.sendToChild = "";
     },
@@ -586,11 +594,11 @@ const editor = {
       for (const tab in value.tabs) {
         if (skipIds.includes(tab)) continue;
         const area = value.tabs[tab].area;
-        
+
         // Rename
         if (value.tabs[tab].hasOwnProperty('originalId')) {
           let orig = value.tabs[tab].originalId;
-          
+
           for (const area in this.editorData.contentData) {
             for (const tabItem of this.editorData.contentData[area]) {
               if (tabItem.id == orig) {
@@ -602,7 +610,7 @@ const editor = {
           }
           continue;
 
-        // Add New
+          // Add New
         } else {
           let obj = {
             html: " ",
@@ -615,8 +623,8 @@ const editor = {
         }
       }
 
-      
-      
+
+
       this.sendToChild = "refresh";
       await this.$nextTick();
       this.sendToChild = "";
@@ -853,7 +861,7 @@ const contentEditor = {
           case "createSpoilersFalse":
             this.openArea('nonspoiler');
             this.createSpoilers = false;
-            
+
             return;
           case "createSpoilersTrue":
             this.createSpoilers = true;
@@ -1049,7 +1057,7 @@ const metaEditor = {
             this.parentVal = this.tempPageData.parent;
             this.tagsVal = this.tempPageData.tags;
             this.urlVal = this.tempPageData.urlPath;
-            this.descVal = this.tempPageData.description ;
+            this.descVal = this.tempPageData.description;
             return;
         }
       }
@@ -1145,15 +1153,15 @@ const tabEditor = {
     },
     tabRename() {
       if (this.selectedTabId === '') return;
-      
+
       const area = this.selectData[this.selectedTabId].area;
       const id = area + "-" + this.tabName.replace(/\s/g, '-').trim().toLowerCase();
-      
+
       delete this.selectData[this.selectedTabId];
 
       this.selectData[id] = {
         name: this.tabName,
-        area: area, 
+        area: area,
         originalId: this.selectedTabId,
       };
 
@@ -1183,7 +1191,7 @@ const tabEditor = {
       this.sendData();
     },
     sendData() {
-      this.$emit('changedSelect', {tabs: this.selectData, deletedTabs: this.deletedTab} );
+      this.$emit('changedSelect', { tabs: this.selectData, deletedTabs: this.deletedTab });
     }
   },
   template: `
@@ -1246,7 +1254,7 @@ const textInput = {
   },
   computed: {
     value: {
-      get() { 
+      get() {
         return this.modelValue;
       },
       set(value) {
@@ -1278,7 +1286,7 @@ const selectDrop = {
     onChange(event) {
       for (const tabId in this.data) {
         if (tabId !== event.target.value) continue;
-        this.selectedArea = this.data[tabId].type === 'nonspoiler' ? 'Non-Spoiler': 'Spoiler';
+        this.selectedArea = this.data[tabId].type === 'nonspoiler' ? 'Non-Spoiler' : 'Spoiler';
       }
       this.$emit('changedSelect', event.target.value);
     }

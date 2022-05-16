@@ -1,33 +1,39 @@
-{   
-    "projectTitle": "The Song of Enderion",
-    "projectSubtitle": "A Hymn reverberating through Eternity",
-    "eternalVersion": "0.0.1",
-    "main": "index.html",
-    "id": "asdasdasdasdsad",
-    "headerNavigation": {
-        "Home": {"_default": "home"},
-        "Story": {
-            "_default": "stories/_index",
-            "Story A": "stories/story-a",
-            "Story B": "stories/story-b",
-            "Story C": "stories/story-c"
-        },
-        "Characters": {
-            "_default": "characters/_index",
-            "Story A": "characters/story-a",
-            "Story B": "characters/story-b",
-            "Story C": "characters/story-c"
-        },
-        "Lore": {
-            "_default": "lore/_index",
-            "World": "lore/world",
-            "History": "lore/history",
-            "Monsters": "lore/monsters",
-            "Races": "lore/races",
-            "Magic": "lore/magic",
-            "Creatures": "lore/creatures"
-        },
-        "Librarium": {"_default": "librarium"},
-        "About": {"_default": "about"}
+{
+  "projectTitle": "The Song of Enderion",
+  "projectSubtitle": "A Hymn reverberating through Eternity",
+  "eternalVersion": "0.0.1",
+  "main": "index.html",
+  "id": "6z41Vjm8hAkRKojtn1ADPWVRj9mA7tMHcYTiRnGP0eYtTXTyXw",
+  "headerNavigation": {
+    "Home": {
+      "_default": "home"
+    },
+    "Story": {
+      "_default": "story",
+      "The Birth of a Hero": "tboah",
+      "The Irregular Entity": "tie",
+      "Euphemia of the Ordinary Quill": "eotoq"
+    },
+    "Characters": {
+      "_default": "characters",
+      "The Birth of a Hero": "tboah-characters",
+      "The Irregular Entity": "tie-characters",
+      "Euphemia of the Ordinary Quill": "eotoq-characters"
+    },
+    "Lore": {
+      "_default": "lore",
+      "World": "world",
+      "History": "history",
+      "Monsters": "monsters",
+      "Races": "races",
+      "Magic": "magic",
+      "Creatures": "creatures"
+    },
+    "Librarium": {
+      "_default": "librarium"
+    },
+    "About": {
+      "_default": "about"
     }
+  }
 }

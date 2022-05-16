@@ -8633,7 +8633,6 @@ hr {
 
 .btn--header {
   border-radius: 0.1em;
-  font-size: medium;
 }
 
 @media screen and (min-width: 100px) {
@@ -8710,6 +8709,44 @@ hr {
   .project-title {
     font-size: 3.5em;
   }
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  text-align: left;
+  background-color: #f1f1f1;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  -webkit-box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+          box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  padding: 0.4em;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  background-color: #F7F7F7;
+  color: #212121;
+  text-decoration: none;
+}
+
+.dropdown-content button:hover {
+  background-color: #0d6efd;
+  color: #E7E7E2;
 }
 
 .toggle {

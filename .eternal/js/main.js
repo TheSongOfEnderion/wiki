@@ -13,12 +13,18 @@ const isObject = (obj) => {
 
 
 try {
-  window.api.receive("fromMain", (data) => {
+  window.api.receive("fromMain", async (data) => {
     if (data.name == 'path') {
       if (projectPath != '') return;
       projectPath = data.value;
       console.log("Path: ", projectPath);
     }
+
+    if (data.name == 'done-saving') {
+      console.log('Rerendering');
+      await root.rerenderPage();
+    }
+
   });
 } catch (error) {}
 
@@ -49,6 +55,8 @@ function startPage() {
         editorData: {},
 
         isEmptyPage: false,
+
+        rerenderData: {},
       };
     },
     methods: {
@@ -78,7 +86,7 @@ function startPage() {
       isElectron() {
         const userAgent = navigator.userAgent.toLowerCase();
         // renderEditor(true);
-        
+
         if (userAgent.indexOf(' electron/') == -1) {
           // Not electron
           console.log("Not on electron");
@@ -126,7 +134,7 @@ function startPage() {
               pageData: this.cloneObj(data.pageData),
               profileData: this.cloneObj(data.profileData),
               pageName: data.pageData.name,
-              pageUrl: pageUrlPath,
+              pageUrl: data.pageData.urlPath,
               path: projectPath,
               isNewPage: this.isEmptyPage,
             }
@@ -134,13 +142,20 @@ function startPage() {
 
           this.dir[data.pageData.urlName] = {
             "title": data.pageData.title,
-            "path": pageUrlPath,
+            "path": data.pageData.urlPath,
             "parent": data.pageData.parent,
           };
         }
         this.clearVars();
         // Rerender
-        await this.renderPage('rerender', data);
+        await this.$nextTick();
+
+
+        this.rerenderData = data;
+      },
+      async rerenderPage() {
+        this.clearVars();
+        await this.renderPage('rerender', this.rerenderData);
       },
       async renderPage(mode, data) {
         // Step 3. Set Page General Data
@@ -187,7 +202,7 @@ function startPage() {
             pageUrlPath = 'content/' + pageName + '.html';
             window.pageData.title = this.capitalize(pageName.replace(/\-/g, " ")).trim();
             this.isEmptyPage = true;
-            break; 
+            break;
 
           case 'rerender':
             window.profileData = data.profileData;
@@ -199,7 +214,7 @@ function startPage() {
             break;
         }
         let pathSplit = window.pageData.urlPath.split("/");
-        window.pageData.urlName = pathSplit[pathSplit.length-1].split(".html")[0];
+        window.pageData.urlName = pathSplit[pathSplit.length - 1].split(".html")[0];
 
         // Step 6. Set Page Specific Data
         this.pageData = window.pageData;
@@ -263,6 +278,11 @@ function startPage() {
       }
 
     },
+    computed: {
+      isElectronCheck() {
+        return this.isElectron();
+      }
+    },
     async mounted() {
       // Step 1. Retrieves Necessary Files
       const metaRes = await fetch(`.eternal/eternal.json`); // Get Metadata
@@ -273,7 +293,7 @@ function startPage() {
 
       // Step 2. Gets Page URL
       pageName = this.getPageUrl();
-  
+
       await this.readPage(pageName);
 
 
@@ -416,7 +436,7 @@ class TextRenderer {
     const lines = htmlContentString.trim().split("\n");
 
     let htmlContent = '';
-
+    let first = true;
     for (const line of lines) {
       let value = line.trim();
       if (value == "") {
@@ -470,21 +490,29 @@ class TextRenderer {
             continue;
           }
 
+          let loweredlinkname = linkName.toLowerCase();
           // // Search Indirectly
           for (const pageName in this.dir) {
             let dirItem = this.dir[pageName];
-            if (dirItem.title.toLowerCase() === linkNameLowered) {
+            if (dirItem.title.toLowerCase() === loweredlinkname) {
               value = value.replace(link, `<a class="btn btn-primary btn--color-secondary" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
               break;
             }
           }
           value = value.replace(link, `<a class="btn btn-primary btn--color-secondary red" onclick="root.readPage('${linkNameLowered}')">${link.replace(/\]/g, '').replace(/\[/g, '').trim()}</a>`);
-          
+
         }
       }
 
       // Add Value
-      htmlContent += value;
+      
+      if (first) {
+        htmlContent += value + "\n";
+        first = false;
+      } else {
+        htmlContent += value + "<br>\n";
+      }
+
     }
 
 
