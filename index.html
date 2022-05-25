@@ -33,7 +33,7 @@
       <!-- v-if="isElectronCheck" -->
 
       <!-- Editor -->
-      <div class="row editor-div">
+      <div class="row editor-div" v-if="isElectronCheck">
         <editor :passed-editor-data="editorData" @save-content="saveContent" @delete-page="deletePage" @update-project="updateProject" @new-page="newPage"/>
       </div>
 
