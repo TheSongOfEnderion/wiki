@@ -68,5 +68,10 @@
     "title": "TESSSSSS",
     "path": "content/test/testssss-page.html",
     "parent": ""
+  },
+  "yasha-romanova": {
+    "title": "Yasha romanova",
+    "path": "content/tboah/characters/e-class/yasha-romanova.html",
+    "parent": "tboah-characters"
   }
 }

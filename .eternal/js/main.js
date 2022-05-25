@@ -6,6 +6,7 @@ var pageUrlPath = '';
 var idList = [];
 var root;
 var projectPath = '';
+var urlpaths = [];
 
 const isObject = (obj) => {
   return Object.prototype.toString.call(obj) === '[object Object]';
@@ -18,11 +19,19 @@ try {
       if (projectPath != '') return;
       projectPath = data.value;
       console.log("Path: ", projectPath);
+      return;
     }
 
     if (data.name == 'done-saving') {
       console.log('Rerendering');
       await root.rerenderPage();
+      return;
+    }
+
+    if (data.name == 'urlpaths') {
+      urlpaths = data.value;
+      console.log(urlpaths);
+      return;
     }
 
   });
@@ -101,9 +110,6 @@ function startPage() {
       },
       capitalize(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-      },
-      test(value) {
-        console.log(value);
       },
       updateProject() {
         if (!this.isElectron()) return;
@@ -334,8 +340,12 @@ function startPage() {
 
       await this.readPage(pageName);
 
-
-
+      if (this.isElectron()) {
+        window.api.send('toMain', {
+          name: 'project:getcontentdirs',
+          projectPath: projectPath,
+        });
+      }
     }
   });
 
@@ -530,7 +540,7 @@ class TextRenderer {
     `;
 
     for (const head in this.TOClist) {
-      toc += `\n<a href="#${this.TOClist[head].id}" class="toc-${this.TOClist[head].h} btn-primary btn--color-secondary">${head}</a><br>`;
+      toc += `\n<a href="#${this.TOClist[head].id}" class="toc-${this.TOClist[head].h} btn-primary btn--color-tertiary">${head}</a><br>`;
     }
 
     htmlContent = htmlContent.replace("[[toc]]", `<div class="toc">${toc}</div>`);

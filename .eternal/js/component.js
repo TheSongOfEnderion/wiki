@@ -331,7 +331,7 @@ const profilebox = {
       <div class="profile-image" v-if="Object.keys(imageData).length !== 0">
         <template v-for="(value, name, index) in imageData">
             <button @click="selectedTab(name)" :id="name + '-btn'" 
-              :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', 'font--smaller', index == 0 ? 'btn--active' : '' ]"> 
+              :class="['btn', 'btn-primary', 'btn--color-tertiary', 'btn--color-tab', 'font--smaller', index == 0 ? 'btn--active' : '' ]"> 
               {{ value.name }}
             </button>
         </template>
