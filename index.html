@@ -10,7 +10,7 @@
   <link rel="stylesheet" href=".eternal/css/style.css">
 
   <!-- Scripts -->
-  <script rel="modulepreload" src=".eternal/js/vue/vue.global.prod.js"></script>
+  <script rel="modulepreload" src=".eternal/js/vue/vue.global.js"></script>
   <script rel="modulepreload" src=".eternal/js/component.js"></script>
   <script rel="modulepreload" src=".eternal/js/main.js"></script>
 
@@ -30,9 +30,11 @@
         <header-card :title="projectTitle" :subtitle="projectSubtitle" :btn-list="headerNavBtn" @read-page="readPage"/>
       </div>
 
+      <!-- v-if="isElectronCheck" -->
+
       <!-- Editor -->
-      <div class="row editor-div" v-if="isElectronCheck">
-        <editor :passed-editor-data="editorData" @save-content="saveContent" />
+      <div class="row editor-div">
+        <editor :passed-editor-data="editorData" @save-content="saveContent" @delete-page="deletePage" @update-project="updateProject" @new-page="newPage"/>
       </div>
 
       <!-- Page Card -->

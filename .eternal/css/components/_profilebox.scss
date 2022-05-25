@@ -6,6 +6,10 @@ $profilebox-font-size: 0.98em;
   font-size: $profilebox-font-size ;
 } 
 
+#profile-box {
+  padding-bottom: 3em; 
+}  
+
 .profile-box {
   * {
     @include font();

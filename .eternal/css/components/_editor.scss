@@ -45,3 +45,101 @@
   font-size: medium;
 }
 
+
+.card--editor {
+  height: max-content;
+  overflow: auto;   
+}
+
+#manage-tab {
+  height: auto;
+}  
+
+
+// sidebar
+.sidebar {
+  position: fixed;
+  height: 100%;
+  width: 15em;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  
+  padding: 1em;
+
+  color: $font-color-light;
+  background-color: $color-primary;
+}
+
+// Side Button
+
+.btn-div {
+  // margin: 0em;
+  z-index: 99;
+  position: fixed;
+  top: 10%;
+  left: 20%;
+  width: fit-content;
+}
+
+.btn-side {
+  width: 2.5em;
+  text-align: center;
+  margin: 0.5em;
+  padding: 0.4em 0.8em;
+
+}
+    
+@media (min-width: 100px) {
+  .btn-div {
+    top: 0.2em;
+    left: 0.2em;
+  }
+  .sidebar {
+    width: 80%;
+  }
+}  
+
+@media (min-width: 300px) {
+  .btn-div {
+    top: 1%;
+    left: 2%;
+  }
+  .sidebar {
+    width: 90%;
+  }
+}  
+
+@media (min-width: 400px) {
+  .btn-div {
+    top: 1%;
+    left: 2%;
+  }
+  .sidebar {
+    width: 20em;
+  }
+}  
+
+@media (min-width: 500px) {
+  .btn-div {
+    top: 1%;
+    left: 2%;
+  }
+  .sidebar {
+    width: 20em;
+  }
+}  
+
+@media (min-width: 700px) {
+  .btn-div {
+    top: 3%;
+    left: 5%;
+  }
+}  
+
+@media (min-width: 1000px) {
+  .btn-div {
+    top: 10%;
+    left: 15%;
+  }
+}  

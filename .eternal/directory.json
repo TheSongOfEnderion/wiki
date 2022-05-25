@@ -24,11 +24,6 @@
     "path": "content/story/tboah/tboah.html",
     "parent": ""
   },
-  "tie-characters": {
-    "title": "Characters",
-    "path": "content/story/tie/tie-characters.html",
-    "parent": ""
-  },
   "tboah-characters": {
     "title": "Characters",
     "path": "content/story/tboah/tboah-characters.html",
@@ -43,5 +38,35 @@
     "title": "Eltia axolin",
     "path": "content/story/tboah/characters/deuteragonist/eltia-axolin.html",
     "parent": "tboah-characters"
+  },
+  "mayumi-severino": {
+    "title": "Mayumi severino",
+    "path": "content/story/tboah/characters/deuteragonist/mayumi-severino.html",
+    "parent": "tboah-characters"
+  },
+  "tie": {
+    "title": "The Irregular Entity",
+    "path": "content/story/tie/tie.html",
+    "parent": ""
+  },
+  "marcus-romulo": {
+    "title": "Marcus romulo",
+    "path": "content/story/tie/characters/main-characters/marcus-romulo.html",
+    "parent": "tie-characters"
+  },
+  "kevin-lichtein": {
+    "title": "Kevin lichtein",
+    "path": "content/story/tboah/characters/protagonist/kevin-lichtein.html",
+    "parent": "tboah-characters"
+  },
+  "new-page": {
+    "title": "TEST PAEG",
+    "path": "content/test/test-page.html",
+    "parent": ""
+  },
+  "testssss-page": {
+    "title": "TESSSSSS",
+    "path": "content/test/testssss-page.html",
+    "parent": ""
   }
 }

@@ -8251,6 +8251,26 @@ div.jsoneditor-statusbar > .jsoneditor-size-info {
   border-radius: 0.2em;
 }
 
+.btn-secondary {
+  text-decoration: none;
+  -webkit-transition-duration: 0.4s;
+          transition-duration: 0.4s;
+  padding: 0.2em 0.2em;
+  border-radius: 0.2em;
+}
+
+.btn--link {
+  color: #0d6efd;
+  background-color: transparent;
+}
+
+.btn--link:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  -webkit-box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+          box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
 .btn--color-primary {
   color: #fff;
   background-color: #0d6efd;
@@ -8264,11 +8284,12 @@ div.jsoneditor-statusbar > .jsoneditor-size-info {
 }
 
 .btn--color-secondary {
-  color: #0d6efd;
+  color: #2b2b2b;
+  background-color: #E7E7E2;
 }
 
 .btn--color-secondary:hover {
-  background-color: #0d6efd;
+  background-color: #408cfd;
   color: #fff;
   -webkit-box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
           box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
@@ -8462,6 +8483,11 @@ a:hover {
           box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
+li::marker {
+  content: "•";
+  font-size: 1.2em;
+}
+
 h1 {
   font-size: 1.9em;
 }
@@ -8612,7 +8638,7 @@ hr {
 
 @media (min-width: 1400px) {
   .card {
-    width: 750px;
+    width: 800px;
     padding: 2em;
   }
 }
@@ -8633,6 +8659,15 @@ hr {
 
 .btn--header {
   border-radius: 0.1em;
+  color: #2b2b2b !important;
+  background-color: transparent !important;
+}
+
+.btn--header:hover {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+  -webkit-box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.4);
 }
 
 @media screen and (min-width: 100px) {
@@ -8739,7 +8774,7 @@ hr {
   padding: 0.4em;
   padding-left: 0.8em;
   padding-right: 0.8em;
-  background-color: #F7F7F7;
+  background-color: #f3f3f3;
   color: #212121;
   text-decoration: none;
 }
@@ -8838,7 +8873,7 @@ hr {
 }
 
 .page-breadcrumbs {
-  background-color: #F7F7F7;
+  background-color: #f3f3f3;
   color: #2b2b2b;
   border-radius: 0.3em;
   margin-top: 0.5em;
@@ -8851,7 +8886,7 @@ hr {
   text-decoration: none;
   color: #2b2b2b;
   text-align: left;
-  padding: 0em 0.1em;
+  padding: 0em 0.3em;
   background-color: transparent !important;
 }
 
@@ -8891,7 +8926,7 @@ hr {
 
 /* box css */
 .toc {
-  background-color: #F7F7F7;
+  background-color: #f3f3f3;
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
@@ -8919,6 +8954,10 @@ hr {
 
 .h {
   margin: 0em !important;
+}
+
+#profile-box {
+  padding-bottom: 3em;
 }
 
 .profile-box {
@@ -8961,7 +9000,7 @@ hr {
 }
 
 .profile-box--visual {
-  background-color: #F7F7F7;
+  background-color: #f3f3f3;
 }
 
 .profile-box--visual table tbody {
@@ -9084,46 +9123,88 @@ hr {
   overflow: auto;
 }
 
-#profile-box {
-  padding-bottom: 3em;
-}
-
 #manage-tab {
   height: auto;
 }
 
-.btn-side {
-  margin: 1em;
+.sidebar {
   position: fixed;
+  height: 100%;
+  width: 15em;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  padding: 1em;
+  color: #fff;
+  background-color: #0d6efd;
+}
+
+.btn-div {
   z-index: 99;
-  padding: 0.4em 0.8em;
+  position: fixed;
   top: 10%;
   left: 20%;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.btn-side {
+  width: 2.5em;
+  text-align: center;
+  margin: 0.5em;
+  padding: 0.4em 0.8em;
 }
 
 @media (min-width: 100px) {
-  .btn-side {
+  .btn-div {
     top: 0.2em;
     left: 0.2em;
+  }
+  .sidebar {
+    width: 80%;
   }
 }
 
 @media (min-width: 300px) {
-  .btn-side {
+  .btn-div {
     top: 1%;
     left: 2%;
+  }
+  .sidebar {
+    width: 90%;
+  }
+}
+
+@media (min-width: 400px) {
+  .btn-div {
+    top: 1%;
+    left: 2%;
+  }
+  .sidebar {
+    width: 20em;
+  }
+}
+
+@media (min-width: 500px) {
+  .btn-div {
+    top: 1%;
+    left: 2%;
+  }
+  .sidebar {
+    width: 20em;
   }
 }
 
 @media (min-width: 700px) {
-  .btn-side {
+  .btn-div {
     top: 3%;
     left: 5%;
   }
 }
 
 @media (min-width: 1000px) {
-  .btn-side {
+  .btn-div {
     top: 10%;
     left: 15%;
   }

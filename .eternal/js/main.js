@@ -13,7 +13,7 @@ const isObject = (obj) => {
 
 
 try {
-  window.api.receive("fromMain", async (data) => {
+  window.api.receive("fromMain", async(data) => {
     if (data.name == 'path') {
       if (projectPath != '') return;
       projectPath = data.value;
@@ -105,7 +105,45 @@ function startPage() {
       test(value) {
         console.log(value);
       },
-      async readPage(pagename_) {
+      updateProject() {
+        if (!this.isElectron()) return;
+
+        window.api.send('toMain', {
+          name: 'project:update',
+          path: projectPath,
+        });
+
+        alert('Updated Project to latest js/css/index!');
+      },
+      deletePage() {
+        if (pageName === 'home') {
+          alert('Home Page cannot be deleted');
+          return;
+        }
+
+        if (!this.isElectron()) return;
+
+        delete this.dir[pageName];
+
+        // code to move file into trash bin
+
+        window.api.send('toMain', {
+          name: 'project:deletepage',
+          data: { pageName: pageName, projectPath: projectPath }
+        });
+
+        console.log(pageName);
+
+        this.readPage('home');
+
+      },
+      async newPage() {
+        pageName = 'new-page';
+        window.history.replaceState(null, null, `?p=new-page`);
+        this.clearVars();
+        await this.renderPage('pageNull', 'assets/new-page.html');
+      },
+      async readPage(pagename_, newPage = false) {
         pageName = pagename_.replace(/\s/g, '-').trim();
         if (pageName !== 'home') {
           window.history.replaceState(null, null, `?p=${pageName}`);
@@ -128,7 +166,7 @@ function startPage() {
         if (isElectron) {
 
           window.api.send('toMain', {
-            name: 'project:render',
+            name: 'project:save',
             data: {
               content: data.contentData,
               pageData: this.cloneObj(data.pageData),
@@ -313,6 +351,7 @@ function startPage() {
   app.component(tabs.name, tabs);
 
   app.component(editor.name, editor);
+  app.component(sideBar.name, sideBar);
   app.component(metaEditor.name, metaEditor);
   app.component(tabEditor.name, tabEditor);
   app.component(contentEditor.name, contentEditor);
@@ -447,6 +486,9 @@ class TextRenderer {
       value = this.renderWordBold(value);
       value = this.renderWordItalic(value);
 
+      // Link
+      value = this.renderLink(value);
+
       // List
       if (value.startsWith("* ")) {
         htmlContent += `<li>${value.replace("* ", "").trim()}</li>\n`;
@@ -474,48 +516,14 @@ class TextRenderer {
       }
 
 
-      // Link
-      let links = value.match(/\[\[(.*?)\]\]/g);
-      if (links) {
-        for (const link of links) {
-          if (link === '[[toc]]') continue;
-          let linkName = link.trim().replace(/(\[|\])/g, '');
-
-          // // Search Directly
-          let linkNameLowered = linkName.toLowerCase().replace(/\s/g, '-');
-          if (this.dir.hasOwnProperty(linkNameLowered)) {
-            let dirItem = this.dir[linkNameLowered];
-
-            value = value.replace(link, `<a class="btn btn-primary btn--color-secondary" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
-            continue;
-          }
-
-          let loweredlinkname = linkName.toLowerCase();
-          // // Search Indirectly
-          for (const pageName in this.dir) {
-            let dirItem = this.dir[pageName];
-            if (dirItem.title.toLowerCase() === loweredlinkname) {
-              value = value.replace(link, `<a class="btn btn-primary btn--color-secondary" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
-              break;
-            }
-          }
-          value = value.replace(link, `<a class="btn btn-primary btn--color-secondary red" onclick="root.readPage('${linkNameLowered}')">${link.replace(/\]/g, '').replace(/\[/g, '').trim()}</a>`);
-
-        }
-      }
-
       // Add Value
-      
       if (first) {
         htmlContent += value + "\n";
         first = false;
       } else {
         htmlContent += value + "<br>\n";
       }
-
     }
-
-
 
     let toc = `
       <p class="font--small"><b>Table of Contents</b></p>
@@ -531,16 +539,48 @@ class TextRenderer {
     return htmlContent;
   }
 
-  /**
-   * Render Bold Words.
-   *
-   * Renders words containing ** {word} ** and turns it into a
-   * bold html tag.
-   *
-   * @access     public
-   * @param {string}   value   word to check if it has a bold format.
-   * @return {string}  `<b>${content}</b>`
-   */
+  renderLink(value) {
+      let links = value.match(/\[\[(.*?)\]\]/g);
+
+      if (!links) return value;
+
+      for (const link of links) {
+        if (link === '[[toc]]') continue;
+        let linkName = link.trim().replace(/(\[|\])/g, '');
+
+        // // Search Directly
+        let linkNameLowered = linkName.toLowerCase().replace(/\s/g, '-');
+        if (this.dir.hasOwnProperty(linkNameLowered)) {
+          let dirItem = this.dir[linkNameLowered];
+
+          value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
+          continue;
+        }
+
+        let loweredlinkname = linkName.toLowerCase();
+        // // Search Indirectly
+        for (const pageName in this.dir) {
+          let dirItem = this.dir[pageName];
+          if (dirItem.title.toLowerCase() === loweredlinkname) {
+            value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
+            break;
+          }
+        }
+        value = value.replace(link, `<a class="btn btn-secondary btn--link red" onclick="root.readPage('${linkNameLowered}')">${link.replace(/\]/g, '').replace(/\[/g, '').trim()}</a>`);
+
+      }
+      return value;
+    }
+    /**
+     * Render Bold Words.
+     *
+     * Renders words containing ** {word} ** and turns it into a
+     * bold html tag.
+     *
+     * @access     public
+     * @param {string}   value   word to check if it has a bold format.
+     * @return {string}  `<b>${content}</b>`
+     */
   renderWordBold(value) {
     const bold_words = value.match(/\*\*(.*?)\*\*/g);
     const bold_words2 = value.match(/\_\_(.*?)\_\_/g);

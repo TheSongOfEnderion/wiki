@@ -13,6 +13,13 @@
 
 .btn--header {
   border-radius: 0.1em;
+  color: $font-color-dark !important;
+  background-color: transparent !important;
+  &:hover {
+    background-color: $color-primary !important;
+    color: $font-color-light !important;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.4);
+  }
 }
 
 @media screen and (min-width: 100px) {

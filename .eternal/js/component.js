@@ -496,8 +496,8 @@ const editor = {
   props: {
     passedEditorData: { type: Object, required: true },
   },
-  emits: ['saveContent'],
-  components: ['markdown', 'btn', 'content-editor', 'profile-editor', 'meta-editor', 'tab-editor', 'select-drop', 'btnToggle'],
+  emits: ['saveContent', 'delete-page', 'update-project', 'new-page'],
+  components: ['markdown', 'btn', 'content-editor', 'profile-editor', 'meta-editor', 'tab-editor', 'select-drop', 'btnToggle', 'sidebar'],
   watch: {
     passedEditorData: {
       immediate: true,
@@ -515,6 +515,10 @@ const editor = {
     toggleEditorView() {
       document.getElementById('page-content').classList.toggle("hide");
       document.getElementById('editor').classList.toggle("hide");
+    },
+    toggleSideBar() {
+      document.getElementById('sidebar').classList.toggle("hide");
+      console.log(document.getElementById('sidebar'));
     },
     openEditorTab(tabName) {
       const tabList = ['content-editor', 'manage-tab', 'profile-box', 'scripts-tab'];
@@ -623,8 +627,6 @@ const editor = {
         }
       }
 
-
-
       this.sendToChild = "refresh";
       await this.$nextTick();
       this.sendToChild = "";
@@ -638,7 +640,10 @@ const editor = {
     }
   },
   template: `
-    <div>
+    <sidebar @delete-page="$emit('delete-page')" @update-project="$emit('update-project')" @new-page="$emit('new-page')"/> 
+
+    <div class="d-flex flex-column btn-div">
+      <btn class="font--medium btn-side" text="≡" @btn-click="toggleSideBar"/>
       <btn class="font--medium btn-side" text="⚙" @btn-click="toggleEditorView"/>
     </div>
 
@@ -700,6 +705,33 @@ const editor = {
 
       </div>
     </div>`
+};
+
+const sideBar = {
+  name: 'sidebar',
+  emits: ['delete-page', 'hide-page', 'update-project', 'new-page'],
+  methods: {
+    closeSidebar() {
+      document.getElementById('sidebar').classList.add('hide');
+    },
+    deletePage() {
+      if (!confirm('Do you really want to delete this page?')) return;
+      this.$emit('delete-page');
+      this.closeSidebar();
+    }
+  },
+  template: `
+    <div id="sidebar" class='sidebar hide'>
+      <btn class="font--medium float-end" text="✕" @btn-click="closeSidebar"/>
+      <h2 class='mb-3'>Side Menu</h2>
+      
+      <btn class="font--medium btn--color-secondary" text="New Page" @btn-click="$emit('new-page')"/>
+      <btn class="font--medium btn--color-secondary" text="Delete Page" @btn-click="deletePage"/>
+      <!-- <btn class="font--medium btn--color-secondary" text="Hide Page" @btn-click="$emit('hide-page')"/> -->
+      <btn class="font--medium btn--color-secondary" text="Update Project" @btn-click="$emit('update-project')"/>
+      
+    </div>
+  `
 };
 
 const profileEditor = {
@@ -1044,10 +1076,13 @@ const metaEditor = {
         if (!newVal) return;
         switch (newVal) {
           case "sendData":
+            const urlValSplit = this.urlVal.split("/");
+
             this.tempPageData.title = this.titleVal;
             this.tempPageData.parent = this.parentVal;
             this.tempPageData.tags = this.tagsVal;
             this.tempPageData.urlPath = this.urlVal;
+            this.tempPageData.urlName = urlValSplit[urlValSplit.length - 1].split(".html")[0];
             this.tempPageData.description = this.descVal;
 
             this.$emit('send-data', this.tempPageData);

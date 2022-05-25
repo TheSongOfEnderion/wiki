@@ -4,7 +4,7 @@ $card-bg: white;
 $color-primary: #0d6efd;
 $color-error: #e82b2b;
 $color-light: #E7E7E2;
-$color-light2: #F7F7F7;
+$color-light2: darken(#F7F7F7, 1.7);
 $font-color-primary: $color-primary;
 $font-color-light: #fff;
 $font-color-dark: #2b2b2b;
@@ -18,12 +18,12 @@ $btn-primary--font: $font-color-light;
 
 // Header Variables
 $header-font: $font-family;
-
+   
 // BreadCrumb Variables
 $breadcrumbs-bg: $color-light2;
 $breadcrumbs-font-color: $font-color-dark;
 
-// TOC
+// TOC             
 $toc-bg: $color-light2;
 
 // ======== VARIABLE AREA ======== (DO NOT REMOVE THIS COMMENT)
@@ -34,14 +34,14 @@ $toc-bg: $color-light2;
 @import './editor/easymde';
 @import './editor/jsoneditor'; 
 
-// Imports 
+// Imports  
 @import './font/font';
 @import './buttons';
 @import './utility';
 @import './default';
 @import './input';
 
-// Imports Components         
+// Imports Components 
 @import './components/card';
 @import './components/header';
 @import './components/toggle';
@@ -49,12 +49,12 @@ $toc-bg: $color-light2;
 @import './components/toc';
 @import './components/profilebox';
 @import './components/editor';
-           
+      
 @mixin center-contents {
   display: grid;
   place-items: center;
 }
-
+ 
 @mixin innerBorder($size, $color) {
   -webkit-box-shadow: inset 0px 0px 0px $size $color !important;
   -moz-box-shadow: inset 0px 0px 0px $size $color !important;
@@ -71,53 +71,4 @@ $toc-bg: $color-light2;
   outline: 3px solid $outline;
 }
 
-.card--editor {
-  height: max-content;
-  overflow: auto;   
-}
 
-#profile-box {
-  padding-bottom: 3em; 
-}  
- 
-#manage-tab {
-  height: auto;
-}  
-
-// Side Button
-.btn-side {
-  margin: 1em;
-  position: fixed;
-  z-index: 99;
-  padding: 0.4em 0.8em;
-  top: 10%;
-  left: 20%;
-}
-    
-@media (min-width: 100px) {
-  .btn-side {
-    top: 0.2em;
-    left: 0.2em;
-  }
-}  
-
-@media (min-width: 300px) {
-  .btn-side {
-    top: 1%;
-    left: 2%;
-  }
-}  
-
-@media (min-width: 700px) {
-  .btn-side {
-    top: 3%;
-    left: 5%;
-  }
-}  
-
-@media (min-width: 1000px) {
-  .btn-side {
-    top: 10%;
-    left: 15%;
-  }
-}  
