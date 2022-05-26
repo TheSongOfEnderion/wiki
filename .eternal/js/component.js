@@ -207,7 +207,7 @@ const pageContent = {
 
         <!-- Create Non-Spoiler Buttons -->
         <div class="page-tab-btns"  v-show="pageContents.nonspoiler.length > 1">
-            <button v-for="(html, index) in pageContents.nonspoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('nonspoiler', html.pageid)">{{ html.name }}</button>
+            <button v-for="(html, index) in pageContents.nonspoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-tertiary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('nonspoiler', html.pageid)">{{ html.name }}</button>
         </div>
         <!-- Create Non-Spoiler Content Area -->
         <tab v-for="(html, index) in pageContents.nonspoiler" :html="html.html" :id="html.pageid" :profile-data="html.profileBox" :class="{hide: index != 0}"/>
@@ -219,7 +219,7 @@ const pageContent = {
 
         <!-- Create Spoiler Buttons -->
         <div class="page-tab-btns" v-show="pageContents.spoiler.length > 1">
-            <button v-for="(html, index) in pageContents.spoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-secondary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('spoiler', html.pageid)">{{ html.name }}</button>
+            <button v-for="(html, index) in pageContents.spoiler" :id="html.id + '-btn'" :class="['btn', 'btn-primary', 'btn--color-tertiary', 'btn--color-tab', index == 0 ? 'btn--active' : '']" @click="selectedTab('spoiler', html.pageid)">{{ html.name }}</button>
         </div>
         <!-- Create Spoiler Content Area -->
         <tab v-for="(html, index) in pageContents.spoiler" :html="html.html" :id="html.pageid" :profile-data="html.profileBox" :class="{hide: index != 0}"/>
