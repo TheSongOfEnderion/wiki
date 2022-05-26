@@ -7,7 +7,7 @@
   "home": {
     "title": "Home",
     "path": "content/home.html",
-    "parent": ""
+    "parent": "geh"
   },
   "ethan-morales": {
     "title": "Ethan Morales",
@@ -59,16 +59,6 @@
     "path": "content/story/tboah/characters/protagonist/kevin-lichtein.html",
     "parent": "tboah-characters"
   },
-  "new-page": {
-    "title": "TEST PAEG",
-    "path": "content/test/test-page.html",
-    "parent": ""
-  },
-  "testssss-page": {
-    "title": "TESSSSSS",
-    "path": "content/test/testssss-page.html",
-    "parent": ""
-  },
   "yasha-romanova": {
     "title": "Yasha romanova",
     "path": "content/tboah/characters/e-class/yasha-romanova.html",
@@ -93,5 +83,10 @@
     "title": "Enderion",
     "path": "content/lore/enderion.html",
     "parent": "lore"
+  },
+  "tie-characters": {
+    "title": "Tie characters",
+    "path": "content/story/tie/tie-characters.html",
+    "parent": ""
   }
 }

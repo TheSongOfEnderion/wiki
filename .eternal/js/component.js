@@ -496,7 +496,7 @@ const editor = {
   props: {
     passedEditorData: { type: Object, required: true },
   },
-  emits: ['saveContent', 'delete-page', 'update-project', 'new-page', 'history-previous'],
+  emits: ['save-content', 'delete-page', 'update-project', 'new-page', 'history-previous'],
   components: ['markdown', 'btn', 'content-editor', 'profile-editor', 'meta-editor', 'tab-editor', 'select-drop', 'btnToggle', 'sidebar'],
   watch: {
     passedEditorData: {
@@ -538,6 +538,11 @@ const editor = {
       await this.$nextTick();
       this.sendToChild = "";
 
+      if (this.tempPageData.urlPath.toLowerCase().includes('.html')) {
+        this.$emit('send-data', null);
+        return;
+      }
+
       let content = '';
       for (const area in this.tempContentData) {
         content += `<div id="${area}">\n`;
@@ -550,7 +555,7 @@ const editor = {
       this.tempPageData.createSpoilers = this.tempCreateSpoilers;
       this.tempPageData.tabs = this.editorData.pageData.tabs;
 
-      this.$emit('saveContent', {
+      this.$emit('save-content', {
         contentData: content,
         profileData: this.tempProfileData,
         pageData: this.tempPageData
@@ -1043,9 +1048,10 @@ const metaEditor = {
       titleVal: "",
       parentVal: "",
       tagsVal: "",
-      urlVal: "",
+      urlName: "",
+      urlPath: "",
       descVal: "",
-
+      
       tempPageData: {}
     };
   },
@@ -1061,14 +1067,20 @@ const metaEditor = {
       handler(newVal) {
         if (Object.keys(newVal).length === 0) return;
 
-
         this.tempPageData = JSON.parse(JSON.stringify(this.editorData.pageData));
 
         this.titleVal = this.editorData.pageData.title;
-        this.urlVal = this.editorData.pageData.urlPath;
+        this.urlName = this.editorData.pageData.urlName;
+        this.urlPath = this.editorData.pageData.urlPath;
         this.parentVal = this.editorData.pageData.parent;
         this.tagsVal = this.editorData.pageData.tags;
         this.descVal = this.editorData.pageData.description;
+
+        if (this.urlPath.charAt(this.urlPath.length - 1) != '/') {
+          this.urlPath += '/';
+        }
+
+        // console.log(this.urlPath);
       }
     },
     orderFromParent: {
@@ -1077,14 +1089,14 @@ const metaEditor = {
         if (!newVal) return;
         switch (newVal) {
           case "sendData":
-            const urlValSplit = this.urlVal.split("/");
+            const urlNameSplit = this.urlName.split("/");
 
-            this.tempPageData.title = this.titleVal;
-            this.tempPageData.parent = this.parentVal;
-            this.tempPageData.tags = this.tagsVal;
-            this.tempPageData.urlPath = this.urlVal;
-            this.tempPageData.urlName = urlValSplit[urlValSplit.length - 1].split(".html")[0];
-            this.tempPageData.description = this.descVal;
+            this.tempPageData.title = this.titleVal.trim();
+            this.tempPageData.parent = this.parentVal.trim();
+            this.tempPageData.tags = this.tagsVal.trim();
+            this.tempPageData.urlPath = this.urlPath.trim();
+            this.tempPageData.urlName = this.urlName.trim();
+            this.tempPageData.description = this.descVal.trim();
 
             this.$emit('send-data', this.tempPageData);
             return;
@@ -1092,7 +1104,8 @@ const metaEditor = {
             this.titleVal = this.tempPageData.title;
             this.parentVal = this.tempPageData.parent;
             this.tagsVal = this.tempPageData.tags;
-            this.urlVal = this.tempPageData.urlPath;
+            this.urlPath = this.tempPageData.urlPath;
+            this.urlName = this.tempPageData.urlName;
             this.descVal = this.tempPageData.description;
             return;
         }
@@ -1104,8 +1117,10 @@ const metaEditor = {
       <tbody>
         <tr class="input-text input-text--visual">
           <textinput id="pageTitle" name="Page Title" place-holder="Awesome page title!" v-model="titleVal" @editor-changed="$emit('editor-changed')"/> </tr>
-          <tr class="input-text input-text--visual">
-          <textinput id="pageTitle" name="Page URL" place-holder="page file name" v-model="urlVal" @editor-changed="$emit('editor-changed')"/> </tr>
+        <tr class="input-text input-text--visual">
+          <textinput id="pageTitle" name="Url Name" place-holder="page file name" v-model="urlName" @editor-changed="$emit('editor-changed')"/> </tr>
+        <tr class="input-text input-text--visual">
+          <textinput id="pageTitle" name="Path" place-holder="page file name" v-model="urlPath" @editor-changed="$emit('editor-changed')"/> </tr>
         <tr class="input-text input-text--visual">
           <textinput id="pageParent" name="Parent" place-holder="Parent page for breadcrumbs" v-model="parentVal" @editor-changed="$emit('editor-changed')"/> </tr>
         <tr class="input-text input-text--visual">
