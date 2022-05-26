@@ -25,10 +25,10 @@
       "Eldra": "eldra",
       "World": "world",
       "History": "history",
-      "Monsters": "monsters",
+      "Creatures": "creatures",
       "Races": "races",
       "Magic": "magic",
-      "Creatures": "creatures"
+      "Beings": "beings"
     },
     "Librarium": {
       "_default": "librarium"

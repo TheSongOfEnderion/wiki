@@ -66,8 +66,8 @@
   },
   "eldra": {
     "title": "Eldra",
-    "path": "content/eldra.html",
-    "parent": ""
+    "path": "content/lore/eldra.html",
+    "parent": "lore"
   },
   "eldrada": {
     "title": "Eldrada",
@@ -81,12 +81,62 @@
   },
   "enderion": {
     "title": "Enderion",
-    "path": "content/lore/enderion.html",
-    "parent": "lore"
+    "path": "content/lore/beings/enderion.html",
+    "parent": "beings"
   },
   "tie-characters": {
     "title": "Tie characters",
     "path": "content/story/tie/tie-characters.html",
+    "parent": ""
+  },
+  "races": {
+    "title": "Races",
+    "path": "content/lore/races.html",
+    "parent": "lore"
+  },
+  "arsean": {
+    "title": "Arsean",
+    "path": "content/lore/races/mirdum/arsean.html",
+    "parent": "races"
+  },
+  "eldric-language": {
+    "title": "Eldric language",
+    "path": "content/lore/eldra/eldric-language.html",
+    "parent": "eldra"
+  },
+  "world": {
+    "title": "World",
+    "path": "content/lore/world.html",
+    "parent": "lore"
+  },
+  "beings": {
+    "title": "Beings",
+    "path": "content/lore/beings.html",
+    "parent": "lore"
+  },
+  "mirdum": {
+    "title": "Mirdum",
+    "path": "content/lore/world/mirdum.html",
+    "parent": "world"
+  },
+  "celt": {
+    "title": "Celt",
+    "path": "content/lore/races/mirdum/celt.html",
+    "parent": "races"
+  },
+  "yoruban": {
+    "title": "Yoruban",
+    "path": "content/lore/races/mirdum/yoruban.html",
+    "parent": "races"
+  },
+  "shadowfaust": {
+    "title": "Shadowfaust",
+    "path": "content/lore/races/mirdum/shadowfaust.html",
+    "parent": "races"
+  },
+  "librarium": {
+    "title": "Librarium Sanctum",
+    "path": "content/librarium/librarium.html",
     "parent": ""
   }
 }

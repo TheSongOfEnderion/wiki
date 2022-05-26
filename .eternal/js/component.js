@@ -1079,8 +1079,6 @@ const metaEditor = {
         if (this.urlPath.charAt(this.urlPath.length - 1) != '/') {
           this.urlPath += '/';
         }
-
-        // console.log(this.urlPath);
       }
     },
     orderFromParent: {
