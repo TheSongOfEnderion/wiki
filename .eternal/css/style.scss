@@ -49,12 +49,12 @@ $toc-bg: $color-light2;
 @import './components/toc';
 @import './components/profilebox';
 @import './components/editor';
-      
+
 @mixin center-contents {
   display: grid;
   place-items: center;
 }
- 
+
 @mixin innerBorder($size, $color) {
   -webkit-box-shadow: inset 0px 0px 0px $size $color !important;
   -moz-box-shadow: inset 0px 0px 0px $size $color !important;

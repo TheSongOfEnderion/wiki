@@ -73,5 +73,25 @@
     "title": "Yasha romanova",
     "path": "content/tboah/characters/e-class/yasha-romanova.html",
     "parent": "tboah-characters"
+  },
+  "eldra": {
+    "title": "Eldra",
+    "path": "content/eldra.html",
+    "parent": ""
+  },
+  "eldrada": {
+    "title": "Eldrada",
+    "path": "content/lore/eldra/eldrada.html",
+    "parent": "eldra"
+  },
+  "lore": {
+    "title": "Lore",
+    "path": "content/lore/lore.html",
+    "parent": ""
+  },
+  "enderion": {
+    "title": "Enderion",
+    "path": "content/lore/enderion.html",
+    "parent": "lore"
   }
 }

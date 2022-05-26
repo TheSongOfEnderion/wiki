@@ -34,7 +34,9 @@
 
       <!-- Editor -->
       <div class="row editor-div" v-if="isElectronCheck">
-        <editor :passed-editor-data="editorData" @save-content="saveContent" @delete-page="deletePage" @update-project="updateProject" @new-page="newPage"/>
+        <editor :passed-editor-data="editorData" @save-content="saveContent"
+          @delete-page="deletePage" @update-project="updateProject" 
+          @new-page="newPage" @history-previous='historyPrevious'/>
       </div>
 
       <!-- Page Card -->

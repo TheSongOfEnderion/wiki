@@ -22,6 +22,7 @@
     },
     "Lore": {
       "_default": "lore",
+      "Eldra": "eldra",
       "World": "world",
       "History": "history",
       "Monsters": "monsters",

@@ -8,6 +8,8 @@ var root;
 var projectPath = '';
 var urlpaths = [];
 
+
+
 const isObject = (obj) => {
   return Object.prototype.toString.call(obj) === '[object Object]';
 };
@@ -15,7 +17,7 @@ const isObject = (obj) => {
 
 try {
   window.api.receive("fromMain", async(data) => {
-    if (data.name == 'path') {
+    if (data.name == 'projectpath') {
       if (projectPath != '') return;
       projectPath = data.value;
       console.log("Path: ", projectPath);
@@ -30,12 +32,14 @@ try {
 
     if (data.name == 'urlpaths') {
       urlpaths = data.value;
-      console.log(urlpaths);
       return;
     }
 
   });
-} catch (error) {}
+} catch (error) {
+  console.log(error);
+
+}
 
 
 function startPage() {
@@ -66,6 +70,7 @@ function startPage() {
         isEmptyPage: false,
 
         rerenderData: {},
+        pageHistory: [],
       };
     },
     methods: {
@@ -116,10 +121,21 @@ function startPage() {
 
         window.api.send('toMain', {
           name: 'project:update',
-          path: projectPath,
+          id: this.meta.id,
+          projectPath: projectPath
         });
 
-        alert('Updated Project to latest js/css/index!');
+        // alert('Updated Project to latest js/css/index!');
+      },
+      async historyPrevious() {
+        if (this.pageHistory.length === 1) return;
+        console.log(this.pageHistory);
+        console.log(this.pageHistory.length, this.pageHistory.length-2);
+        await this.readPage(this.pageHistory[this.pageHistory.length-2]);
+
+        this.pageHistory = this.pageHistory.slice(0, this.pageHistory.length-2);
+        console.log(this.pageHistory);
+
       },
       deletePage() {
         if (pageName === 'home') {
@@ -132,13 +148,10 @@ function startPage() {
         delete this.dir[pageName];
 
         // code to move file into trash bin
-
         window.api.send('toMain', {
           name: 'project:deletepage',
           data: { pageName: pageName, projectPath: projectPath }
         });
-
-        console.log(pageName);
 
         this.readPage('home');
 
@@ -173,6 +186,7 @@ function startPage() {
 
           window.api.send('toMain', {
             name: 'project:save',
+            id: this.meta.id,
             data: {
               content: data.contentData,
               pageData: this.cloneObj(data.pageData),
@@ -319,6 +333,8 @@ function startPage() {
         if (this.areaToggle == false) {
           document.getElementById('nonspoiler').classList.remove('hide');
         }
+
+        this.pageHistory.push(pageName);
       }
 
     },
@@ -326,6 +342,9 @@ function startPage() {
       isElectronCheck() {
         return this.isElectron();
       }
+    },
+    async created() {
+      
     },
     async mounted() {
       // Step 1. Retrieves Necessary Files
@@ -343,9 +362,17 @@ function startPage() {
       if (this.isElectron()) {
         window.api.send('toMain', {
           name: 'project:getcontentdirs',
+          id: this.meta.id,
           projectPath: projectPath,
         });
+
+        window.api.send('toMain', {
+          name: 'project:getpath',
+          id: this.meta.id
+        });
       }
+
+
     }
   });
 
@@ -556,14 +583,27 @@ class TextRenderer {
 
       for (const link of links) {
         if (link === '[[toc]]') continue;
-        let linkName = link.trim().replace(/(\[|\])/g, '');
+
+        let linkName = '';
+        let linkDisplayName = '';
+        if (link.includes('|')) {
+          const rawSplit = link.split("|");
+          linkName = rawSplit[0].trim().replace(/(\[|\])/g, '').toLowerCase();
+          linkDisplayName = rawSplit[1].trim().replace(/(\[|\])/g, '');
+        } else {
+          linkName = link.trim().replace(/(\[|\])/g, '');
+        }
+        
 
         // // Search Directly
         let linkNameLowered = linkName.toLowerCase().replace(/\s/g, '-');
         if (this.dir.hasOwnProperty(linkNameLowered)) {
           let dirItem = this.dir[linkNameLowered];
-
-          value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
+          let name = dirItem.title;
+          if (linkDisplayName !== '') {
+            name = linkDisplayName;
+          }
+          value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${name}</a>`);
           continue;
         }
 
@@ -572,11 +612,21 @@ class TextRenderer {
         for (const pageName in this.dir) {
           let dirItem = this.dir[pageName];
           if (dirItem.title.toLowerCase() === loweredlinkname) {
-            value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${dirItem.title}</a>`);
+            let name = dirItem.title;
+            if (linkDisplayName !== '') {
+              name = linkDisplayName;
+            }
+            value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${name}</a>`);
             break;
           }
         }
-        value = value.replace(link, `<a class="btn btn-secondary btn--link red" onclick="root.readPage('${linkNameLowered}')">${link.replace(/\]/g, '').replace(/\[/g, '').trim()}</a>`);
+        let name = '';
+        if (linkDisplayName !== '') {
+          name = linkDisplayName;
+        } else {
+          name = link.replace(/\]/g, '').replace(/\[/g, '').trim();
+        }
+        value = value.replace(link, `<a class="btn btn-secondary btn--link red" onclick="root.readPage('${linkNameLowered}')">${linkDisplayName}</a>`);
 
       }
       return value;

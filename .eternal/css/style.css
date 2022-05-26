@@ -5284,13 +5284,11 @@ progress {
   padding: 4px 0;
 }
 
-.CodeMirror pre.CodeMirror-line,
-.CodeMirror pre.CodeMirror-line-like {
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
   padding: 0 4px;
 }
 
-.CodeMirror-gutter-filler,
-.CodeMirror-scrollbar-filler {
+.CodeMirror-gutter-filler, .CodeMirror-scrollbar-filler {
   background-color: #fff;
 }
 
@@ -5336,21 +5334,15 @@ progress {
   z-index: 1;
 }
 
-.cm-fat-cursor .CodeMirror-line::-moz-selection,
-.cm-fat-cursor .CodeMirror-line > span::-moz-selection,
-.cm-fat-cursor .CodeMirror-line > span > span::-moz-selection {
+.cm-fat-cursor .CodeMirror-line::-moz-selection, .cm-fat-cursor .CodeMirror-line > span::-moz-selection, .cm-fat-cursor .CodeMirror-line > span > span::-moz-selection {
   background: 0 0;
 }
 
-.cm-fat-cursor .CodeMirror-line::selection,
-.cm-fat-cursor .CodeMirror-line > span::selection,
-.cm-fat-cursor .CodeMirror-line > span > span::selection {
+.cm-fat-cursor .CodeMirror-line::selection, .cm-fat-cursor .CodeMirror-line > span::selection, .cm-fat-cursor .CodeMirror-line > span > span::selection {
   background: 0 0;
 }
 
-.cm-fat-cursor .CodeMirror-line::-moz-selection,
-.cm-fat-cursor .CodeMirror-line > span::-moz-selection,
-.cm-fat-cursor .CodeMirror-line > span > span::-moz-selection {
+.cm-fat-cursor .CodeMirror-line::-moz-selection, .cm-fat-cursor .CodeMirror-line > span::-moz-selection, .cm-fat-cursor .CodeMirror-line > span > span::-moz-selection {
   background: 0 0;
 }
 
@@ -5407,8 +5399,7 @@ progress {
   color: #292;
 }
 
-.cm-header,
-.cm-strong {
+.cm-header, .cm-strong {
   font-weight: 700;
 }
 
@@ -5444,8 +5435,7 @@ progress {
   color: #05a;
 }
 
-.cm-s-default .cm-type,
-.cm-s-default .cm-variable-3 {
+.cm-s-default .cm-type, .cm-s-default .cm-variable-3 {
   color: #085;
 }
 
@@ -5542,10 +5532,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   border-right: 50px solid transparent;
 }
 
-.CodeMirror-gutter-filler,
-.CodeMirror-hscrollbar,
-.CodeMirror-scrollbar-filler,
-.CodeMirror-vscrollbar {
+.CodeMirror-gutter-filler, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-vscrollbar {
   position: absolute;
   z-index: 6;
   display: none;
@@ -5629,8 +5616,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   min-height: 1px;
 }
 
-.CodeMirror pre.CodeMirror-line,
-.CodeMirror pre.CodeMirror-line-like {
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
   border-radius: 0;
   border-width: 0;
   background: 0 0;
@@ -5649,8 +5635,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   font-variant-ligatures: contextual;
 }
 
-.CodeMirror-wrap pre.CodeMirror-line,
-.CodeMirror-wrap pre.CodeMirror-line-like {
+.CodeMirror-wrap pre.CodeMirror-line, .CodeMirror-wrap pre.CodeMirror-line-like {
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: normal;
@@ -5679,11 +5664,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   outline: 0;
 }
 
-.CodeMirror-gutter,
-.CodeMirror-gutters,
-.CodeMirror-linenumber,
-.CodeMirror-scroll,
-.CodeMirror-sizer {
+.CodeMirror-gutter, .CodeMirror-gutters, .CodeMirror-linenumber, .CodeMirror-scroll, .CodeMirror-sizer {
   -webkit-box-sizing: content-box;
           box-sizing: content-box;
 }
@@ -5731,21 +5712,15 @@ div.CodeMirror-dragcursors {
   cursor: crosshair;
 }
 
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
   background: #d7d4f0;
 }
 
-.CodeMirror-line::selection,
-.CodeMirror-line > span::selection,
-.CodeMirror-line > span > span::selection {
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
   background: #d7d4f0;
 }
 
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
   background: #d7d4f0;
 }
 
@@ -5902,8 +5877,7 @@ span.CodeMirror-selectedtext {
   width: 100%;
 }
 
-.editor-toolbar .easymde-dropdown,
-.editor-toolbar button {
+.editor-toolbar .easymde-dropdown, .editor-toolbar button {
   background: 0 0;
   display: inline-block;
   text-align: center;
@@ -5920,8 +5894,7 @@ span.CodeMirror-selectedtext {
   width: 30px;
 }
 
-.editor-toolbar button.active,
-.editor-toolbar button:hover {
+.editor-toolbar button.active, .editor-toolbar button:hover {
   background: #fcfcfc;
   border-color: #95a5a6;
 }
@@ -5937,7 +5910,7 @@ span.CodeMirror-selectedtext {
 }
 
 .editor-toolbar button:after {
-  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
   font-size: 65%;
   vertical-align: text-bottom;
   position: relative;
@@ -6062,8 +6035,7 @@ span.CodeMirror-selectedtext {
   margin-bottom: 10px;
 }
 
-.editor-preview table td,
-.editor-preview table th {
+.editor-preview table td, .editor-preview table th {
   border: 1px solid #ddd;
   padding: 5px;
 }
@@ -6143,9 +6115,7 @@ span.CodeMirror-selectedtext {
   top: 30px;
 }
 
-.easymde-dropdown:active .easymde-dropdown-content,
-.easymde-dropdown:focus .easymde-dropdown-content,
-.easymde-dropdown:focus-within .easymde-dropdown-content {
+.easymde-dropdown:active .easymde-dropdown-content, .easymde-dropdown:focus .easymde-dropdown-content, .easymde-dropdown:focus-within .easymde-dropdown-content {
   visibility: visible;
 }
 
@@ -8446,6 +8416,10 @@ div.jsoneditor-statusbar > .jsoneditor-size-info {
   outline: 2px solid #0d6efd;
 }
 
+.li {
+  margin-left: 1em;
+}
+
 html {
   font-family: "Rubik Regular";
   color: #2b2b2b;
@@ -8496,7 +8470,7 @@ a:hover {
 }
 
 li::marker {
-  content: "•";
+  content: "•   ";
   font-size: 1.2em;
 }
 
@@ -8563,8 +8537,6 @@ hr {
   padding: 2em;
   overflow: auto;
   border-radius: 0.8em;
-  text-align: justify;
-  text-justify: inter-word;
 }
 
 .card--visual {

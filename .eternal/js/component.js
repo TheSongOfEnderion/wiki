@@ -463,8 +463,8 @@ const breadcrumbs = {
   template: `
     <div class="page-breadcrumbs" v-if="this.breadcrumbs.length !== 0">
       <template v-for="crumb in breadcrumbs">
-        <btn v-if="crumb.type == 'link'" @btn-click="$emit('read-page', crumb.urlName)" :text="crumb.title"/>
-        <button v-if="crumb.type === 'arrow'" class="btn clear">{{ crumb.title }}</button>
+        <btn v-if="crumb.type == 'link'" class="m-0" @btn-click="$emit('read-page', crumb.urlName)" :text="crumb.title"/>
+        <button v-if="crumb.type === 'arrow'" class="btn m-0 clear">{{ crumb.title }}</button>
       </template>
     </div>  
   `
@@ -496,7 +496,7 @@ const editor = {
   props: {
     passedEditorData: { type: Object, required: true },
   },
-  emits: ['saveContent', 'delete-page', 'update-project', 'new-page'],
+  emits: ['saveContent', 'delete-page', 'update-project', 'new-page', 'history-previous'],
   components: ['markdown', 'btn', 'content-editor', 'profile-editor', 'meta-editor', 'tab-editor', 'select-drop', 'btnToggle', 'sidebar'],
   watch: {
     passedEditorData: {
@@ -645,6 +645,7 @@ const editor = {
     <div class="d-flex flex-column btn-div">
       <btn class="font--medium btn-side" text="≡" @btn-click="toggleSideBar"/>
       <btn class="font--medium btn-side" text="⚙" @btn-click="toggleEditorView"/>
+      <btn class="font--medium btn-side" text="🡄" @btn-click="$emit('history-previous')"/>
     </div>
 
     <div id="editor" class="container hide">
