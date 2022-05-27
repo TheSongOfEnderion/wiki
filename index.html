@@ -27,7 +27,7 @@
 
       <!-- Page Header -->
       <div id="header" class="row">
-        <header-card :title="projectTitle" :subtitle="projectSubtitle" :btn-list="headerNavBtn" @read-page="readPage"/>
+        <header-card :title="projectTitle" :subtitle="projectSubtitle" :btn-list="headerNavBtn" @read-page="gotoPage"/>
       </div>
 
       <!-- v-if="isElectronCheck" -->
@@ -45,7 +45,7 @@
         <h1 class="page-title d-flex justify-content-between" v-cloak>{{ pageTitle }}
           <toggle v-show="pageData.createSpoilers === true" @toggled="areaToggleHandler" />
         </h1>
-        <page-content :page-contents="pageContents" :page-data="pageData" :dir="dir" :area-toggle="areaToggle" @read-page="readPage">
+        <page-content :page-contents="pageContents" :page-data="pageData" :dir="dir" :area-toggle="areaToggle" @read-page="gotoPage">
       </div>
 
     </div>

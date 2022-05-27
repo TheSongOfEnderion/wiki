@@ -98,7 +98,6 @@ function startPage() {
       },
       isElectron() {
         const userAgent = navigator.userAgent.toLowerCase();
-        // renderEditor(true);
 
         if (userAgent.indexOf(' electron/') == -1) {
           // Not electron
@@ -126,12 +125,31 @@ function startPage() {
 
         // alert('Updated Project to latest js/css/index!');
       },
+      async gotoPage(pagename_) {
+        pageName = pagename_.replace(/\s/g, '-').trim();
+        if (pageName !== 'home') {
+          window.history.replaceState(null, null, `?p=${pageName}`);
+        } else {
+          window.history.replaceState(null, null, window.location.pathname);
+        }
+
+        console.log(window.location.href.split('?p=')[0] + '?p=' + pageName);
+        
+        if (!this.isElectron()) {
+          const newLink = window.location.href.split('?p=')[0] + '?p=' + pageName;
+          // window.location.replace();
+          window.open(newLink, "_self");
+        } else {
+          await this.readPage(pageName);
+        }
+        // await this.readPage(pageName);
+      },
       async historyPrevious() {
         if (this.pageHistory.length === 1) return;
         await this.readPage(this.pageHistory[this.pageHistory.length-2]);
         this.pageHistory = this.pageHistory.slice(0, this.pageHistory.length-2);
       },
-      deletePage() {
+      async deletePage() {
         if (pageName === 'home') {
           alert('Home Page cannot be deleted');
           return;
@@ -165,6 +183,11 @@ function startPage() {
         } else {
           window.history.replaceState(null, null, window.location.pathname);
         }
+
+        if (!this.isElectron()) {
+          // location.reload();
+        }
+ 
         this.clearVars();
         if (!this.dir.hasOwnProperty(pageName)) {
           // Null Render
@@ -599,7 +622,7 @@ class TextRenderer {
           if (linkDisplayName !== '') {
             name = linkDisplayName;
           }
-          value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${name}</a>`);
+          value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.gotoPage('${linkNameLowered}')">${name}</a>`);
           continue;
         }
 
@@ -612,7 +635,7 @@ class TextRenderer {
             if (linkDisplayName !== '') {
               name = linkDisplayName;
             }
-            value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.readPage('${linkNameLowered}')">${name}</a>`);
+            value = value.replace(link, `<a class="btn btn-secondary btn--link" onclick="root.gotoPage('${linkNameLowered}')">${name}</a>`);
             break;
           }
         }
@@ -622,7 +645,7 @@ class TextRenderer {
         } else {
           name = link.replace(/\]/g, '').replace(/\[/g, '').trim();
         }
-        value = value.replace(link, `<a class="btn btn-secondary btn--link red" onclick="root.readPage('${linkNameLowered}')">${name}</a>`);
+        value = value.replace(link, `<a class="btn btn-secondary btn--link red" onclick="root.gotoPage('${linkNameLowered}')">${name}</a>`);
 
       }
       return value;

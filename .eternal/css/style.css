@@ -8292,7 +8292,7 @@ div.jsoneditor-statusbar > .jsoneditor-size-info {
 }
 
 .btn--active:hover {
-  color: white;
+  color: white !important;
 }
 
 .btn--active2 {
