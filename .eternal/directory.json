@@ -84,11 +84,6 @@
     "path": "content/lore/beings/enderion.html",
     "parent": "beings"
   },
-  "tie-characters": {
-    "title": "Tie characters",
-    "path": "content/story/tie/tie-characters.html",
-    "parent": ""
-  },
   "races": {
     "title": "Races",
     "path": "content/lore/races.html",
@@ -147,6 +142,21 @@
   "tie-characterss": {
     "title": "New page",
     "path": "content/tie-characterss.html",
+    "parent": ""
+  },
+  "amihan-villanueva": {
+    "title": "Amihan Villanueva",
+    "path": "content/story/tboah/characters/e-class/amihan-villanueva.html",
+    "parent": "tboah-characters"
+  },
+  "new-page-vPD5A": {
+    "title": "New page",
+    "path": "content/test/new-page-vPD5A.html",
+    "parent": ""
+  },
+  "tie-charactersss": {
+    "title": "Tie characters",
+    "path": "content/test/tie-charactersss.html",
     "parent": ""
   }
 }

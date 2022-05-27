@@ -8345,6 +8345,10 @@ div.jsoneditor-statusbar > .jsoneditor-size-info {
   color: #fff;
 }
 
+.font--gray {
+  color: #e6e6e6;
+}
+
 .font--w-bold {
   font-weight: 400;
 }
@@ -8530,6 +8534,18 @@ hr {
 
 .input-text--visual input {
   border: 1px solid #E7E7E2;
+}
+
+.dropdown-select {
+  width: 100%;
+  border-radius: 0.3em;
+  font-size: 1em;
+  padding: 0.2em 0.5em;
+  margin: 0.2em;
+}
+
+.dropdown-select--visual:focus {
+  outline: 1px solid #0d6efd;
 }
 
 .card {

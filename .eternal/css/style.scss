@@ -40,8 +40,9 @@ $toc-bg: $color-light2;
 @import './utility';
 @import './default';
 @import './input';
+@import './dropdown';
 
-// Imports Components
+// Imports Components    
 @import './components/card';
 @import './components/header';
 @import './components/toggle';

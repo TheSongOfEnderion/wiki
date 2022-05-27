@@ -497,10 +497,11 @@ const editor = {
     passedEditorData: { type: Object, required: true },
     urlpaths: { type: Array, default: [] },
     parentsList: { type: Array, default: [] },
+    templateList: { type: Array, default: [] },
     isNewPage: { type: Boolean, default: false },
     dir: { type: Object, required: true },
   },
-  emits: ['save-content', 'delete-page', 'update-project', 'new-page', 'history-previous'],
+  emits: ['save-content', 'delete-page', 'update-project', 'new-page', 'history-previous', 'set-page-as-template'],
   components: ['markdown', 'btn', 'content-editor', 'profile-editor', 'meta-editor', 'tab-editor', 'select-drop', 'btnToggle', 'sidebar'],
   watch: {
     passedEditorData: {
@@ -645,7 +646,10 @@ const editor = {
       await this.$nextTick();
       this.sendToChild = "";
       console.log(this.editorData);
-    }
+    },
+    newPage(value) {
+      this.$emit('new-page', value);
+    },
   },
   computed: {
     getSpoilerStorageValue() {
@@ -654,7 +658,7 @@ const editor = {
     }
   },
   template: `
-    <sidebar @delete-page="$emit('delete-page')" @update-project="$emit('update-project')" @new-page="$emit('new-page')"/> 
+    <sidebar @delete-page="$emit('delete-page')" @update-project="$emit('update-project')" @new-page="newPage" @set-page-as-template="$emit('set-page-as-template')" :template-list="templateList"/> 
 
     <div class="d-flex flex-column btn-div">
       <btn class="font--medium btn-side" text="≡" @btn-click="toggleSideBar"/>
@@ -724,7 +728,16 @@ const editor = {
 
 const sideBar = {
   name: 'sidebar',
-  emits: ['delete-page', 'hide-page', 'update-project', 'new-page'],
+  emits: ['delete-page', 'hide-page', 'update-project', 'new-page', 'set-page-as-template'],
+  components: ['dropdown'],
+  data() {
+    return {
+      template: '',
+    };
+  },
+  props: {
+    templateList: { type: Array, default: [] },
+  },
   methods: {
     closeSidebar() {
       document.getElementById('sidebar').classList.add('hide');
@@ -733,17 +746,28 @@ const sideBar = {
       if (!confirm('Do you really want to delete this page?')) return;
       this.$emit('delete-page');
       this.closeSidebar();
+    },
+    newPage() {
+      this.$emit('new-page', this.template);
     }
   },
   template: `
     <div id="sidebar" class='sidebar hide'>
+
       <btn class="font--medium float-end" text="✕" @btn-click="closeSidebar"/>
       <h2 class='mb-3'>Side Menu</h2>
-      
-      <btn class="font--medium btn--color-secondary" text="New Page" @btn-click="$emit('new-page')"/>
-      <btn class="font--medium btn--color-secondary" text="Delete Page" @btn-click="deletePage"/>
-      <!-- <btn class="font--medium btn--color-secondary" text="Hide Page" @btn-click="$emit('hide-page')"/> -->
+
       <btn class="font--medium btn--color-secondary" text="Update Project" @btn-click="$emit('update-project')"/>
+
+      <br>
+      <btn class="font--medium btn--color-secondary" text="New Page" @btn-click="newPage"/>
+      <btn class="font--medium btn--color-secondary" text="Delete Page" @btn-click="deletePage"/>
+      <br>
+      <dropdown id="templateInput" place-holder="Template" v-model="template" :autocomplete-data="templateList"/>
+      <br>
+      <btn class="font--medium btn--color-secondary" text="Set page as Template" @btn-click="$emit('set-page-as-template')"/>
+      <!-- <btn class="font--medium btn--color-secondary" text="Hide Page" @btn-click="$emit('hide-page')"/> -->
+      <!-- :autocomplete-data="urlpaths" -->
       
     </div>
   `
@@ -1060,7 +1084,7 @@ const metaEditor = {
       urlName: "",
       urlPath: "",
       descVal: "",
-      
+
       tempPageData: {},
     };
   },
@@ -1281,7 +1305,7 @@ const tabEditor = {
           <tbody>
             <tr class="input-text input-text--visual">
               <p class="m-0 text-left">Tab Name:</p>
-              <textinput id="tabName"  name="Tab Name" :no-name='true' place-holder="Place a name here" v-model="tabName" @editor-changed="$emit('editor-changed')"/> </tr>
+              <textinput id="tabName" place-holder="Place a name here" v-model="tabName" @editor-changed="$emit('editor-changed')"/> </tr>
             <tr class="ps-5">
               <btn class="font--small" text="Rename" @btn-click="tabRename"/>
               <btn class="font--small" text="Delete" @btn-click="tabDelete"/>
@@ -1311,8 +1335,7 @@ const textInput = {
     name: { type: String, default: "" },
     placeHolder: { type: String, default: "" },
     modelValue: { type: String, default: "" },
-    noName: { type: Boolean, default: false },
-    autocompleteData: { type: Array, default: []}
+    autocompleteData: { type: Array, default: [] }
   },
   computed: {
     value: {
@@ -1326,7 +1349,7 @@ const textInput = {
     }
   },
   template: `
-    <td class="textinput-label" ><label :for="id" v-if="noName == false"> {{ name }}: </label></td>
+    <td class="textinput-label" ><label :for="id" v-if="name !== ''"> {{ name }}: </label></td>
     <td class="textinput-input" >
       <input v-if="autocompleteData.length == 0" type="text" :id="id" :name="name" class="outline-primary" :placeHolder="placeHolder" v-model="value" />
       <input v-else type="text" :id="id" :list="id + '-list'" :name="name" class="outline-primary" :placeHolder="placeHolder" v-model="value" />
@@ -1335,7 +1358,6 @@ const textInput = {
           <option v-for="value in autocompleteData">{{value}}</option>
         </datalist>
       </template>
-    
     </td>
   `
 };
@@ -1404,8 +1426,38 @@ const selectDrop = {
     `
 };
 
-// const sideButton = {
-//   name: `side-btn`,
-//   components: 
-//   template: ``
-// };
+const dropdown = {
+  name: `dropdown`,
+  emits: ['update:modelValue', 'template-change'],
+  props: {
+    id: { type: String, required: true },
+    name: { type: String, default: "" },
+    placeHolder: { type: String, default: "" },
+    modelValue: { type: String, default: "" },
+    autocompleteData: { type: Object, default: ['test 1', 'test 2'] }
+  },
+  computed: {
+    value: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit('update:modelValue', value);
+      }
+    }
+  },
+  // methods: {
+  //   onChange(event) {
+  //     this.$emit('template-change', event.target.value);
+  //   }, @change="onChange($event)"
+  // },
+  template: `
+    <div>
+      <select :name="name" :id="id" v-model="value" class="dropdown-select dropdown-select--visual">
+        <option value="" selected>No Selected Template</option>
+        <option v-for="value in autocompleteData" :value="value">{{'- ' + value }}</option>
+      </select>
+    </div>
+
+  `
+};

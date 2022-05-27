@@ -35,9 +35,9 @@
 
       <!-- Editor -->
       <div class="row editor-div" v-if="isElectron">
-        <editor :passed-editor-data="editorData" :urlpaths="urlpaths" :parents-list="parentlists"
+        <editor :passed-editor-data="editorData" :urlpaths="urlpaths" :parents-list="parentlists" :template-list="templateList"
           @save-content="saveContent" :is-new-page="isNewPage" :dir="dir"
-          @delete-page="deletePage" @update-project="updateProject" 
+          @delete-page="deletePage" @update-project="updateProject" @set-page-as-template="setPageAsTemplate" 
           @new-page="newPage" @history-previous='historyPrevious'/>
       </div>
 

@@ -38,6 +38,10 @@
   color: $font-color-light;
 }
 
+.font--gray {
+  color: darken($font-color-light, 10);
+}
+
 // weight
 .font--w-bold {
   font-weight: 400;

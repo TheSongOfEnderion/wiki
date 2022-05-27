@@ -24,12 +24,16 @@ function startPage() {
         dir: {},
         headerNavBtn: {},
 
+        // Others
+        areaToggle: getSpoilerStorageValue(),
+
         // Project Variables
         projectTitle: '',
         projectSubtitle: '',
 
 
         // Page Variables
+        editorData: {},
         pageData: {},
         pageTitle: '',
         pageContents: {
@@ -37,19 +41,18 @@ function startPage() {
           nonspoiler: []
         },
 
-        // Others
-        areaToggle: getSpoilerStorageValue(),
-        editorData: {},
-
+        // Validator data
+        isElectron: false,
         isNewPage: false,
 
+        // Reload data
         rerenderData: {},
         pageHistory: [],
 
+        // Autocomplete data
         urlpaths: [],
         parentlists: [],
-
-        isElectron: false,
+        templateList:[],
       };
     },
     methods: {
@@ -156,6 +159,22 @@ function startPage() {
         });
       },
 
+      setPageAsTemplate() {
+
+        if (!this.dir.hasOwnProperty(pageName)) {
+          console.log("Can't turn non-existent page into a template");
+          return;
+        }
+
+        window.api.send('toMain', {
+          name: 'project:setastemplate',
+          id: projectId,
+          urlName: pageName,
+          urlPath: this.dir[pageName].path,
+          projectPath: projectPath
+        });
+      },
+
       /**
        * Load Previous History.
        *
@@ -219,11 +238,17 @@ function startPage() {
        *
        * @access     private
        */
-      async newPage() {
+      async newPage(selectedTemplate) {
         pageName = 'new-page';
         window.history.replaceState(null, null, `?p=new-page`);
         this.clearVars();
-        await this.renderPage('pageNull', 'assets/new-page.html');
+        console.log('Template: ', selectedTemplate);
+        if (selectedTemplate == '' ) {
+          await this.renderPage('pageNull', 'assets/new-page.html', true);
+        } else {
+          await this.renderPage('pageNull', `assets/templates/${selectedTemplate}.html`, true);
+        }
+        
         document.getElementById('sidebar').classList.add('hide');
       },
 
@@ -323,7 +348,7 @@ function startPage() {
        * @param {string}   mode  'normal', 'pageNull', or 'rerender'
        * @param {string}   data  urlName or urlPath if null
        */
-      async renderPage(mode, data) {
+      async renderPage(mode, data, isNewPage = false) {
         // Step 3. Set Page General Data
         this.headerNavBtn = this.meta.headerNavigation;
         this.projectTitle = this.meta.projectTitle;
@@ -366,7 +391,7 @@ function startPage() {
             window.pageData.title = this.capitalize(pageName.replace(/\-/g, " ")).trim();
             window.pageData.urlName = pageName.trim().toLowerCase().replace(/\s/g, '-');
 
-            if (data === 'assets/new-page.html') window.pageData.urlName += '-' + makeid(5);
+            if (isNewPage) window.pageData.urlName += '-' + makeid(5);
 
             this.isNewPage = true;
             break;
@@ -456,7 +481,6 @@ function startPage() {
         });
       }
     },
-
     async created() {
       this.isElectronCheck();
 
@@ -479,6 +503,13 @@ function startPage() {
               id: projectId,
               projectPath: projectPath,
             });
+
+            // Get templates path for sidebar newpage
+            window.api.send('toMain', {
+              name: 'project:gettemplates',
+              id: projectId,
+              projectPath: projectPath,
+            });
             return;
           }
 
@@ -494,6 +525,13 @@ function startPage() {
             this.urlpaths = data.value;
             return;
           }
+
+          // Receives template dropdown data
+          if (data.name == 'templateList') {
+            this.templateList = data.value;
+            return;
+          }
+
         });
       } catch (error) {}
     },
@@ -545,6 +583,7 @@ function startPage() {
   app.component(profileEditor.name, profileEditor);
   app.component(textInput.name, textInput);
   app.component(selectDrop.name, selectDrop);
+  app.component(dropdown.name, dropdown);
 
   // Mount
   root = app.mount('#app');
