@@ -61,7 +61,7 @@
   },
   "yasha-romanova": {
     "title": "Yasha romanova",
-    "path": "content/tboah/characters/e-class/yasha-romanova.html",
+    "path": "content/story/tboah/characters/e-class/yasha-romanova.html",
     "parent": "tboah-characters"
   },
   "eldra": {
@@ -137,6 +137,16 @@
   "librarium": {
     "title": "Librarium Sanctum",
     "path": "content/librarium/librarium.html",
+    "parent": ""
+  },
+  "jay-baker": {
+    "title": "Jay Baker",
+    "path": "content/story/tboah/characters/e-class/jay-baker.html",
+    "parent": ""
+  },
+  "tie-characterss": {
+    "title": "New page",
+    "path": "content/tie-characterss.html",
     "parent": ""
   }
 }

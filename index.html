@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Template</title>
+  <title id="projectTitle">Project Template</title>
 
   <!-- Style -->
   <link rel="stylesheet" href=".eternal/css/style.css">
@@ -23,6 +23,7 @@
 
 <body>
   <div id="app" v-cloak>
+
     <div class="d-flex flex-column center">
 
       <!-- Page Header -->
@@ -33,8 +34,9 @@
       <!-- v-if="isElectronCheck" -->
 
       <!-- Editor -->
-      <div class="row editor-div" v-if="isElectronCheck">
-        <editor :passed-editor-data="editorData" @save-content="saveContent"
+      <div class="row editor-div" v-if="isElectron">
+        <editor :passed-editor-data="editorData" :urlpaths="urlpaths" :parents-list="parentlists"
+          @save-content="saveContent" :is-new-page="isNewPage" :dir="dir"
           @delete-page="deletePage" @update-project="updateProject" 
           @new-page="newPage" @history-previous='historyPrevious'/>
       </div>

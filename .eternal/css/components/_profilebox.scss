@@ -90,7 +90,7 @@ $profilebox-font-size: 0.98em;
   }
 }
 
-@media (min-width: 300px) {
+@media (min-width: 400px) {
   .profile-box {
     float: none !important;
     margin: auto;
@@ -104,7 +104,7 @@ $profilebox-font-size: 0.98em;
   }
 }
 
-@media (min-width: 400px) {
+@media (min-width: 500px) {
   .profile-box {
     float: right !important;
     margin-left: 1em;
