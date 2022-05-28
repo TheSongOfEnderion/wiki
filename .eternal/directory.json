@@ -158,5 +158,10 @@
     "title": "Tie characters",
     "path": "content/test/tie-charactersss.html",
     "parent": ""
+  },
+  "niña-bach": {
+    "title": "Niña Bach",
+    "path": "content/story/tboah/characters/e-class/niña-bach.html",
+    "parent": "tboah-characters"
   }
 }
