@@ -743,7 +743,7 @@ const sideBar = {
       document.getElementById('sidebar').classList.add('hide');
     },
     deletePage() {
-      if (!confirm('Do you really want to delete this page?')) return;
+      if (!window.confirm('Do you really want to delete this page?')) return;
       this.$emit('delete-page');
       this.closeSidebar();
     },

@@ -215,19 +215,33 @@ function startPage() {
           alert('Home Page cannot be deleted');
           return;
         }
+        if (!this.dir.hasOwnProperty(pageName)) {
+          console.log("Cannot Delete nonexistent page");
+          return;
+        }
 
         // Deletes page from directory
         delete this.dir[pageName];
 
         // code to move file into trash bin
-        window.api.send('toMain', {
+        await window.api.send('toMain', {
           name: 'project:deletepage',
           data: { pageName: pageName, projectPath: projectPath }
         });
 
         // Goes back home and hides sidebar
-        this.readPage('home');
+        await this.readPage('home');
         document.getElementById('sidebar').classList.add('hide');
+
+        // Updates Lists
+        this.parentlists = Object.keys(this.dir);
+
+        // Updates urlPath autocomplete data
+        await window.api.send('toMain', {
+          name: 'project:getcontentdirs',
+          id: projectId,
+          projectPath: projectPath,
+        });
 
       },
 
@@ -272,7 +286,7 @@ function startPage() {
         pagePath += data.pageData.urlName.replace(/\s/g, '-') + '.html';
 
         // Send to electron
-        window.api.send('toMain', {
+        await window.api.send('toMain', {
           name: 'project:save',
           id: this.meta.id,
           projectPath: projectPath,
@@ -291,6 +305,16 @@ function startPage() {
           "path": pagePath,
           "parent": data.pageData.parent,
         };
+
+        // Updates Parent lists
+        this.parentlists = Object.keys(this.dir);
+
+        // Updates urlPath autocomplete data
+        await window.api.send('toMain', {
+          name: 'project:getcontentdirs',
+          id: projectId,
+          projectPath: projectPath,
+        });
 
         // Saves for rerender
         this.clearVars();
@@ -339,6 +363,16 @@ function startPage() {
         await this.renderPage('normal', this.dir[pageName].path);
       },
 
+      async fetchHTML(src) {
+        let response = await fetch(src);
+        if (response.status === 400) {
+          return null;
+        }
+        let text = await response.text();
+        text.replace(/&gt;/gm, '>');
+        return text;
+      },
+
       /**
        * Render Page.
        *
@@ -355,7 +389,6 @@ function startPage() {
         this.projectSubtitle = this.meta.projectSubtitle;
         this.areaToggle = getSpoilerStorageValue();
         let pageRaw = '';
-        let html = '';
         var pageFile;
 
         document.getElementById('projectTitle').innerText = this.projectTitle;
@@ -363,8 +396,8 @@ function startPage() {
         switch (mode) {
           case 'normal':
             try {
-              pageFile = await fetch(data);
-              if (pageFile.status == 404) {
+              pageFile = await this.fetchHTML(data);
+              if (pageFile == null) {
                 await this.renderPage('pageNull', 'assets/page-not-found.html');
                 return;
               }
@@ -373,8 +406,7 @@ function startPage() {
               return;
             }
 
-            html = await pageFile.text();
-            pageRaw = html.trim().split("<!-- File Content -->");
+            pageRaw = pageFile.trim().split("<!-- File Content -->");
 
             // Step 5. Processing Window Variables
             loadScripts(pageRaw[0]);
@@ -382,9 +414,8 @@ function startPage() {
             break;
 
           case 'pageNull':
-            pageFile = await fetch(data);
-            html = (await pageFile.text()).replace('[[pageName]]', pageName);
-            pageRaw = html.trim().split("<!-- File Content -->");
+            pageFile = (await this.fetchHTML(data)).replace('[[pageName]]', pageName);
+            pageRaw = pageFile.trim().split("<!-- File Content -->");
 
             // Step 5. Processing Window Variables
             loadScripts(pageRaw[0]);
@@ -427,7 +458,8 @@ function startPage() {
           let areaDiv = parsedContent.getElementById(area);
           if (!areaDiv) continue;
           for (let item of areaDiv.querySelectorAll('.page-tab')) {
-            let itemHtml = superTrim(item.innerHTML);
+
+            let itemHtml = superTrim(item.innerHTML.replace(/&gt;/gm, '>'));
             editorContentDataTemp[item.id] = itemHtml;
             content.push(`<div id="${item.id}" class="page-tag">\n` + itemHtml + "\n</div>");
           }
@@ -498,14 +530,14 @@ function startPage() {
             console.log("Path: ", projectPath);
 
             // Get urlPath autocomplete data
-            window.api.send('toMain', {
+            await window.api.send('toMain', {
               name: 'project:getcontentdirs',
               id: projectId,
               projectPath: projectPath,
             });
 
             // Get templates path for sidebar newpage
-            window.api.send('toMain', {
+            await window.api.send('toMain', {
               name: 'project:gettemplates',
               id: projectId,
               projectPath: projectPath,
@@ -556,7 +588,7 @@ function startPage() {
 
       // Get the projectPath
       if (this.isElectron) {
-        window.api.send('toMain', {
+        await window.api.send('toMain', {
           name: 'project:getpath',
           id: this.meta.id
         });
@@ -746,6 +778,27 @@ class TextRenderer {
       // List
       if (value.startsWith("* ")) {
         htmlContent += `<li>${value.replace("* ", "").trim()}</li>\n`;
+        continue;
+      }
+
+      if (value.startsWith("> ")) {
+        const rawSplit = value.split("-");
+        const text = rawSplit[0].replace("> ", '');
+        let author = '';
+
+        if (typeof rawSplit[1] != 'undefined') {
+          author = `<br><span class="font--small float-end pe-3">- ${rawSplit[1]}</span>`;
+        }
+
+        htmlContent += `
+        <div class="center">
+          <span class="quote">
+            <span class="quote-marks font--larger"><b>“</b></span>
+              ${text}
+            <span class="quote-marks"><b>”</b></span>
+            ${author}
+          </span>
+        </div>\n`;
         continue;
       }
 

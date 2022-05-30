@@ -1,0 +1,18 @@
+.quote {
+    width: 100%;
+        
+    border-left: 5px solid $color-light;
+    background-color: $color-light2;
+    color: $font-color-dark;
+    font-style: italic;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.1em;
+    padding: 0.8em 0.5em 0.5em 0.8em;
+    margin: 0.5em 0.5em 0.5em 0em;
+    line-height: 1.4em;
+}
+
+
+.quote-marks {
+    font-size: 1.4em;
+}

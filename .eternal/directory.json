@@ -31,7 +31,7 @@
   },
   "giselle-iridao": {
     "title": "Giselle Iridao",
-    "path": "content/story/tboah/characters/deuteragonist/giselle-iridao.html",
+    "path": "content/story/tboah/characters/giselle-iridao.html",
     "parent": "tboah-characters"
   },
   "eltia-axolin": {
@@ -40,7 +40,7 @@
     "parent": "tboah-characters"
   },
   "mayumi-severino": {
-    "title": "Mayumi severino",
+    "title": "Mayumi Severino",
     "path": "content/story/tboah/characters/deuteragonist/mayumi-severino.html",
     "parent": "tboah-characters"
   },
@@ -137,7 +137,7 @@
   "jay-baker": {
     "title": "Jay Baker",
     "path": "content/story/tboah/characters/e-class/jay-baker.html",
-    "parent": ""
+    "parent": "tboah-characters"
   },
   "tie-characterss": {
     "title": "New page",
@@ -149,19 +149,34 @@
     "path": "content/story/tboah/characters/e-class/amihan-villanueva.html",
     "parent": "tboah-characters"
   },
-  "new-page-vPD5A": {
-    "title": "New page",
-    "path": "content/test/new-page-vPD5A.html",
-    "parent": ""
-  },
-  "tie-charactersss": {
-    "title": "Tie characters",
-    "path": "content/test/tie-charactersss.html",
-    "parent": ""
-  },
   "niña-bach": {
     "title": "Niña Bach",
     "path": "content/story/tboah/characters/e-class/niña-bach.html",
     "parent": "tboah-characters"
+  },
+  "ancestor-parents": {
+    "title": "Ancestor Parents",
+    "path": "content/librarium/myths and religions/ancestor-parents.html",
+    "parent": "myths-and-religions"
+  },
+  "myths-and-religions": {
+    "title": "Myths and Religions",
+    "path": "content/librarium/myths and religions/myths-and-religions.html",
+    "parent": "librarium"
+  },
+  "religion": {
+    "title": "Religion",
+    "path": "content/religion.html",
+    "parent": ""
+  },
+  "god-template": {
+    "title": "God Template",
+    "path": "content/god-template.html",
+    "parent": ""
+  },
+  "the-shadow-commandments": {
+    "title": "The Shadow Commandments",
+    "path": "content/librarium/myths and religions/the-shadow-commandments.html",
+    "parent": "myths-and-religions"
   }
 }
