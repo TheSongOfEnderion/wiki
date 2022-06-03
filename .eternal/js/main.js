@@ -278,11 +278,18 @@ function startPage() {
         // Validator
         if (!this.isElectron) return;
 
+        // Ensures home
+        if (pageName === 'home' & data.pageData.urlName !== 'home') {
+          data.pageData.urlName = 'home';
+        }
+
         // Creates URLpath with urlName.html at the end /
         let pagePath = data.pageData.urlPath.slice().trim();
+        
         if (pagePath.charAt(pagePath.length - 1) != '/') {
           pagePath += '/';
         }
+        let originalPath = pagePath.slice() + pageName.replace(/\s/g, '-') + '.html';
         pagePath += data.pageData.urlName.replace(/\s/g, '-') + '.html';
 
         // Send to electron
@@ -292,12 +299,19 @@ function startPage() {
           projectPath: projectPath,
           info: {
             pagePath: pagePath,
+            originalPath: originalPath,
+            originalName: pageName.replace(/\s/g, '-'),
             isNewPage: this.isNewPage,
           },
           contentData: data.contentData,
           pageData: this.cloneObj(data.pageData),
           profileData: this.cloneObj(data.profileData),
         });
+
+        // Rename
+        if (pageName !== 'new-page' && this.dir.hasOwnProperty(pageName) && pageName !== data.pageData.urlName) {
+          delete this.dir[pageName];
+        }
 
         // Saves to directory
         this.dir[data.pageData.urlName] = {
@@ -320,6 +334,7 @@ function startPage() {
         this.clearVars();
         await this.$nextTick();
         this.rerenderData = data;
+        pageName = data.pageData.urlName;
       },
 
       /**
@@ -781,6 +796,7 @@ class TextRenderer {
         continue;
       }
 
+      // Quote Block
       if (value.startsWith("> ")) {
         const rawSplit = value.split("-");
         const text = rawSplit[0].replace("> ", '');

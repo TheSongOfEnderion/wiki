@@ -131,8 +131,8 @@
   },
   "librarium": {
     "title": "Librarium Sanctum",
-    "path": "content/librarium/librarium.html",
-    "parent": ""
+    "path": "content/librarium.html",
+    "parent": "lore"
   },
   "jay-baker": {
     "title": "Jay Baker",
@@ -161,7 +161,7 @@
   },
   "myths-and-religions": {
     "title": "Myths and Religions",
-    "path": "content/librarium/myths and religions/myths-and-religions.html",
+    "path": "content/librarium/myths-and-religions.html",
     "parent": "librarium"
   },
   "religion": {
@@ -178,5 +178,45 @@
     "title": "The Shadow Commandments",
     "path": "content/librarium/myths and religions/the-shadow-commandments.html",
     "parent": "myths-and-religions"
+  },
+  "eldrasil": {
+    "title": "Eldrasil",
+    "path": "content/lore/eldra/eldrasil.html",
+    "parent": "eldra"
+  },
+  "micthianteculou": {
+    "title": "Micthianteculou",
+    "path": "content/lore/eldra/eldrasil/micthianteculou.html",
+    "parent": "eldrasil"
+  },
+  "test ppagea": {
+    "title": "New page",
+    "path": "content/test-ppagea.html",
+    "parent": ""
+  },
+  "test-ppagea": {
+    "title": "New page",
+    "path": "content/test-ppagea.html",
+    "parent": ""
+  },
+  "the-creation": {
+    "title": "The Creation of Existence",
+    "path": "content/librarium/myths and religions/the-creation.html",
+    "parent": "myths-and-religions"
+  },
+  "bloom-lotus-company": {
+    "title": "Bloom Lotus Company",
+    "path": "content/lore/world/mirdum/loreteia/bloom-lotus-company.html",
+    "parent": ""
+  },
+  "ancient-heroes": {
+    "title": "Ancient Heroes",
+    "path": "content/librarium/history/ancient-heroes.html",
+    "parent": "history"
+  },
+  "history": {
+    "title": "History",
+    "path": "content/librarium/history.html",
+    "parent": "librarium"
   }
 }

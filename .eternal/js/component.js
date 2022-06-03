@@ -523,7 +523,6 @@ const editor = {
     },
     toggleSideBar() {
       document.getElementById('sidebar').classList.toggle("hide");
-      console.log(document.getElementById('sidebar'));
     },
     openEditorTab(tabName) {
       const tabList = ['content-editor', 'manage-tab', 'profile-box', 'scripts-tab'];
@@ -638,14 +637,12 @@ const editor = {
             pageid: tab + "-page",
           };
           this.editorData.contentData[area].push(obj);
-          console.log(obj);
         }
       }
 
       this.sendToChild = "refresh";
       await this.$nextTick();
       this.sendToChild = "";
-      console.log(this.editorData);
     },
     newPage(value) {
       this.$emit('new-page', value);
@@ -1251,7 +1248,6 @@ const tabEditor = {
       };
 
       this.selectedTabId = id;
-      console.log(this.tabName);
       this.sendData();
     },
     tabAdd(area) {
@@ -1459,5 +1455,31 @@ const dropdown = {
       </select>
     </div>
 
+  `
+};
+
+const confirmBox = {
+  name: `confirm-box`,
+  components: ['btn'],
+  props: {
+    text: { type: String, required: true },
+    func: { type: Function, required: true }
+  },
+  methods: {
+    confirm() {
+      this.func();
+    },
+    cancel() {
+
+    },
+  },
+  template: `
+    <div class="confirmbox center">
+      <div>
+      <btn :text="Confirm" class="font--medium" @btn-click="confirm"/>
+      <btn :text="Cancel" class="font--medium" @btn-click="cancel"/>
+      </div>
+      
+    </div>
   `
 };
