@@ -9,7 +9,6 @@ var root; // Reference to Vue App
 var projectId = ''; // Long random id of project
 var projectPath = ''; // Absolute path of project
 
-
 /**
  * Start Page.
  *
@@ -63,7 +62,7 @@ function startPage() {
         // Autocomplete data
         urlpaths: [],
         parentlists: [],
-        templateList:[],
+        templateList: [],
       };
     },
     methods: {
@@ -76,6 +75,7 @@ function startPage() {
        * @access     private
        */
       isElectronCheck() {
+        console.log(navigator.userAgentData);
         const userAgent = navigator.userAgent.toLowerCase();
         if (userAgent.indexOf(' electron/') == -1) { // Not electron
           console.log("Not on electron");
@@ -228,22 +228,7 @@ function startPage() {
       async deletePage() {
         // Validator
         if (!this.isElectron) return;
-        if (pageName === 'home') {
-          // alert('Home Page cannot be deleted');
-          sendToMain('dialog:alert', {
-            swalOptions: {
-              title: "Delete Warning",
-              text: "Home Page cannot be deleted",
-              icon: "warning",
-              showCancelButton: false
-            }
-          });
-          return;
-        }
-        if (!this.dir.hasOwnProperty(pageName)) {
-          console.log("Cannot Delete nonexistent page");
-          return;
-        }
+        if (pageName === 'home') return;
 
         // Deletes page from directory
         delete this.dir[pageName];
@@ -268,6 +253,36 @@ function startPage() {
           projectPath: projectPath,
         });
 
+        notify('success', 'Deleted Successfully', 'File is moved to trash folder.');
+      },
+
+      async deletePageConfirm() {
+        if (!this.isElectron) return;
+        if (pageName === 'home') {
+          sendToMain('dialog:alert', null, {
+            swalOptions: {
+              title: "Home Page cannot be deleted",
+              text: "This is the most important page of your project.",
+              icon: "warning",
+              showCancelButton: false
+            }
+          });
+          return;
+        }
+        if (!this.dir.hasOwnProperty(pageName)) {
+          console.log("Cannot Delete nonexistent page");
+          return;
+        }
+
+
+        sendToMain('dialog:alert', 'response:delete', {
+          swalOptions: {
+            title: "Are you sure you want to delete this page?",
+            text: "You can still find it in the trash folder if you changed your mind",
+            icon: "warning",
+            showCancelButton: true
+          }
+        });
       },
 
       /**
@@ -282,12 +297,12 @@ function startPage() {
         window.history.replaceState(null, null, `?p=new-page`);
         this.clearVars();
         console.log('Template: ', selectedTemplate);
-        if (selectedTemplate == '' ) {
+        if (selectedTemplate == '') {
           await this.renderPage('pageNull', 'assets/new-page.html', true);
         } else {
           await this.renderPage('pageNull', `assets/templates/${selectedTemplate}.html`, true);
         }
-        
+
         document.getElementById('sidebar').classList.add('hide');
       },
 
@@ -310,7 +325,7 @@ function startPage() {
 
         // Creates URLpath with urlName.html at the end /
         let pagePath = data.pageData.urlPath.slice().trim();
-        
+
         if (pagePath.charAt(pagePath.length - 1) != '/') {
           pagePath += '/';
         }
@@ -604,6 +619,11 @@ function startPage() {
             return;
           }
 
+          if (data.name == 'response:delete') {
+            if (data.value == true) await this.deletePage();
+            return;
+          }
+
         });
       } catch (error) {}
     },
@@ -661,12 +681,39 @@ function startPage() {
   root = app.mount('#app');
 }
 
-function sendToMain(name, value) {
+function sendToMain(name, responseName, value) {
   window.api.send('toMain', {
     name: name,
     id: projectId,
     projectPath: projectPath,
+    responseName: responseName,
     ...value
+  });
+}
+
+/**
+ * Notifies User.
+ *
+ * Creates a notification bar.
+ *
+ * @access           public
+ * @param {string}   theme   success, info, warning, error, and none.
+ * @param {string}   title   title of notify.
+ * @param {string}   message   the message str.
+ */
+function notify(theme, title, message) {
+  const myNotification = window.createNotification({
+    closeOnClick: true,
+    displayCloseButton: false,
+    positionClass: 'nfc-top-right',
+    onclick: false,
+    showDuration: 2500,
+    theme: theme
+  });
+
+  myNotification({
+    title: title,
+    message: message
   });
 }
 
@@ -1045,3 +1092,6 @@ function makeid(length) {
     return result;
   }
 }
+
+
+// Notification.js

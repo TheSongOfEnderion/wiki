@@ -24,7 +24,7 @@ $header-font: $font-family;
 $breadcrumbs-bg: $color-light2;
 $breadcrumbs-font-color: $font-color-dark;
 
-// TOC         
+// TOC       
 $toc-bg: $color-light2;
 
 // ======== VARIABLE AREA ======== (DO NOT REMOVE THIS COMMENT)
@@ -34,7 +34,8 @@ $toc-bg: $color-light2;
 @import './boostrap/bootstrap-grid';
 @import './editor/easymde';
 @import './editor/jsoneditor'; 
-
+@import './editor/notifications';
+   
 // Imports
 @import './font/font';
 @import './buttons';
