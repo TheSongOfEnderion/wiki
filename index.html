@@ -37,8 +37,8 @@
 
       <!-- v-if="isElectronCheck" -->
 
-      <!-- Editor  v-if="isElectron" -->
-      <div class="row editor-div">
+      <!-- Editor -->
+      <div class="row editor-div" v-if="isElectron">
         <editor :passed-editor-data="editorData" :urlpaths="urlpaths" :parents-list="parentlists" :template-list="templateList" @save-content="saveContent" :is-new-page="isNewPage" :dir="dir" @delete-page="deletePageConfirm" @update-project="updateProject" @set-page-as-template="setPageAsTemplate"
           @new-page="newPage" @history-previous='historyPrevious' />
       </div>

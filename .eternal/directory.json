@@ -132,7 +132,7 @@
   "librarium": {
     "title": "Librarium Sanctum",
     "path": "content/librarium.html",
-    "parent": "lore"
+    "parent": ""
   },
   "jay-baker": {
     "title": "Jay Baker",
@@ -218,5 +218,10 @@
     "title": "History",
     "path": "content/librarium/history.html",
     "parent": "librarium"
+  },
+  "histories": {
+    "title": "History",
+    "path": "content/lore/histories.html",
+    "parent": "lore"
   }
 }

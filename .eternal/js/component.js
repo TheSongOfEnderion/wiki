@@ -115,7 +115,13 @@ const btntoggle = {
         this.$emit('toggle-click', this.isToggledVal);
       }
     },
-    template: `<button type='button' @click="onClick()" :id="btnId" :class="['btn', 'btn-primary', 'btn--color-primary', isToggledVal === true ? 'btn--active2' : '']">{{ text }}</button>`,
+    template: `
+      <button type='button'
+        @click="onClick()" 
+        :id="btnId" 
+        :class="['btn', 'btn-primary', 'btn--color-primary', isToggledVal === true ? 'btn--active2' : '']">
+        {{ text }}
+      </button>`,
   };
 
 const dropdown = {
@@ -138,11 +144,6 @@ const dropdown = {
         }
       }
     },
-    // methods: {
-    //   onChange(event) {
-    //     this.$emit('template-change', event.target.value);
-    //   }, @change="onChange($event)"
-    // },
     template: `
       <div>
         <select :name="name" :id="id" v-model="value" class="dropdown-select dropdown-select--visual">

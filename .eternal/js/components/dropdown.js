@@ -20,11 +20,6 @@ const dropdown = {
         }
       }
     },
-    // methods: {
-    //   onChange(event) {
-    //     this.$emit('template-change', event.target.value);
-    //   }, @change="onChange($event)"
-    // },
     template: `
       <div>
         <select :name="name" :id="id" v-model="value" class="dropdown-select dropdown-select--visual">
