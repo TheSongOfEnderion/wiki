@@ -916,7 +916,7 @@ class TextRenderer {
 
           // Create id
           let id = "";
-          if (!this.createSpoilers) {
+          if (this.createSpoilers) {
             id = `${area}-${value_.replace(/\s/g, "-").toLowerCase()}`;
           } else {
             id = `${value_.replace(/\s/g, "-").toLowerCase()}`;

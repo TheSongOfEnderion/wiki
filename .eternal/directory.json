@@ -194,11 +194,6 @@
     "path": "content/test-ppagea.html",
     "parent": ""
   },
-  "test-ppagea": {
-    "title": "New page",
-    "path": "content/test-ppagea.html",
-    "parent": ""
-  },
   "the-creation": {
     "title": "The Creation of Existence",
     "path": "content/librarium/myths and religions/the-creation.html",
@@ -231,7 +226,7 @@
   },
   "the-blade-of-amaranth": {
     "title": "The Blade of Amaranth",
-    "path": "content/items/the-blade-of-amaranth.html",
+    "path": "content/items/weapons/the-blade-of-amaranth.html",
     "parent": "items"
   },
   "kataratch-armor": {
