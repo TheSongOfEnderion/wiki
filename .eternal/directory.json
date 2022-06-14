@@ -35,7 +35,7 @@
     "parent": "tboah-characters"
   },
   "eltia-axolin": {
-    "title": "Eltia axolin",
+    "title": "Eltia Axolin",
     "path": "content/story/tboah/characters/deuteragonist/eltia-axolin.html",
     "parent": "tboah-characters"
   },
@@ -253,5 +253,10 @@
     "title": "Euphemia Trysten",
     "path": "content/story/eotoq/characters/euphemia.html",
     "parent": "eotoq-characters"
+  },
+  "eotoq:chapter-1": {
+    "title": "Chapter 1 — The Ordinary Quill (1)",
+    "path": "content/story/eotoq/chapters/eotoq:chapter-1.html",
+    "parent": "eotoq"
   }
 }

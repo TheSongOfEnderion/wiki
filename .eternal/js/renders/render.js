@@ -862,8 +862,13 @@ class TextRenderer {
 
     for (const line of lines) {
       let value = line.trim();
-      if (value == "") {
+      if (value == "" || value == '[[nl]]') {
         htmlContent += '<br>';
+        continue;
+      }
+
+      if (value.includes("◇ ◇ ◇ ◇ ◇")) {
+        htmlContent += `<span class="center">◇ ◇ ◇ ◇ ◇</span>`;
         continue;
       }
 
