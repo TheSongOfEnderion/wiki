@@ -519,7 +519,7 @@ function startPage() {
           }
         }
 
-        const textRenderer = new TextRenderer(this.dir, this.isElectron);
+        const textRenderer = new TextRenderer(this.dir, this.isElectron, this.pageData.createSpoilers);
 
         // Step 8. Add Contents to render
         content.forEach((item, index) => { // Adding them to the tab
@@ -819,7 +819,7 @@ function superTrim(text) {
  * @access     public
  */
 class TextRenderer {
-  constructor(dir, isElectron) {
+  constructor(dir, isElectron, createSpoilers) {
     this.headerConvertionTable = {
       '# ': 'h1',
       '## ': 'h2',
@@ -832,6 +832,7 @@ class TextRenderer {
     this.dir = dir;
     this.isElectron = isElectron;
     this.references = [];
+    this.createSpoilers = createSpoilers;
   }
 
   /**
@@ -856,13 +857,13 @@ class TextRenderer {
 
     // Variables
     let htmlContent = ''; // Final Processed content
-    var TOClist = {}; // Table of Contents
+    var TOClist = {}; // Table of Contents '<p class="space"></p>'
     this.references = [];
 
     for (const line of lines) {
       let value = line.trim();
       if (value == "") {
-        htmlContent += '<p class="space"></p>';
+        htmlContent += '<br>';
         continue;
       }
 
@@ -912,7 +913,15 @@ class TextRenderer {
         let h = this.headerConvertionTable[hres[0]];
         if (this.renderTOC) {
           let value_ = value.replace(hres[0], "");
-          let id = `${area}-${value_.replace(/\s/g, "-").toLowerCase()}`;
+
+          // Create id
+          let id = "";
+          if (!this.createSpoilers) {
+            id = `${area}-${value_.replace(/\s/g, "-").toLowerCase()}`;
+          } else {
+            id = `${value_.replace(/\s/g, "-").toLowerCase()}`;
+          }
+          
           if (idList.includes(id)) {
             id += makeid(5);
           }
