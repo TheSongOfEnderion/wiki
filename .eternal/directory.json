@@ -223,5 +223,40 @@
     "title": "History",
     "path": "content/lore/histories.html",
     "parent": "lore"
+  },
+  "items": {
+    "title": "Items",
+    "path": "content/items.html",
+    "parent": "lore"
+  },
+  "the-blade-of-amaranth": {
+    "title": "The Blade of Amaranth",
+    "path": "content/items/the-blade-of-amaranth.html",
+    "parent": "items"
+  },
+  "kataratch-armor": {
+    "title": "Kataratch Armor",
+    "path": "content/items/armors/kataratch-armor.html",
+    "parent": "items"
+  },
+  "eotoq-characters": {
+    "title": "Characters",
+    "path": "content/story/eotoq/eotoq-characters.html",
+    "parent": "eotoq"
+  },
+  "eotoq": {
+    "title": "Euphemia of the Ordinary Quill",
+    "path": "content/story/eotoq/eotoq.html",
+    "parent": ""
+  },
+  "ordinary-quill": {
+    "title": "Ordinary Quill",
+    "path": "content/items/misc/ordinary-quill.html",
+    "parent": "items"
+  },
+  "euphemia": {
+    "title": "Euphemia Trysten",
+    "path": "content/story/eotoq/characters/euphemia.html",
+    "parent": "eotoq-characters"
   }
 }

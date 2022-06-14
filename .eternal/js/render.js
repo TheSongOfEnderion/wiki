@@ -866,6 +866,15 @@ class TextRenderer {
         continue;
       }
 
+      // List
+      if (value.startsWith("* ")) {
+        value = `• ${value.replace("* ", "").trim()}`;
+      }
+
+      if (value.startsWith("** ")) {
+        value = `<span class="ms-4">• </span>${value.replace("** ", "").trim()}`;
+      }
+
       // Formats
       value = this.renderWordBold(value);
       value = this.renderWordItalic(value);
@@ -873,16 +882,7 @@ class TextRenderer {
       // Link
       value = this.renderLink(value);
 
-      // List
-      if (value.startsWith("* ")) {
-        htmlContent += `<li>${value.replace("* ", "").trim()}</li>\n`;
-        continue;
-      }
 
-      if (value.startsWith("** ")) {
-        htmlContent += `<li class="ms-4">${value.replace("** ", "").trim()}</li>\n`;
-        continue;
-      }
 
       // Quote Block
       if (value.startsWith("> ")) {

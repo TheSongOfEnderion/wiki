@@ -53,10 +53,10 @@ const metaEditor = {
           switch (newVal) {
             case "sendData":
               this.tempPageData.title = this.titleVal.trim();
-              this.tempPageData.parent = this.parentVal.trim();
-              this.tempPageData.tags = this.tagsVal.trim();
-              this.tempPageData.urlPath = this.urlPath.trim();
-              this.tempPageData.urlName = this.urlName.trim();
+              this.tempPageData.parent = this.parentVal.trim().toLowerCase();
+              this.tempPageData.tags = this.tagsVal.trim().toLowerCase();
+              this.tempPageData.urlPath = this.urlPath.trim().toLowerCase();
+              this.tempPageData.urlName = this.urlName.trim().toLowerCase();
               this.tempPageData.description = this.descVal.trim();
   
               this.$emit('send-data', this.tempPageData);

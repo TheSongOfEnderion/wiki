@@ -29,7 +29,8 @@
       "Creatures": "creatures",
       "Races": "races",
       "Magic": "magic",
-      "Beings": "beings"
+      "Beings": "beings",
+      "Items": "items"
     },
     "Librarium": {
       "_default": "librarium"
