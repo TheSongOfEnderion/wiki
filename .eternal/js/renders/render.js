@@ -486,6 +486,7 @@ function startPage() {
             window.pageData = data.pageData;
 
             this.isNewPage = false;
+            //tests
             break;
         }
 
@@ -548,7 +549,10 @@ function startPage() {
           document.getElementById('nonspoiler').classList.remove('hide');
         }
 
-        this.pageHistory.push(pageName);
+        if (mode != 'rerender') {
+          this.pageHistory.push(pageName);
+        }
+
       },
 
       /**
@@ -860,6 +864,8 @@ class TextRenderer {
     var TOClist = {}; // Table of Contents '<p class="space"></p>'
     this.references = [];
 
+    let listMargin = false;
+
     for (const line of lines) {
       let value = line.trim();
       if (value == "" || value == '[[nl]]') {
@@ -878,7 +884,8 @@ class TextRenderer {
       }
 
       if (value.startsWith("** ")) {
-        value = `<span class="ms-4">• </span>${value.replace("** ", "").trim()}`;
+        value = `• ${value.replace("** ", "").trim()}`;
+        listMargin = true;
       }
 
       // Formats
@@ -945,6 +952,11 @@ class TextRenderer {
       if (htmlContent === '') {
         htmlContent += value + "\n";
       } else {
+        if (listMargin) {
+          htmlContent += '<p class="ms-4 my-0">' + value + "</p>\n";
+          listMargin = false;
+          continue;
+        }
         htmlContent += value + "<br>\n";
       }
     }

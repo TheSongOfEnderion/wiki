@@ -60,7 +60,7 @@
     "parent": "tboah-characters"
   },
   "yasha-romanova": {
-    "title": "Yasha romanova",
+    "title": "Yasha Romanova",
     "path": "content/story/tboah/characters/e-class/yasha-romanova.html",
     "parent": "tboah-characters"
   },
@@ -202,7 +202,7 @@
   "bloom-lotus-company": {
     "title": "Bloom Lotus Company",
     "path": "content/lore/world/mirdum/loreteia/bloom-lotus-company.html",
-    "parent": ""
+    "parent": "mirdum"
   },
   "ancient-heroes": {
     "title": "Ancient Heroes",
@@ -258,5 +258,25 @@
     "title": "Chapter 1 — The Ordinary Quill (1)",
     "path": "content/story/eotoq/chapters/eotoq-chapter-1.html",
     "parent": "eotoq"
+  },
+  "klein-huber": {
+    "title": "Klein Huber",
+    "path": "content/story/tboah/characters/e-class/klein-huber.html",
+    "parent": "tboah-characters"
+  },
+  "mina": {
+    "title": "Mina",
+    "path": "content/story/tboah/characters/a-class/mina.html",
+    "parent": ""
+  },
+  "characters": {
+    "title": "Characters",
+    "path": "content/characters.html",
+    "parent": ""
+  },
+  "aulindrel": {
+    "title": "Aulindrel",
+    "path": "content/lore/beings/aulindrel.html",
+    "parent": "beings"
   }
 }
